@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
+    <meta name="description" content="离线英文单词学习应用，支持多分类、拼写练习，以及 CSV + 音频 ZIP 词库导入导出。" />
+    <meta name="application-name" content="English Learning Offline" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-title" content="EngWords" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+    <meta name="format-detection" content="telephone=no" />
+    <meta name="theme-color" content="#17324d" />
+    <title>English Learning Offline</title>
+    <link rel="icon" href="assets/icons/icon.svg" type="image/svg+xml" />
+    <link rel="icon" href="assets/icons/icon-192.png" type="image/png" sizes="192x192" />
+    <link rel="icon" href="assets/icons/icon-512.png" type="image/png" sizes="512x512" />
+    <link rel="apple-touch-icon" href="assets/icons/apple-touch-icon.png" sizes="180x180" />
+    <link rel="manifest" href="manifest.webmanifest" />
+    <link rel="stylesheet" href="styles/main.css" />
+  </head>
+  <body>
+    <div class="app-shell">
+      <header class="hero">
+        <div>
+          <p class="eyebrow">Offline Vocabulary PWA</p>
+          <h1>English Learning</h1>
+          <p class="subtitle">本地存词、分类练习、离线可用。</p>
+        </div>
+      </header>
+      <main id="app" class="app-root" aria-live="polite"></main>
+    </div>
+    <script src="assets/vendor/jszip.min.js"></script>
+    <script type="module" src="app.js"></script>
+  </body>
+  </html>

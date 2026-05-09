@@ -4,4 +4,4 @@
 venv*/
 .venv/
 .DS_Store
-.dev-https/
+/docs/.dev-https/

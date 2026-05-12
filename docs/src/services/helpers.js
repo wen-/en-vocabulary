@@ -63,6 +63,26 @@ export function uniqueStrings(values) {
   return [...new Set((values ?? []).map((value) => String(value).trim()).filter(Boolean))];
 }
 
+export function normalizeStringList(values) {
+  if (Array.isArray(values)) {
+    return uniqueStrings(values);
+  }
+
+  if (values === undefined || values === null) {
+    return [];
+  }
+
+  return uniqueStrings([values]);
+}
+
+export function createCategoryKey(name) {
+  return normalizeText(name);
+}
+
+export function createExampleKey(example) {
+  return `${normalizeText(example?.en)}@@${normalizeText(example?.zh)}`;
+}
+
 export function normalizePhoneticAndNotes(phoneticValue, notesValue) {
   const phonetic = String(phoneticValue ?? "").trim();
   const notes = String(notesValue ?? "").trim();

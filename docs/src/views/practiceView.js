@@ -1,7 +1,9 @@
 import { escapeHtml } from "../services/helpers.js";
 
-function renderPracticeDetails(word) {
-  if (!word?.example && !word?.notes) {
+function renderPracticeExamples(word) {
+  const examples = Array.isArray(word?.examples) ? word.examples : [];
+
+  if (!examples.length) {
     return "";
   }
 
@@ -9,13 +11,29 @@ function renderPracticeDetails(word) {
     <details class="disclosure-panel disclosure-panel--compact">
       <summary class="disclosure-toggle disclosure-toggle--compact">
         <div>
-          <span>查看例句与备注</span>
-          <small>${[word.example ? "例句" : "", word.notes ? "备注" : ""].filter(Boolean).join(" / ")}</small>
+          <span>查看例句与翻译</span>
+          <small>共 ${examples.length} 条</small>
         </div>
       </summary>
-      <div class="disclosure-panel__body disclosure-panel__body--compact">
-        ${word.example ? `<p class="supporting-text">例句：${escapeHtml(word.example)}</p>` : ""}
-        ${word.notes ? `<p class="supporting-text">备注：${escapeHtml(word.notes)}</p>` : ""}
+      <div class="disclosure-panel__body disclosure-panel__body--compact example-preview-list">
+        ${examples
+          .map(
+            (example, index) => `
+              <div class="example-pair">
+                <div class="example-pair__header">
+                  <strong>例句 ${index + 1}</strong>
+                  ${
+                    word.exampleAudioIds?.includes(example.id)
+                      ? `<button type="button" class="ghost-button ghost-button--tiny" data-action="play-example-audio" data-example-id="${escapeHtml(example.id)}">播放例句音频</button>`
+                      : ""
+                  }
+                </div>
+                <p class="supporting-text">${escapeHtml(example.en)}</p>
+                <p class="supporting-text">${escapeHtml(example.zh)}</p>
+              </div>
+            `,
+          )
+          .join("")}
       </div>
     </details>
   `;
@@ -33,9 +51,8 @@ function renderCategorySelector(categories, selectedIds, fieldName) {
           (category) => `
             <label class="check-chip check-chip--inline">
               <input type="checkbox" name="${fieldName}" value="${escapeHtml(category.id)}" ${selectedIds.includes(category.id) ? "checked" : ""} />
-              <div class="check-chip__content check-chip__content--inline">
+              <div class="check-chip__content check-chip__content--single-line">
                 <span>${escapeHtml(category.name)}</span>
-                <small>${escapeHtml(category.group || "未分组")}</small>
               </div>
             </label>
           `,
@@ -170,7 +187,7 @@ export function renderPracticeView({ categories, categoriesById, practiceConfig,
               : `
                 <div class="question-panel">
                   <div class="question-panel__meta">
-                    <span>第 ${practiceSession.currentIndex + 1} / ${practiceSession.queueIds.length} 题，${currentWord?.hasAudio ? "可播放音频" : "无音频"}，${escapeHtml(formatSelectedPages(practiceSession.selectedPages))}</span>
+                    <span>第 ${practiceSession.currentIndex + 1} / ${practiceSession.queueIds.length} 题，${currentWord?.hasWordAudio ? "可播放" : "无音频"}，${escapeHtml(formatSelectedPages(practiceSession.selectedPages))}</span>
                   </div>
                   <div class="question-panel__prompt">
                     <h3>${escapeHtml(currentWord?.meaning || "请根据提示拼写单词")}</h3>
@@ -178,13 +195,13 @@ export function renderPracticeView({ categories, categoriesById, practiceConfig,
                       type="button"
                       class="icon-button icon-button--audio"
                       data-action="play-practice-audio"
-                      aria-label="播放音频"
-                      ${currentWord?.hasAudio ? `data-word-id="${escapeHtml(currentWord.id)}"` : "disabled"}
+                      aria-label="播放"
+                      ${currentWord?.hasWordAudio ? `data-word-id="${escapeHtml(currentWord.id)}"` : "disabled"}
                     >
                       <span class="audio-icon" aria-hidden="true"></span>
                     </button>
                   </div>
-                  ${renderPracticeDetails(currentWord)}
+                  ${renderPracticeExamples(currentWord)}
                   ${
                     answeredCurrent
                       ? `

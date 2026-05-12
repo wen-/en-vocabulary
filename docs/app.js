@@ -1,15 +1,15 @@
 import { openDatabase } from "./src/db/database.js";
-import { listWords, saveWord, deleteWord, filterWords, getAudioRecord } from "./src/db/wordRepository.js";
+import { listWords, saveWord, deleteWord, filterWords, getWordAudioRecord, getExampleAudioRecord } from "./src/db/wordRepository.js";
 import { listCategories, saveCategory, deleteCategory } from "./src/db/categoryRepository.js";
 import { listPracticeAttempts, recordPracticeAttempt, summarizeAttempts } from "./src/db/practiceRepository.js";
 import { AUDIO_ACCEPT, validateAudioFile, playAudioBlob } from "./src/services/audioService.js";
 import { DEMO_CATEGORIES, DEMO_WORDS } from "./src/services/demoData.js";
 import {
   clearAllData,
-  createWordsCsvPackageZipBlob,
-  createWordsCsvTemplate,
-  importWordsFromCsvFile,
-  inspectCsvImportFile,
+  createLibraryPackageZipBlob,
+  createLibraryTemplate,
+  importLibraryFromFile,
+  inspectLibraryImportFile,
 } from "./src/services/importExportService.js";
 import { createDownload, createId, escapeHtml, normalizeText, shuffle, uniqueStrings } from "./src/services/helpers.js";
 import { renderWordsView } from "./src/views/wordsView.js";
@@ -53,6 +53,7 @@ const state = {
   view: VIEWS.words,
   loading: true,
   busy: false,
+  wordEditorExpanded: false,
   words: [],
   categories: [],
   practiceAttempts: [],
@@ -83,13 +84,24 @@ function createEmptyWordDraft() {
   return {
     id: "",
     term: "",
-    phonetic: "",
+    phonetics: [""],
     meaning: "",
-    example: "",
-    notes: "",
+    examples: [createEmptyExampleDraft()],
     categoryIds: [],
+    hasWordAudio: false,
+    removeWordAudio: false,
+    wordAudioFile: null,
+  };
+}
+
+function createEmptyExampleDraft() {
+  return {
+    id: createId(),
+    en: "",
+    zh: "",
     hasAudio: false,
-    hasExampleAudio: false,
+    removeAudio: false,
+    audioFile: null,
   };
 }
 
@@ -97,7 +109,6 @@ function createEmptyCategoryDraft() {
   return {
     id: "",
     name: "",
-    group: "",
     description: "",
   };
 }
@@ -152,7 +163,7 @@ function syncWordListPageSize() {
 
 function createEmptyImportPreviews() {
   return {
-    csv: null,
+    library: null,
   };
 }
 
@@ -166,6 +177,61 @@ function createImportPreview(file, summary, overrides = {}) {
     ...summary,
     ...overrides,
   };
+}
+
+function normalizeDraftPhonetics(values) {
+  const phonetics = Array.isArray(values) ? values.map((value) => String(value ?? "")) : [];
+  return phonetics.length ? phonetics : [""];
+}
+
+function normalizeDraftExamples(values) {
+  const examples = (Array.isArray(values) ? values : [])
+    .map((value) => ({
+      id: value?.id ? String(value.id) : createId(),
+      en: String(value?.en ?? ""),
+      zh: String(value?.zh ?? ""),
+      hasAudio: Boolean(value?.hasAudio),
+      removeAudio: Boolean(value?.removeAudio) && Boolean(value?.hasAudio),
+      audioFile: value?.audioFile || null,
+    }))
+    .filter(Boolean);
+
+  return examples.length ? examples : [createEmptyExampleDraft()];
+}
+
+function readWordDraftFromForm(form) {
+  const formData = new FormData(form);
+  const currentExamplesById = new Map(state.wordDraft.examples.map((example) => [example.id, example]));
+  const exampleIds = formData.getAll("exampleId").map((value) => String(value || createId()));
+  const exampleEnValues = formData.getAll("exampleEn").map((value) => String(value ?? ""));
+  const exampleZhValues = formData.getAll("exampleZh").map((value) => String(value ?? ""));
+  const removeExampleAudioIds = new Set(formData.getAll("removeExampleAudio").map((value) => String(value)));
+  const examples = exampleIds.map((id, index) => {
+    const current = currentExamplesById.get(id) || createEmptyExampleDraft();
+
+    return {
+      ...current,
+      id,
+      en: exampleEnValues[index] || "",
+      zh: exampleZhValues[index] || "",
+      removeAudio: current.hasAudio && removeExampleAudioIds.has(id),
+    };
+  });
+
+  return {
+    ...state.wordDraft,
+    id: String(formData.get("id") || ""),
+    term: String(formData.get("term") || ""),
+    phonetics: normalizeDraftPhonetics(formData.getAll("phoneticValue")),
+    meaning: String(formData.get("meaning") || ""),
+    examples: normalizeDraftExamples(examples),
+    categoryIds: uniqueStrings(formData.getAll("categoryId")),
+    removeWordAudio: state.wordDraft.hasWordAudio && formData.get("removeWordAudio") === "on",
+  };
+}
+
+function syncWordDraftFromForm(form) {
+  state.wordDraft = readWordDraftFromForm(form);
 }
 
 function getPwaStatus() {
@@ -399,6 +465,21 @@ function scrollToWordListStart() {
   });
 }
 
+function scrollToCategoryEditorStart() {
+  window.requestAnimationFrame(() => {
+    const anchor = document.querySelector("[data-category-editor-scroll-anchor]");
+
+    if (!(anchor instanceof HTMLElement)) {
+      return;
+    }
+
+    anchor.scrollIntoView({
+      behavior: "smooth",
+      block: "start",
+    });
+  });
+}
+
 function buildAppSummary() {
   return {
     words: state.words.length,
@@ -505,9 +586,22 @@ function renderView() {
         categoriesById,
         filters: state.filters,
         draft: state.wordDraft,
+        isEditorOpen: state.wordEditorExpanded || Boolean(state.wordDraft.id),
         busy: state.busy,
         audioAccept: AUDIO_ACCEPT,
       });
+  }
+}
+
+function onToggle(event) {
+  const target = event.target;
+
+  if (!(target instanceof HTMLDetailsElement)) {
+    return;
+  }
+
+  if (target.dataset.ui === "word-editor-disclosure") {
+    state.wordEditorExpanded = target.open;
   }
 }
 
@@ -601,29 +695,26 @@ function finalizePracticeSession() {
   };
 }
 
-function formatCsvImportSummary(summary, options = {}) {
+function formatLibraryImportSummary(summary, options = {}) {
   const audioSummary =
     summary.importedAudio || summary.updatedAudio || summary.skippedAudio
       ? `，新增 ${summary.importedAudio} 个音频，更新 ${summary.updatedAudio} 个音频，跳过 ${summary.skippedAudio} 个音频`
       : "";
-  const overwriteHint = summary.skippedWords
-    ? " 若你是在用新版词库补充音标、例句等字段，请改用“覆盖同名单词”或“覆盖导入”。"
-    : "";
 
   if (options.importMode === "replace") {
     return `已清空本地数据并导入词库：新增 ${summary.createdWords} 个单词，新增 ${summary.createdCategories} 个分类${audioSummary}。`;
   }
 
-  if (summary.duplicateMode === "overwrite") {
-    return `词库导入完成：新增 ${summary.createdWords} 个单词，覆盖 ${summary.updatedWords} 个同名单词，新增 ${summary.createdCategories} 个分类${audioSummary}。`;
+  if (summary.duplicateMode === "merge") {
+    return `词库导入完成：新增 ${summary.createdWords} 个单词，合并 ${summary.updatedWords} 个同名单词，跳过 ${summary.skippedWords} 个完全一致的重复单词，新增 ${summary.createdCategories} 个分类${audioSummary}。`;
   }
 
-  return `词库导入完成：新增 ${summary.createdWords} 个单词，跳过 ${summary.skippedWords} 个重复单词，新增 ${summary.createdCategories} 个分类${audioSummary}。${overwriteHint}`;
+  return `词库导入完成：新增 ${summary.createdWords} 个单词，跳过 ${summary.skippedWords} 个重复单词，新增 ${summary.createdCategories} 个分类${audioSummary}。`;
 }
 
 async function previewImportFile(file) {
   if (!file) {
-    state.importPreviews.csv = null;
+    state.importPreviews.library = null;
     render();
     return;
   }
@@ -632,19 +723,19 @@ async function previewImportFile(file) {
   render();
 
   try {
-    const summary = await inspectCsvImportFile(file);
+    const summary = await inspectLibraryImportFile(file);
 
     if (summary.requiresZipForAudio) {
-      state.importPreviews.csv = createImportPreview(file, summary, {
+      state.importPreviews.library = createImportPreview(file, summary, {
         status: "error",
-        message: "纯 CSV 中检测到 audio 或 exampleAudio 列引用。若要一起导入音频，请改用 ZIP 包，并包含 words.csv、audio 目录和可选 example-audio 目录。",
+        message: "纯 JSON 词库中检测到音频引用。若要一起导入单词或例句音频，请改用 ZIP 词库包，并包含 library.json 与 audio 目录。",
       });
       return;
     }
 
-    state.importPreviews.csv = createImportPreview(file, summary);
+    state.importPreviews.library = createImportPreview(file, summary);
   } catch (error) {
-    state.importPreviews.csv = createImportPreview(file, {}, {
+    state.importPreviews.library = createImportPreview(file, {}, {
       status: "error",
       message: error instanceof Error ? error.message : "预览失败。",
     });
@@ -656,27 +747,57 @@ async function previewImportFile(file) {
 
 async function handleWordSubmit(form) {
   const formData = new FormData(form);
-  const audioFile = formData.get("audioFile");
-  let audioChange = { mode: "keep" };
+  const draft = readWordDraftFromForm(form);
+  const selectedWordAudio = formData.get("wordAudioFile");
+  const wordAudioFile = selectedWordAudio instanceof File && selectedWordAudio.size > 0
+    ? selectedWordAudio
+    : draft.wordAudioFile;
+  const exampleAudioFiles = formData.getAll("exampleAudioFile");
+  let wordAudioChange = { mode: "keep" };
 
-  if (audioFile instanceof File && audioFile.size > 0) {
-    validateAudioFile(audioFile);
-    audioChange = { mode: "replace", file: audioFile };
-  } else if (formData.get("removeAudio") === "on") {
-    audioChange = { mode: "remove" };
+  if (wordAudioFile instanceof File && wordAudioFile.size > 0) {
+    validateAudioFile(wordAudioFile);
+    wordAudioChange = { mode: "replace", file: wordAudioFile };
+  } else if (draft.removeWordAudio) {
+    wordAudioChange = { mode: "remove" };
+  }
+
+  const exampleAudios = {};
+
+  for (const [index, example] of draft.examples.entries()) {
+    const selectedExampleAudio = exampleAudioFiles[index];
+    const exampleAudioFile = selectedExampleAudio instanceof File && selectedExampleAudio.size > 0
+      ? selectedExampleAudio
+      : example.audioFile;
+
+    if (exampleAudioFile instanceof File && exampleAudioFile.size > 0) {
+      validateAudioFile(exampleAudioFile);
+      exampleAudios[example.id] = { mode: "replace", file: exampleAudioFile };
+      continue;
+    }
+
+    if (example.removeAudio) {
+      exampleAudios[example.id] = { mode: "remove" };
+    }
   }
 
   await saveWord(
     {
-      id: String(formData.get("id") || ""),
-      term: formData.get("term"),
-      phonetic: formData.get("phonetic"),
-      meaning: formData.get("meaning"),
-      example: formData.get("example"),
-      notes: formData.get("notes"),
-      categoryIds: formData.getAll("categoryId"),
+      id: draft.id,
+      term: draft.term,
+      phonetics: draft.phonetics,
+      meaning: draft.meaning,
+      examples: draft.examples.map((example) => ({
+        id: example.id,
+        en: example.en,
+        zh: example.zh,
+      })),
+      categoryIds: draft.categoryIds,
     },
-    audioChange,
+    {
+      wordAudio: wordAudioChange,
+      exampleAudios,
+    },
   );
 
   state.wordDraft = createEmptyWordDraft();
@@ -689,7 +810,6 @@ async function handleCategorySubmit(form) {
   await saveCategory({
     id: String(formData.get("id") || ""),
     name: formData.get("name"),
-    group: formData.get("group"),
     description: formData.get("description"),
   });
 
@@ -761,16 +881,16 @@ async function handlePracticeAnswer(form) {
   };
 }
 
-async function handleImportCsv(form) {
+async function handleImportLibrary(form) {
   const formData = new FormData(form);
-  const rawFile = formData.get("csvFile");
+  const rawFile = formData.get("libraryFile");
   const importMode = String(formData.get("importMode") || "merge");
   const duplicateMode = String(formData.get("duplicateMode") || "skip");
-  const preview = state.importPreviews.csv;
+  const preview = state.importPreviews.library;
   const file = rawFile instanceof File && rawFile.size > 0 ? rawFile : preview?.file;
 
   if (!(file instanceof File) || file.size === 0) {
-    throw new Error("请选择一个 CSV 文件或 ZIP 词库包。");
+    throw new Error("请选择一个 JSON 文件或 ZIP 词库包。");
   }
 
   if (preview?.status === "error" && matchesPreviewFile(preview, file)) {
@@ -779,11 +899,11 @@ async function handleImportCsv(form) {
 
   const inspection = preview?.status === "ready" && matchesPreviewFile(preview, file)
     ? preview
-    : await inspectCsvImportFile(file);
+    : await inspectLibraryImportFile(file);
   const confirmed = window.confirm(
     importMode === "replace"
-      ? `将先清空当前本地单词、分类、音频和练习记录，再从${inspection.format === "zip" ? " ZIP 词库包" : " CSV 文件"}导入 ${inspection.rows} 行词条，涉及 ${inspection.categories} 个分类${inspection.audioRefs ? `，并引用 ${inspection.audioRefs} 个音频文件` : ""}。\n该操作不可恢复，是否继续？`
-      : `将从${inspection.format === "zip" ? " ZIP 词库包" : " CSV 文件"}导入 ${inspection.rows} 行词条，涉及 ${inspection.categories} 个分类${inspection.audioRefs ? `，并引用 ${inspection.audioRefs} 个音频文件` : ""}。\n重复单词策略：${duplicateMode === "overwrite" ? "覆盖同名单词" : "跳过同名单词"}。${duplicateMode === "skip" ? "\n如果你是在用新版词库更新音标、例句或备注，请改选“覆盖同名单词”。" : ""}\n是否继续？`,
+      ? `将先清空当前本地单词、分类、音频和练习记录，再从${inspection.format === "zip" ? " ZIP 词库包" : " JSON 词库"}导入 ${inspection.words} 个单词、${inspection.examples} 条例句和 ${inspection.categories} 个分类${inspection.audioRefs ? `，并引用 ${inspection.audioRefs} 个音频文件` : ""}。\n该操作不可恢复，是否继续？`
+      : `将从${inspection.format === "zip" ? " ZIP 词库包" : " JSON 词库"}导入 ${inspection.words} 个单词、${inspection.examples} 条例句和 ${inspection.categories} 个分类${inspection.audioRefs ? `，并引用 ${inspection.audioRefs} 个音频文件` : ""}。\n重复单词策略：${duplicateMode === "merge" ? "合并同名单词" : "跳过同名单词"}。\n是否继续？`,
   );
 
   if (!confirmed) {
@@ -795,15 +915,15 @@ async function handleImportCsv(form) {
     resetPracticeSession();
   }
 
-  const summary = await importWordsFromCsvFile(file, {
-    duplicateMode: importMode === "replace" ? "overwrite" : duplicateMode,
+  const summary = await importLibraryFromFile(file, {
+    duplicateMode: importMode === "replace" ? "merge" : duplicateMode,
   });
   state.wordDraft = createEmptyWordDraft();
   state.categoryDraft = createEmptyCategoryDraft();
   state.view = VIEWS.words;
-  state.importPreviews.csv = null;
+  state.importPreviews.library = null;
   await refreshData();
-  return formatCsvImportSummary(summary, { importMode });
+  return formatLibraryImportSummary(summary, { importMode });
 }
 
 async function onChange(event) {
@@ -813,16 +933,49 @@ async function onChange(event) {
     return;
   }
 
-  if (target.name === "csvFile") {
+  if (target.name === "libraryFile") {
     await previewImportFile(target.files?.[0] ?? null);
+    return;
+  }
+
+  if (target.name === "wordAudioFile") {
+    state.wordDraft.wordAudioFile = target.files?.[0] ?? null;
+    state.wordDraft.removeWordAudio = false;
+    return;
+  }
+
+  if (target.name === "exampleAudioFile") {
+    const exampleId = String(target.dataset.exampleId || "");
+
+    state.wordDraft.examples = state.wordDraft.examples.map((example) => {
+      if (example.id !== exampleId) {
+        return example;
+      }
+
+      return {
+        ...example,
+        audioFile: target.files?.[0] ?? null,
+        removeAudio: false,
+      };
+    });
   }
 }
 
 async function handlePlayWordAudio(wordId) {
-  const record = await getAudioRecord(wordId);
+  const record = await getWordAudioRecord(wordId);
 
   if (!record?.blob) {
     throw new Error("当前单词还没有音频。");
+  }
+
+  await playAudioBlob(record.blob);
+}
+
+async function handlePlayExampleAudio(exampleId) {
+  const record = await getExampleAudioRecord(exampleId);
+
+  if (!record?.blob) {
+    throw new Error("当前例句还没有音频。");
   }
 
   await playAudioBlob(record.blob);
@@ -840,7 +993,6 @@ async function seedDemoData() {
     if (!record) {
       record = await saveCategory({
         name: demoCategory.name,
-        group: demoCategory.group,
         description: demoCategory.description,
       });
       categoryByName.set(normalizedName, record);
@@ -863,12 +1015,12 @@ async function seedDemoData() {
     await saveWord(
       {
         term: demoWord.term,
+        phonetics: demoWord.phonetics,
         meaning: demoWord.meaning,
-        example: demoWord.example,
-        notes: demoWord.notes,
+        examples: demoWord.examples,
         categoryIds: demoWord.categoryKeys.map((key) => categoryIdByKey.get(key)).filter(Boolean),
       },
-      { mode: "keep" },
+      { wordAudio: { mode: "keep" }, exampleAudios: {} },
     );
 
     existingTerms.add(normalizedTerm);
@@ -894,13 +1046,22 @@ function populateWordDraft(wordId) {
   state.wordDraft = {
     id: word.id,
     term: word.term,
-    phonetic: word.phonetic,
+    phonetics: word.phonetics?.length ? [...word.phonetics] : [""],
     meaning: word.meaning,
-    example: word.example,
-    notes: word.notes,
+    examples: word.examples?.length
+      ? word.examples.map((example) => ({
+          id: example.id,
+          en: example.en,
+          zh: example.zh,
+          hasAudio: word.exampleAudioIds?.includes(example.id),
+          removeAudio: false,
+          audioFile: null,
+        }))
+      : [createEmptyExampleDraft()],
     categoryIds: [...(word.categoryIds || [])],
-    hasAudio: word.hasAudio,
-    hasExampleAudio: Boolean(word.hasExampleAudio),
+    hasWordAudio: Boolean(word.hasWordAudio),
+    removeWordAudio: false,
+    wordAudioFile: null,
   };
   state.view = VIEWS.words;
 }
@@ -915,7 +1076,6 @@ function populateCategoryDraft(categoryId) {
   state.categoryDraft = {
     id: category.id,
     name: category.name,
-    group: category.group,
     description: category.description,
   };
   state.view = VIEWS.categories;
@@ -949,8 +1109,8 @@ async function onSubmit(event) {
       case "practice-answer":
         await handlePracticeAnswer(form);
         return null;
-      case "import-csv":
-        return handleImportCsv(form);
+      case "import-library":
+        return handleImportLibrary(form);
       default:
         return null;
     }
@@ -975,6 +1135,59 @@ async function onClick(event) {
       state.view = trigger.dataset.view || VIEWS.words;
       render();
       return;
+    case "add-phonetic": {
+      const form = trigger.closest("form");
+
+      if (!form) {
+        return;
+      }
+
+      syncWordDraftFromForm(form);
+      state.wordDraft.phonetics = [...state.wordDraft.phonetics, ""];
+      render();
+      return;
+    }
+    case "remove-phonetic": {
+      const form = trigger.closest("form");
+      const index = Number(trigger.dataset.index || "-1");
+
+      if (!form || index < 0) {
+        return;
+      }
+
+      syncWordDraftFromForm(form);
+      state.wordDraft.phonetics = state.wordDraft.phonetics.filter((_, currentIndex) => currentIndex !== index);
+      state.wordDraft.phonetics = normalizeDraftPhonetics(state.wordDraft.phonetics);
+      render();
+      return;
+    }
+    case "add-example": {
+      const form = trigger.closest("form");
+
+      if (!form) {
+        return;
+      }
+
+      syncWordDraftFromForm(form);
+      state.wordDraft.examples = [...state.wordDraft.examples, createEmptyExampleDraft()];
+      render();
+      return;
+    }
+    case "remove-example": {
+      const form = trigger.closest("form");
+      const exampleId = String(trigger.dataset.exampleId || "");
+
+      if (!form || !exampleId) {
+        return;
+      }
+
+      syncWordDraftFromForm(form);
+      state.wordDraft.examples = normalizeDraftExamples(
+        state.wordDraft.examples.filter((example) => example.id !== exampleId),
+      );
+      render();
+      return;
+    }
     case "reset-word-draft":
       state.wordDraft = createEmptyWordDraft();
       render();
@@ -1008,6 +1221,7 @@ async function onClick(event) {
     }
     case "edit-word":
       populateWordDraft(trigger.dataset.wordId);
+      state.wordEditorExpanded = true;
       render();
       return;
     case "delete-word":
@@ -1027,9 +1241,15 @@ async function onClick(event) {
         await handlePlayWordAudio(trigger.dataset.wordId);
       });
       return;
+    case "play-example-audio":
+      await runAction(async () => {
+        await handlePlayExampleAudio(trigger.dataset.exampleId);
+      });
+      return;
     case "edit-category":
       populateCategoryDraft(trigger.dataset.categoryId);
       render();
+      scrollToCategoryEditorStart();
       return;
     case "delete-category": {
       const category = state.categories.find((item) => item.id === trigger.dataset.categoryId);
@@ -1065,18 +1285,18 @@ async function onClick(event) {
       resetPracticeSession();
       render();
       return;
-    case "download-csv-template":
+    case "download-library-template":
       await runAction(async () => {
-        const csvTemplate = createWordsCsvTemplate();
-        createDownload("english-learning-template.csv", csvTemplate, "text/csv;charset=utf-8");
-      }, "CSV 模板已生成。");
+        const libraryTemplate = createLibraryTemplate();
+        createDownload("english-learning-library-template.json", libraryTemplate, "application/json;charset=utf-8");
+      }, "JSON 词库模板已生成。");
       return;
-    case "export-csv-package":
+    case "export-library-package":
       await runAction(async () => {
-        const csvPackageZip = await createWordsCsvPackageZipBlob();
-        const filename = `english-learning-words-${new Date().toISOString().slice(0, 10)}.zip`;
-        createDownload(filename, csvPackageZip, "application/zip");
-      }, "CSV + 音频 ZIP 已生成。");
+        const libraryPackageZip = await createLibraryPackageZipBlob();
+        const filename = `english-learning-library-${new Date().toISOString().slice(0, 10)}.zip`;
+        createDownload(filename, libraryPackageZip, "application/zip");
+      }, "JSON 词库 ZIP 已生成。");
       return;
     case "load-demo-data": {
       const hasData = state.words.length > 0 || state.categories.length > 0;
@@ -1166,6 +1386,7 @@ async function initialize() {
   appRoot.addEventListener("submit", onSubmit);
   appRoot.addEventListener("click", onClick);
   appRoot.addEventListener("change", onChange);
+  appRoot.addEventListener("toggle", onToggle, true);
 
   await openDatabase();
   await refreshData();

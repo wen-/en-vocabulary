@@ -72,12 +72,13 @@ function getServiceWorkerStatus(pwaStatus) {
 
 function renderPreviewCard(preview) {
   if (!preview) {
-    return `<p class="help-text">选中文件后会先预览行数、分类数和音频引用数，再确认是否导入。</p>`;
+    return '<p class="help-text">选中文件后会先预览单词数、例句数、分类数和音频引用数，再确认是否导入。</p>';
   }
 
   const stats = [
-    `${preview.rows} 行词条`,
-    `${preview.categories} 个分类`,
+    `${preview.words || 0} 个单词`,
+    `${preview.examples || 0} 条例句`,
+    `${preview.categories || 0} 个分类`,
     `${preview.audioRefs || 0} 个音频引用`,
   ];
 
@@ -102,7 +103,7 @@ export function renderSettingsView({ summary, storageEstimate, pwaStatus, busy, 
   const usage = storageEstimate?.usage ? bytesToSize(storageEstimate.usage) : "未知";
   const quota = storageEstimate?.quota ? bytesToSize(storageEstimate.quota) : "未知";
   const hasData = summary.words > 0 || summary.categories > 0;
-  const hasCsvPreview = Boolean(importPreviews?.csv);
+  const hasLibraryPreview = Boolean(importPreviews?.library);
   const installStatus = getInstallStatus(pwaStatus);
   const serviceWorkerStatus = getServiceWorkerStatus(pwaStatus);
 
@@ -136,12 +137,12 @@ export function renderSettingsView({ summary, storageEstimate, pwaStatus, busy, 
               <span>${hasData ? "可以继续录入、练习，或用统一词库包在设备间同步。" : "可一键加载示例分类和示例单词，先体验完整流程。"}</span>
             </div>
             <button type="button" class="ghost-button" data-action="load-demo-data" ${busy ? "disabled" : ""}>加载示例数据</button>
-            <button type="button" class="ghost-button" data-action="download-csv-template" ${busy ? "disabled" : ""}>下载 CSV 模板</button>
-            <button type="button" class="primary-button" data-action="export-csv-package" ${busy ? "disabled" : ""}>导出 CSV + 音频 ZIP</button>
-            <form data-form="import-csv" class="form-stack compact-form">
+            <button type="button" class="ghost-button" data-action="download-library-template" ${busy ? "disabled" : ""}>下载 JSON 词库模板</button>
+            <button type="button" class="primary-button" data-action="export-library-package" ${busy ? "disabled" : ""}>导出 JSON + 音频 ZIP</button>
+            <form data-form="import-library" class="form-stack compact-form">
               <label class="field">
-                <span>导入词库 ZIP / CSV</span>
-                <input type="file" name="csvFile" accept="text/csv,.csv,application/zip,.zip" ${hasCsvPreview ? "" : "required"} />
+                <span>导入词库 ZIP / JSON</span>
+                <input type="file" name="libraryFile" accept="application/json,.json,application/zip,.zip" ${hasLibraryPreview ? "" : "required"} />
               </label>
               <label class="field">
                 <span>导入模式</span>
@@ -154,17 +155,17 @@ export function renderSettingsView({ summary, storageEstimate, pwaStatus, busy, 
                 <span>重复单词策略</span>
                 <select name="duplicateMode">
                   <option value="skip">跳过同名单词，保留现有内容</option>
-                  <option value="overwrite">覆盖同名单词的释义、例句和分类</option>
+                  <option value="merge">合并同名单词的音标、释义、例句、分类和音频</option>
                 </select>
               </label>
               <div class="form-actions">
                 <button type="submit" class="primary-button" ${busy ? "disabled" : ""}>导入词库</button>
               </div>
-              <p class="help-text">统一使用 CSV + 音频 ZIP 作为导入导出格式。当前 words.csv 包含 term、phonetic、meaning、example、notes、categories、audio、exampleAudio 列；导出得到的 ZIP 可直接解压编辑 words.csv，再连同 audio 目录和可选 example-audio 目录一起压缩导回。纯 CSV 仍兼容文本导入，但不携带音频。若选择“覆盖导入”，会先清空本地数据，此时重复单词策略不生效。若你是在用新版词库更新旧词条里的音标、例句或备注，不要选“跳过同名单词”，应改选“覆盖同名单词”或“覆盖导入”。</p>
-              ${renderPreviewCard(importPreviews?.csv)}
+              <p class="help-text">词库统一使用 JSON 结构。文本模板使用 library.json，完整词库包使用 ZIP，其中包含 library.json 以及可选的 audio/words 和 audio/examples 目录。JSON 词库适合维护文本数据，ZIP 词库适合同时携带单词音频和例句音频。</p>
+              ${renderPreviewCard(importPreviews?.library)}
             </form>
             <button type="button" class="danger-button" data-action="clear-local-data" ${busy ? "disabled" : ""}>清空全部本地数据</button>
-            <p class="help-text">当前统一词库包只包含单词、音标、分类和音频，不包含练习记录；练习记录仅保留在当前浏览器本地。</p>
+            <p class="help-text">统一词库包只包含分类、单词、音标、释义、例句及单词/例句音频，不包含练习记录；练习记录仅保留在当前浏览器本地。</p>
           </div>
         </section>
 

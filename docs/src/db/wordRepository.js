@@ -1,48 +1,97 @@
-import { AUDIO_SLOTS, STORES, createAudioRecordId, normalizeAudioSlot, requestToPromise, runTransaction } from "./database.js";
-import { createId, normalizePhoneticAndNotes, normalizeText, uniqueStrings } from "../services/helpers.js";
+import {
+  AUDIO_OWNER_TYPES,
+  STORES,
+  createAudioRecordId,
+  normalizeAudioOwnerType,
+  requestToPromise,
+  runTransaction,
+} from "./database.js";
+import { createExampleKey, createId, normalizeStringList, normalizeText, uniqueStrings } from "../services/helpers.js";
 
 function normalizeAudioRecord(record) {
-  if (!record?.wordId) {
+  if (!record?.wordId || !record?.ownerId) {
     return null;
   }
 
-  const slot = normalizeAudioSlot(record.slot);
+  const ownerType = normalizeAudioOwnerType(record.ownerType);
 
   return {
     ...record,
-    id: record.id || createAudioRecordId(record.wordId, slot),
-    slot,
+    id: record.id || createAudioRecordId(ownerType, record.ownerId),
+    ownerType,
   };
 }
 
+function normalizeExamples(examples) {
+  const normalizedExamples = [];
+  const seen = new Set();
+
+  for (const value of Array.isArray(examples) ? examples : []) {
+    const example = {
+      id: value?.id ? String(value.id).trim() : createId(),
+      en: String(value?.en ?? "").trim(),
+      zh: String(value?.zh ?? "").trim(),
+    };
+
+    if (!example.en && !example.zh) {
+      continue;
+    }
+
+    const key = createExampleKey(example);
+
+    if (example.en && example.zh && seen.has(key)) {
+      continue;
+    }
+
+    if (example.en && example.zh) {
+      seen.add(key);
+    }
+
+    normalizedExamples.push(example);
+  }
+
+  return normalizedExamples;
+}
+
 function normalizeWordRecord(record) {
-  const normalizedText = normalizePhoneticAndNotes(record?.phonetic, record?.notes);
+  const exampleAudioIds = uniqueStrings(record?.exampleAudioIds);
 
   return {
     ...record,
     term: String(record?.term ?? "").trim(),
-    phonetic: normalizedText.phonetic,
+    phonetics: normalizeStringList(record?.phonetics),
     meaning: String(record?.meaning ?? "").trim(),
-    example: String(record?.example ?? "").trim(),
-    notes: normalizedText.notes,
+    examples: normalizeExamples(record?.examples),
     categoryIds: uniqueStrings(record?.categoryIds),
-    hasAudio: Boolean(record?.hasAudio),
-    hasExampleAudio: Boolean(record?.hasExampleAudio),
+    hasWordAudio: Boolean(record?.hasWordAudio),
+    exampleAudioIds,
+    exampleAudioCount: exampleAudioIds.length,
   };
 }
 
 function sanitizeWordInput(input) {
-  const normalizedText = normalizePhoneticAndNotes(input.phonetic, input.notes);
-
   return {
-    id: input.id ? String(input.id) : "",
-    term: String(input.term ?? "").trim(),
-    phonetic: normalizedText.phonetic,
-    meaning: String(input.meaning ?? "").trim(),
-    example: String(input.example ?? "").trim(),
-    notes: normalizedText.notes,
-    categoryIds: uniqueStrings(input.categoryIds),
+    id: input?.id ? String(input.id) : "",
+    term: String(input?.term ?? "").trim(),
+    phonetics: normalizeStringList(input?.phonetics),
+    meaning: String(input?.meaning ?? "").trim(),
+    examples: normalizeExamples(input?.examples),
+    categoryIds: uniqueStrings(input?.categoryIds),
   };
+}
+
+function validateWordInput(word) {
+  if (!word.term || !word.meaning) {
+    throw new Error("单词和释义为必填项。");
+  }
+
+  for (let index = 0; index < word.examples.length; index += 1) {
+    const example = word.examples[index];
+
+    if (!example.en || !example.zh) {
+      throw new Error(`第 ${index + 1} 条例句需要同时填写英文和中文翻译。`);
+    }
+  }
 }
 
 function normalizeSingleAudioChange(change) {
@@ -64,32 +113,24 @@ function normalizeSingleAudioChange(change) {
   };
 }
 
-function normalizeAudioChanges(audioChanges) {
-  if (!audioChanges || typeof audioChanges !== "object" || Array.isArray(audioChanges)) {
-    return {
-      [AUDIO_SLOTS.term]: normalizeSingleAudioChange(null),
-      [AUDIO_SLOTS.example]: normalizeSingleAudioChange(null),
-    };
+function normalizeExampleAudioChanges(changes) {
+  if (!changes || typeof changes !== "object") {
+    return {};
   }
 
-  if (Object.prototype.hasOwnProperty.call(audioChanges, "mode")) {
-    return {
-      [AUDIO_SLOTS.term]: normalizeSingleAudioChange(audioChanges),
-      [AUDIO_SLOTS.example]: normalizeSingleAudioChange(null),
-    };
-  }
-
-  return {
-    [AUDIO_SLOTS.term]: normalizeSingleAudioChange(audioChanges[AUDIO_SLOTS.term]),
-    [AUDIO_SLOTS.example]: normalizeSingleAudioChange(audioChanges[AUDIO_SLOTS.example]),
-  };
+  return Object.fromEntries(
+    Object.entries(changes).map(([exampleId, change]) => [String(exampleId), normalizeSingleAudioChange(change)]),
+  );
 }
 
-function createStoredAudioRecord(wordId, slot, file, now) {
+function createStoredAudioRecord(wordId, ownerType, ownerId, file, now) {
+  const normalizedOwnerType = normalizeAudioOwnerType(ownerType);
+
   return {
-    id: createAudioRecordId(wordId, slot),
-    wordId,
-    slot: normalizeAudioSlot(slot),
+    id: createAudioRecordId(normalizedOwnerType, ownerId),
+    ownerType: normalizedOwnerType,
+    ownerId: String(ownerId),
+    wordId: String(wordId),
     name: file.name,
     type: file.type || "application/octet-stream",
     size: file.size,
@@ -100,11 +141,6 @@ function createStoredAudioRecord(wordId, slot, file, now) {
 
 async function deleteAudioRecordsByWord(audioStore, wordId) {
   if (!wordId) {
-    return;
-  }
-
-  if (!audioStore.indexNames.contains("wordId")) {
-    await requestToPromise(audioStore.delete(wordId));
     return;
   }
 
@@ -145,7 +181,12 @@ export function filterWords(words, filters = {}) {
   const selectedCategoryIds = uniqueStrings(filters.categoryIds);
 
   return words.filter((word) => {
-    const haystack = [word.term, word.phonetic, word.meaning, word.example, word.notes]
+    const haystack = [
+      word.term,
+      ...(word.phonetics || []),
+      word.meaning,
+      ...(word.examples || []).flatMap((example) => [example.en, example.zh]),
+    ]
       .map((value) => normalizeText(value))
       .join(" ");
     const matchesQuery = !normalizedQuery || haystack.includes(normalizedQuery);
@@ -157,14 +198,12 @@ export function filterWords(words, filters = {}) {
   });
 }
 
-export async function saveWord(input, audioChange = { mode: "keep" }) {
+export async function saveWord(input, audioChanges = {}) {
   const word = sanitizeWordInput(input);
-  const audioChanges = normalizeAudioChanges(audioChange);
+  validateWordInput(word);
 
-  if (!word.term || !word.meaning) {
-    throw new Error("单词和释义为必填项。");
-  }
-
+  const wordAudioChange = normalizeSingleAudioChange(audioChanges.wordAudio);
+  const exampleAudioChanges = normalizeExampleAudioChanges(audioChanges.exampleAudios);
   const now = Date.now();
   const normalizedTerm = normalizeText(word.term);
 
@@ -182,45 +221,78 @@ export async function saveWord(input, audioChange = { mode: "keep" }) {
     await ensureUniqueTerm(words, normalizedTerm, existing?.id ?? "");
 
     const normalizedExisting = existing ? normalizeWordRecord(existing) : null;
+    const recordId = normalizedExisting?.id ?? createId();
+    const existingAudioRecords = normalizedExisting
+      ? (await requestToPromise(audio.index("wordId").getAll(IDBKeyRange.only(recordId))))
+          .map((record) => normalizeAudioRecord(record))
+          .filter(Boolean)
+      : [];
+    const exampleAudioIds = new Set(
+      existingAudioRecords
+        .filter((record) => record.ownerType === AUDIO_OWNER_TYPES.example)
+        .map((record) => record.ownerId),
+    );
+    const nextExamples = word.examples.map((example) => ({
+      id: example.id || createId(),
+      en: example.en,
+      zh: example.zh,
+    }));
+    const nextExampleIds = new Set(nextExamples.map((example) => example.id));
+    const removedExampleIds = (normalizedExisting?.examples || [])
+      .filter((example) => !nextExampleIds.has(example.id))
+      .map((example) => example.id);
+    let hasWordAudio = existingAudioRecords.some((record) => record.ownerType === AUDIO_OWNER_TYPES.word);
+
+    for (const exampleId of removedExampleIds) {
+      if (exampleAudioIds.has(exampleId)) {
+        exampleAudioIds.delete(exampleId);
+      }
+
+      await requestToPromise(audio.delete(createAudioRecordId(AUDIO_OWNER_TYPES.example, exampleId)));
+    }
+
+    if (wordAudioChange.mode === "replace") {
+      hasWordAudio = true;
+      await requestToPromise(
+        audio.put(createStoredAudioRecord(recordId, AUDIO_OWNER_TYPES.word, recordId, wordAudioChange.file, now)),
+      );
+    }
+
+    if (wordAudioChange.mode === "remove") {
+      hasWordAudio = false;
+      await requestToPromise(audio.delete(createAudioRecordId(AUDIO_OWNER_TYPES.word, recordId)));
+    }
+
+    for (const example of nextExamples) {
+      const exampleAudioChange = exampleAudioChanges[example.id] || { mode: "keep" };
+
+      if (exampleAudioChange.mode === "replace") {
+        exampleAudioIds.add(example.id);
+        await requestToPromise(
+          audio.put(createStoredAudioRecord(recordId, AUDIO_OWNER_TYPES.example, example.id, exampleAudioChange.file, now)),
+        );
+      }
+
+      if (exampleAudioChange.mode === "remove") {
+        exampleAudioIds.delete(example.id);
+        await requestToPromise(audio.delete(createAudioRecordId(AUDIO_OWNER_TYPES.example, example.id)));
+      }
+    }
 
     const record = {
-      id: normalizedExisting?.id ?? createId(),
+      id: recordId,
       term: word.term,
       normalizedTerm,
-      phonetic: word.phonetic,
+      phonetics: word.phonetics,
       meaning: word.meaning,
-      example: word.example,
-      notes: word.notes,
+      examples: nextExamples,
       categoryIds: word.categoryIds,
       createdAt: normalizedExisting?.createdAt ?? now,
       updatedAt: now,
-      hasAudio: normalizedExisting?.hasAudio ?? false,
-      hasExampleAudio: normalizedExisting?.hasExampleAudio ?? false,
+      hasWordAudio,
+      exampleAudioIds: [...exampleAudioIds],
+      exampleAudioCount: exampleAudioIds.size,
     };
-
-    if (audioChanges[AUDIO_SLOTS.term].mode === "replace") {
-      record.hasAudio = true;
-      await requestToPromise(
-        audio.put(createStoredAudioRecord(record.id, AUDIO_SLOTS.term, audioChanges[AUDIO_SLOTS.term].file, now)),
-      );
-    }
-
-    if (audioChanges[AUDIO_SLOTS.term].mode === "remove") {
-      record.hasAudio = false;
-      await requestToPromise(audio.delete(createAudioRecordId(record.id, AUDIO_SLOTS.term)));
-    }
-
-    if (audioChanges[AUDIO_SLOTS.example].mode === "replace") {
-      record.hasExampleAudio = true;
-      await requestToPromise(
-        audio.put(createStoredAudioRecord(record.id, AUDIO_SLOTS.example, audioChanges[AUDIO_SLOTS.example].file, now)),
-      );
-    }
-
-    if (audioChanges[AUDIO_SLOTS.example].mode === "remove") {
-      record.hasExampleAudio = false;
-      await requestToPromise(audio.delete(createAudioRecordId(record.id, AUDIO_SLOTS.example)));
-    }
 
     await requestToPromise(words.put(record));
     return normalizeWordRecord(record);
@@ -238,16 +310,45 @@ export async function deleteWord(wordId) {
   });
 }
 
-export async function getAudioRecord(wordId, slot = AUDIO_SLOTS.term) {
+export async function getAudioRecord(ownerType, ownerId) {
   return runTransaction([STORES.audio], "readonly", async ({ audio }) => {
-    const record = await requestToPromise(audio.get(createAudioRecordId(wordId, slot)));
+    const record = await requestToPromise(audio.get(createAudioRecordId(ownerType, ownerId)));
     return normalizeAudioRecord(record);
   });
+}
+
+export async function getWordAudioRecord(wordId) {
+  return getAudioRecord(AUDIO_OWNER_TYPES.word, wordId);
+}
+
+export async function getExampleAudioRecord(exampleId) {
+  return getAudioRecord(AUDIO_OWNER_TYPES.example, exampleId);
 }
 
 export async function listAudioRecords() {
   return runTransaction([STORES.audio], "readonly", async ({ audio }) => {
     const records = await requestToPromise(audio.getAll());
     return records.map((record) => normalizeAudioRecord(record)).filter(Boolean);
+  });
+}
+
+export async function listWordAudioRecords(wordId) {
+  if (!wordId) {
+    return [];
+  }
+
+  return runTransaction([STORES.audio], "readonly", async ({ audio }) => {
+    const records = await requestToPromise(audio.index("wordId").getAll(IDBKeyRange.only(wordId)));
+
+    return records
+      .map((record) => normalizeAudioRecord(record))
+      .filter(Boolean)
+      .sort((left, right) => {
+        if (left.ownerType !== right.ownerType) {
+          return left.ownerType === AUDIO_OWNER_TYPES.word ? -1 : 1;
+        }
+
+        return (right.updatedAt || 0) - (left.updatedAt || 0);
+      });
   });
 }

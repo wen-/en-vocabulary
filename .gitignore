@@ -5,3 +5,4 @@ venv*/
 .venv/
 .DS_Store
 /docs/.dev-https/
+/docs/词汇/

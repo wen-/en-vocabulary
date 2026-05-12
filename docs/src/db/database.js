@@ -1,8 +1,8 @@
-export const DATABASE_NAME = "english-learning-offline";
-export const DATABASE_VERSION = 2;
+export const DATABASE_NAME = "english-learning-library-v3";
+export const DATABASE_VERSION = 1;
 
-export const AUDIO_SLOTS = {
-  term: "term",
+export const AUDIO_OWNER_TYPES = {
+  word: "word",
   example: "example",
 };
 
@@ -14,12 +14,12 @@ export const STORES = {
   settings: "settings",
 };
 
-export function normalizeAudioSlot(value) {
-  return value === AUDIO_SLOTS.example ? AUDIO_SLOTS.example : AUDIO_SLOTS.term;
+export function normalizeAudioOwnerType(value) {
+  return value === AUDIO_OWNER_TYPES.example ? AUDIO_OWNER_TYPES.example : AUDIO_OWNER_TYPES.word;
 }
 
-export function createAudioRecordId(wordId, slot = AUDIO_SLOTS.term) {
-  return `${String(wordId)}::${normalizeAudioSlot(slot)}`;
+export function createAudioRecordId(ownerType, ownerId) {
+  return `${normalizeAudioOwnerType(ownerType)}::${String(ownerId ?? "")}`;
 }
 
 let databasePromise;
@@ -42,46 +42,13 @@ export function transactionToPromise(transaction) {
 function createAudioStore(database) {
   const audioStore = database.createObjectStore(STORES.audio, { keyPath: "id" });
   audioStore.createIndex("wordId", "wordId", { unique: false });
-  audioStore.createIndex("slot", "slot", { unique: false });
+  audioStore.createIndex("ownerType", "ownerType", { unique: false });
+  audioStore.createIndex("ownerId", "ownerId", { unique: false });
   audioStore.createIndex("updatedAt", "updatedAt", { unique: false });
   return audioStore;
 }
 
-function ensureAudioStore(database, transaction, oldVersion) {
-  if (!database.objectStoreNames.contains(STORES.audio)) {
-    createAudioStore(database);
-    return;
-  }
-
-  if (oldVersion >= 2) {
-    return;
-  }
-
-  const legacyStore = transaction.objectStore(STORES.audio);
-  const readRequest = legacyStore.getAll();
-
-  readRequest.onsuccess = () => {
-    const legacyRecords = Array.isArray(readRequest.result) ? readRequest.result : [];
-
-    database.deleteObjectStore(STORES.audio);
-    const audioStore = createAudioStore(database);
-
-    for (const record of legacyRecords) {
-      if (!record?.wordId) {
-        continue;
-      }
-
-      const slot = normalizeAudioSlot(record.slot);
-      audioStore.put({
-        ...record,
-        id: createAudioRecordId(record.wordId, slot),
-        slot,
-      });
-    }
-  };
-}
-
-function createStores(database, transaction, oldVersion = 0) {
+function createStores(database) {
   if (!database.objectStoreNames.contains(STORES.words)) {
     const wordsStore = database.createObjectStore(STORES.words, { keyPath: "id" });
     wordsStore.createIndex("normalizedTerm", "normalizedTerm", { unique: true });
@@ -91,11 +58,12 @@ function createStores(database, transaction, oldVersion = 0) {
 
   if (!database.objectStoreNames.contains(STORES.categories)) {
     const categoriesStore = database.createObjectStore(STORES.categories, { keyPath: "id" });
-    categoriesStore.createIndex("normalizedName", "normalizedName", { unique: true });
-    categoriesStore.createIndex("group", "group", { unique: false });
+    categoriesStore.createIndex("normalizedKey", "normalizedKey", { unique: true });
   }
 
-  ensureAudioStore(database, transaction, oldVersion);
+  if (!database.objectStoreNames.contains(STORES.audio)) {
+    createAudioStore(database);
+  }
 
   if (!database.objectStoreNames.contains(STORES.practiceAttempts)) {
     const practiceStore = database.createObjectStore(STORES.practiceAttempts, { keyPath: "id" });
@@ -117,8 +85,8 @@ export function openDatabase() {
   databasePromise = new Promise((resolve, reject) => {
     const request = indexedDB.open(DATABASE_NAME, DATABASE_VERSION);
 
-    request.onupgradeneeded = (event) => {
-      createStores(request.result, request.transaction, event.oldVersion);
+    request.onupgradeneeded = () => {
+      createStores(request.result);
     };
 
     request.onsuccess = () => {

@@ -1,6 +1,6 @@
 import { escapeHtml } from "../services/helpers.js";
 
-function renderCategoryGroups(categories) {
+function renderCategoryList(categories) {
   if (!categories.length) {
     return `
       <div class="empty-state">
@@ -10,51 +10,29 @@ function renderCategoryGroups(categories) {
     `;
   }
 
-  const groups = new Map();
-
-  for (const category of categories) {
-    const group = category.group || "未分组";
-
-    if (!groups.has(group)) {
-      groups.set(group, []);
-    }
-
-    groups.get(group).push(category);
-  }
-
-  return [...groups.entries()]
-    .map(
-      ([group, items]) => `
-        <section class="group-block">
-          <div class="group-block__header">
-            <h3>${escapeHtml(group)}</h3>
-            <span>${items.length} 个类别</span>
-          </div>
-          <div class="card-list">
-            ${items
-              .map(
-                (category) => `
-                  <article class="item-card item-card--compact">
-                    <div class="item-card__header">
-                      <div>
-                        <h4>${escapeHtml(category.name)}</h4>
-                        <p class="item-card__meaning">${escapeHtml(category.description || "用于筛选与练习")}</p>
-                      </div>
-                      <div class="inline-actions">
-                        <button type="button" class="ghost-button" data-action="edit-category" data-category-id="${escapeHtml(category.id)}">编辑</button>
-                        <button type="button" class="ghost-button" data-action="delete-category" data-category-id="${escapeHtml(category.id)}">删除</button>
-                      </div>
-                    </div>
-                    <p class="tiny-meta">引用词数：${category.wordCount || 0}</p>
-                  </article>
-                `,
-              )
-              .join("")}
-          </div>
-        </section>
-      `,
-    )
-    .join("");
+  return `
+    <div class="card-list">
+      ${categories
+        .map(
+          (category) => `
+            <article class="item-card item-card--compact">
+              <div class="item-card__header">
+                <div>
+                  <h4>${escapeHtml(category.name)}</h4>
+                  <p class="item-card__meaning">${escapeHtml(category.description || "用于筛选与练习")}</p>
+                </div>
+                <div class="inline-actions inline-actions--compact-row">
+                  <button type="button" class="ghost-button" data-action="edit-category" data-category-id="${escapeHtml(category.id)}">编辑</button>
+                  <button type="button" class="ghost-button" data-action="delete-category" data-category-id="${escapeHtml(category.id)}">删除</button>
+                </div>
+              </div>
+              <p class="tiny-meta">引用词数：${category.wordCount || 0}</p>
+            </article>
+          `,
+        )
+        .join("")}
+    </div>
+  `;
 }
 
 export function renderCategoriesView({ categories, draft, busy }) {
@@ -64,7 +42,7 @@ export function renderCategoriesView({ categories, draft, busy }) {
     <section class="view-stack">
       <div class="section-grid">
         <section class="panel">
-          <div class="section-heading">
+          <div class="section-heading" data-category-editor-scroll-anchor>
             <div>
               <p class="eyebrow">Categories</p>
               <h2>分类管理</h2>
@@ -78,10 +56,6 @@ export function renderCategoriesView({ categories, draft, busy }) {
               <input name="name" value="${escapeHtml(draft.name || "")}" required maxlength="80" placeholder="例如：本科" />
             </label>
             <label class="field">
-              <span>分组</span>
-              <input name="group" value="${escapeHtml(draft.group || "")}" maxlength="80" placeholder="例如：学历层级 / 专业领域" />
-            </label>
-            <label class="field">
               <span>说明</span>
               <textarea name="description" rows="4" maxlength="240" placeholder="可选，用于解释这个分类适合什么词汇。">${escapeHtml(draft.description || "")}</textarea>
             </label>
@@ -93,14 +67,14 @@ export function renderCategoriesView({ categories, draft, busy }) {
         </section>
 
         <section class="panel">
-          <div class="section-heading">
+          <div class="section-heading section-heading--inline-mobile">
             <div>
               <p class="eyebrow">Overview</p>
               <h2>已有分类</h2>
             </div>
             <span class="counter-pill">${categories.length} 个分类</span>
           </div>
-          ${renderCategoryGroups(categories)}
+          ${renderCategoryList(categories)}
         </section>
       </div>
     </section>

@@ -1,9 +1,8 @@
 import { AUDIO_ACCEPT } from "../services/audioService.js";
-import { escapeHtml, formatDateTime } from "../services/helpers.js";
+import { escapeHtml } from "../services/helpers.js";
 
 function renderCategorySelector(categories, selectedIds, fieldName, options = {}) {
   const variant = options.variant || "default";
-  const showGroup = options.showGroup !== false;
 
   if (!categories.length) {
     return '<p class="empty-inline">还没有分类，先去“分类”页创建几个类别。</p>';
@@ -14,15 +13,16 @@ function renderCategorySelector(categories, selectedIds, fieldName, options = {}
       ${categories
         .map(
           (category) => `
-            <label class="check-chip ${variant === "compact" ? "check-chip--compact" : ""}">
+            <label class="check-chip check-chip--inline ${variant === "compact" ? "check-chip--compact" : ""}">
               <input
                 type="checkbox"
                 name="${fieldName}"
                 value="${escapeHtml(category.id)}"
                 ${selectedIds.includes(category.id) ? "checked" : ""}
               />
-              <span>${escapeHtml(category.name)}</span>
-              ${showGroup ? `<small>${escapeHtml(category.group || "未分组")}</small>` : ""}
+              <div class="check-chip__content check-chip__content--single-line">
+                <span>${escapeHtml(category.name)}</span>
+              </div>
             </label>
           `,
         )
@@ -33,14 +33,49 @@ function renderCategorySelector(categories, selectedIds, fieldName, options = {}
 
 function renderCategoryBadges(word, categoriesById) {
   const names = (word.categoryIds || [])
-    .map((categoryId) => categoriesById.get(categoryId)?.name)
-    .filter(Boolean);
+    .map((categoryId) => categoriesById.get(categoryId))
+    .filter(Boolean)
+    .map((category) => category.name);
 
   if (!names.length) {
     return '<span class="tag tag-muted">未分类</span>';
   }
 
   return names.map((name) => `<span class="tag">${escapeHtml(name)}</span>`).join("");
+}
+
+function renderPhoneticText(phonetics) {
+  if (!phonetics?.length) {
+    return "无音标";
+  }
+
+  return phonetics.map((phonetic) => escapeHtml(phonetic)).join("，");
+}
+
+function renderExamplePreview(example, canPlay) {
+  return `
+    <div class="example-preview-item">
+      <div class="example-preview-item__english-row">
+        <p class="supporting-text">${escapeHtml(example.en)}</p>
+        ${
+          canPlay
+            ? `
+                <button
+                  type="button"
+                  class="icon-button icon-button--audio example-preview-item__play-button"
+                  data-action="play-example-audio"
+                  data-example-id="${escapeHtml(example.id)}"
+                  aria-label="播放例句音频"
+                >
+                  <span class="audio-icon" aria-hidden="true"></span>
+                </button>
+              `
+            : ""
+        }
+      </div>
+      <p class="supporting-text example-preview-item__translation">${escapeHtml(example.zh)}</p>
+    </div>
+  `;
 }
 
 function renderWordCards(words, categoriesById, categories, busy) {
@@ -65,39 +100,52 @@ function renderWordCards(words, categoriesById, categories, busy) {
     <div class="card-list">
       <div class="word-list-scroll-anchor" data-word-list-scroll-anchor></div>
       ${words
-        .map(
-          (word) => {
-            const audioMeta = [
-              word.hasAudio ? "含发音音频" : "",
-              word.hasExampleAudio ? "含例句音频" : "",
-            ]
-              .filter(Boolean)
-              .join(" · ");
+        .map((word) => {
+          const visibleExamples = (word.examples || []).slice(0, 2);
+          const remainingExamples = Math.max((word.examples || []).length - visibleExamples.length, 0);
 
-            return `
-            <article class="item-card">
-              <div class="item-card__header">
-                <div class="item-card__title">
-                  <div class="item-card__term-line">
-                    <h3>${escapeHtml(word.term)}</h3>
-                    ${word.phonetic ? `<span class="item-card__phonetic">${escapeHtml(word.phonetic)}</span>` : ""}
+          return `
+            <div class="word-card-swipe">
+              <div class="word-card-swipe__track">
+                <article class="item-card item-card--word">
+                  <div class="item-card__header item-card__header--word">
+                    <div class="item-card__title">
+                      <div class="item-card__term-row ${word.hasWordAudio ? "" : "item-card__term-row--single"}">
+                        <div class="item-card__term-line">
+                          <h3>${escapeHtml(word.term)}</h3>
+                          <p class="item-card__phonetic">${renderPhoneticText(word.phonetics || [])}</p>
+                        </div>
+                        ${
+                          word.hasWordAudio
+                            ? `
+                                <button
+                                  type="button"
+                                  class="icon-button icon-button--audio item-card__play-button"
+                                  data-action="play-word-audio"
+                                  data-word-id="${escapeHtml(word.id)}"
+                                  aria-label="播放单词音频"
+                                >
+                                  <span class="audio-icon" aria-hidden="true"></span>
+                                </button>
+                              `
+                            : ""
+                        }
+                      </div>
+                      <p class="item-card__meaning">${escapeHtml(word.meaning)}</p>
+                    </div>
                   </div>
-                  <p class="item-card__meaning">${escapeHtml(word.meaning)}</p>
-                </div>
-                <div class="inline-actions inline-actions--word-card">
+                  <div class="tag-row">${renderCategoryBadges(word, categoriesById)}</div>
+                  ${(word.examples || []).length ? `<div class="example-preview-list">${visibleExamples.map((example) => renderExamplePreview(example, word.exampleAudioIds?.includes(example.id))).join("")}</div>` : ""}
+                  ${remainingExamples ? `<p class="tiny-meta">还有 ${remainingExamples} 条例句未展开显示</p>` : ""}
+                </article>
+                <div class="word-card-swipe__actions" aria-label="单词操作">
                   <button type="button" class="ghost-button" data-action="edit-word" data-word-id="${escapeHtml(word.id)}">编辑</button>
                   <button type="button" class="ghost-button" data-action="delete-word" data-word-id="${escapeHtml(word.id)}">删除</button>
-                  <button type="button" class="ghost-button" data-action="play-word-audio" data-word-id="${escapeHtml(word.id)}" ${word.hasAudio ? "" : "disabled"}>播放</button>
                 </div>
               </div>
-              <div class="tag-row">${renderCategoryBadges(word, categoriesById)}</div>
-              ${word.example ? `<p class="supporting-text">例句：${escapeHtml(word.example)}</p>` : ""}
-              ${word.notes ? `<p class="supporting-text">备注：${escapeHtml(word.notes)}</p>` : ""}
-              <p class="tiny-meta">更新于 ${formatDateTime(word.updatedAt)}${audioMeta ? ` · ${audioMeta}` : ""}</p>
-            </article>
+            </div>
           `;
-          },
-        )
+        })
         .join("")}
     </div>
   `;
@@ -137,22 +185,87 @@ function renderWordPagination(pagination, busy) {
   `;
 }
 
-export function renderWordsView({ words, pagination, categories, categoriesById, filters, draft, busy }) {
+function renderPhoneticEditorRows(phonetics, busy) {
+  return `
+    <div class="dynamic-list">
+      ${phonetics
+        .map(
+          (phonetic, index) => `
+            <div class="inline-input-row">
+              <input name="phoneticValue" value="${escapeHtml(phonetic)}" maxlength="120" placeholder="如 /əˈnæləsɪs/" />
+              <button type="button" class="ghost-button" data-action="remove-phonetic" data-index="${index}" ${busy ? "disabled" : ""}>删除</button>
+            </div>
+          `,
+        )
+        .join("")}
+      <button type="button" class="ghost-button" data-action="add-phonetic" ${busy ? "disabled" : ""}>新增音标</button>
+    </div>
+  `;
+}
+
+function renderExampleEditorRows(draft, busy) {
+  return `
+    <div class="editor-section-list">
+      ${draft.examples
+        .map(
+          (example, index) => `
+            <section class="nested-editor-card">
+              <input type="hidden" name="exampleId" value="${escapeHtml(example.id)}" />
+              <div class="section-heading section-heading--inline-mobile">
+                <div>
+                  <p class="eyebrow">Example ${index + 1}</p>
+                  <h3>例句 ${index + 1}</h3>
+                </div>
+                <div class="inline-actions">
+                  <button type="button" class="ghost-button" data-action="remove-example" data-example-id="${escapeHtml(example.id)}" ${busy ? "disabled" : ""}>删除例句</button>
+                  <button type="button" class="ghost-button" data-action="play-example-audio" data-example-id="${escapeHtml(example.id)}" ${example.hasAudio ? "" : "disabled"}>播放例句音频</button>
+                </div>
+              </div>
+              <label class="field">
+                <span>英文例句</span>
+                <textarea name="exampleEn" rows="3" maxlength="400">${escapeHtml(example.en)}</textarea>
+              </label>
+              <label class="field">
+                <span>中文翻译</span>
+                <textarea name="exampleZh" rows="3" maxlength="240">${escapeHtml(example.zh)}</textarea>
+              </label>
+              <div class="form-grid form-grid--audio">
+                <label class="field">
+                  <span>例句音频文件</span>
+                  <input type="file" name="exampleAudioFile" data-example-id="${escapeHtml(example.id)}" accept="${AUDIO_ACCEPT}" />
+                </label>
+                <label class="inline-check ${example.hasAudio ? "" : "inline-check--muted"}">
+                  <input type="checkbox" name="removeExampleAudio" value="${escapeHtml(example.id)}" ${example.hasAudio ? "" : "disabled"} ${example.removeAudio ? "checked" : ""} />
+                  <span>${example.hasAudio ? "移除当前例句音频" : "当前没有例句音频"}</span>
+                </label>
+              </div>
+              ${example.audioFile ? `<p class="help-text">待上传：${escapeHtml(example.audioFile.name)}</p>` : example.hasAudio ? '<p class="help-text">当前已保存例句音频。</p>' : ""}
+            </section>
+          `,
+        )
+        .join("")}
+      <button type="button" class="ghost-button" data-action="add-example" ${busy ? "disabled" : ""}>新增例句</button>
+    </div>
+  `;
+}
+
+export function renderWordsView({ words, pagination, categories, categoriesById, filters, draft, isEditorOpen, busy }) {
   const title = draft.id ? "编辑单词" : "添加陌生单词";
   const submitLabel = draft.id ? "保存修改" : "添加单词";
-  const shouldOpenEditor = Boolean(draft.id);
+  const shouldOpenEditor = Boolean(isEditorOpen);
   const selectedFilterCount = (filters.categoryIds || []).length;
+  const phonetics = draft.phonetics?.length ? draft.phonetics : [""];
 
   return `
     <section class="view-stack">
       <div class="section-grid section-grid--wide">
         <section class="panel">
-          <details class="disclosure-panel" ${shouldOpenEditor ? "open" : ""}>
+          <details class="disclosure-panel" data-ui="word-editor-disclosure" ${shouldOpenEditor ? "open" : ""}>
             <summary class="disclosure-toggle">
               <div>
                 <p class="eyebrow">Words</p>
                 <h2>${title}</h2>
-                <p class="tiny-meta">${draft.id ? "正在编辑已有词条" : "点击后展开录入单词、分类和音频。"}</p>
+                <p class="tiny-meta">${draft.id ? "正在编辑已有词条" : "点击后展开录入单词、音标、例句和音频。"}</p>
               </div>
               <span class="counter-pill">${draft.id ? "编辑中" : "展开"}</span>
             </summary>
@@ -162,48 +275,49 @@ export function renderWordsView({ words, pagination, categories, categoriesById,
               </div>
               <form data-form="word-editor" class="form-stack">
                 <input type="hidden" name="id" value="${escapeHtml(draft.id || "")}" />
-                <div class="form-grid">
-                  <label class="field">
-                    <span>单词</span>
-                    <input name="term" value="${escapeHtml(draft.term || "")}" required maxlength="120" />
-                  </label>
-                  <label class="field">
-                    <span>音标</span>
-                    <input name="phonetic" value="${escapeHtml(draft.phonetic || "")}" maxlength="120" placeholder="如 /əˈnæləsɪs/" />
-                  </label>
-                </div>
                 <label class="field">
-                  <span>释义</span>
-                  <input name="meaning" value="${escapeHtml(draft.meaning || "")}" required maxlength="200" />
-                </label>
-                <label class="field">
-                  <span>例句</span>
-                  <textarea name="example" rows="3" maxlength="300">${escapeHtml(draft.example || "")}</textarea>
-                </label>
-                <label class="field">
-                  <span>备注</span>
-                  <textarea name="notes" rows="3" maxlength="300">${escapeHtml(draft.notes || "")}</textarea>
+                  <span>单词</span>
+                  <input name="term" value="${escapeHtml(draft.term || "")}" required maxlength="120" />
                 </label>
                 <div class="field">
                   <div class="field-title">
+                    <span>音标</span>
+                    <small>支持录入多个音标</small>
+                  </div>
+                  ${renderPhoneticEditorRows(phonetics, busy)}
+                </div>
+                <label class="field">
+                  <span>释义</span>
+                  <textarea name="meaning" rows="3" maxlength="300" required>${escapeHtml(draft.meaning || "")}</textarea>
+                </label>
+                <div class="form-grid form-grid--audio">
+                  <label class="field">
+                    <span>单词音频文件</span>
+                    <input type="file" name="wordAudioFile" accept="${AUDIO_ACCEPT}" />
+                  </label>
+                  <label class="inline-check ${draft.hasWordAudio ? "" : "inline-check--muted"}">
+                    <input type="checkbox" name="removeWordAudio" ${draft.hasWordAudio ? "" : "disabled"} ${draft.removeWordAudio ? "checked" : ""} />
+                    <span>${draft.hasWordAudio ? "移除当前单词音频" : "当前没有单词音频"}</span>
+                  </label>
+                </div>
+                ${draft.wordAudioFile ? `<p class="help-text">待上传：${escapeHtml(draft.wordAudioFile.name)}</p>` : draft.hasWordAudio ? '<p class="help-text">当前已保存单词音频。</p>' : ""}
+                <div class="field">
+                  <div class="field-title">
+                    <span>例句</span>
+                    <small>每条例句都需要英文和中文翻译，可单独上传例句音频</small>
+                  </div>
+                  ${renderExampleEditorRows(draft, busy)}
+                </div>
+                <div class="field">
+                  <div class="field-title">
                     <span>分类</span>
-                    <small>同一个单词可同时属于多个类别</small>
+                    <small>同一个单词可同时属于多个分类</small>
                   </div>
                   ${renderCategorySelector(categories, draft.categoryIds || [], "categoryId")}
                 </div>
-                <div class="form-grid form-grid--audio">
-                  <label class="field">
-                    <span>发音音频文件</span>
-                    <input type="file" name="audioFile" accept="${AUDIO_ACCEPT}" />
-                  </label>
-                  <label class="inline-check ${draft.hasAudio ? "" : "inline-check--muted"}">
-                    <input type="checkbox" name="removeAudio" ${draft.hasAudio ? "" : "disabled"} />
-                    <span>${draft.hasAudio ? "移除当前发音音频" : "当前没有发音音频"}</span>
-                  </label>
-                </div>
                 <div class="form-actions">
                   <button type="submit" class="primary-button" ${busy ? "disabled" : ""}>${submitLabel}</button>
-                  <p class="help-text">支持手动上传单词发音，留空表示不替换已有音频。例句音频的数据位与导入导出格式已预留${draft.hasExampleAudio ? "，当前词条已含例句音频。" : "。"}</p>
+                  <button type="button" class="ghost-button" data-action="play-word-audio" data-word-id="${escapeHtml(draft.id || "")}" ${draft.id && draft.hasWordAudio ? "" : "disabled"}>播放当前单词音频</button>
                 </div>
               </form>
             </div>
@@ -221,7 +335,7 @@ export function renderWordsView({ words, pagination, categories, categoriesById,
           <form data-form="word-filters" class="form-stack compact-form">
             <label class="field field--inline-control">
               <span>搜索</span>
-              <input name="query" value="${escapeHtml(filters.query || "")}" placeholder="搜索单词、音标、释义、备注" />
+              <input name="query" value="${escapeHtml(filters.query || "")}" placeholder="搜索单词、音标、释义、例句英文或中文翻译" />
             </label>
             <details class="disclosure-panel disclosure-panel--compact" ${selectedFilterCount ? "open" : ""}>
               <summary class="disclosure-toggle disclosure-toggle--compact">
@@ -232,7 +346,7 @@ export function renderWordsView({ words, pagination, categories, categoriesById,
                 <span class="counter-pill counter-pill--soft">并集</span>
               </summary>
               <div class="disclosure-panel__body disclosure-panel__body--compact">
-                ${renderCategorySelector(categories, filters.categoryIds || [], "filterCategoryId", { variant: "compact", showGroup: false })}
+                ${renderCategorySelector(categories, filters.categoryIds || [], "filterCategoryId", { variant: "compact" })}
               </div>
             </details>
             <div class="form-actions form-actions--inline-mobile">

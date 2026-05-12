@@ -1,4 +1,4 @@
-const CACHE_NAME = "english-learning-shell-v17";
+const CACHE_NAME = "english-learning-shell-v21";
 
 const APP_ASSETS = [
   "./",
@@ -23,18 +23,18 @@ const APP_ASSETS = [
   "./src/views/practiceView.js",
   "./src/views/settingsView.js",
   "./assets/icons/icon.svg",
-  "./assets/icons/icon-192.png",
-  "./assets/icons/icon-512.png",
   "./assets/icons/icon-maskable.svg",
   "./assets/icons/icon-maskable-192.png",
   "./assets/icons/icon-maskable-512.png",
 ];
 
+const PRECACHE_ASSETS = [...new Set(APP_ASSETS)];
+
 self.addEventListener("install", (event) => {
   event.waitUntil(
     caches
       .open(CACHE_NAME)
-      .then((cache) => cache.addAll(APP_ASSETS))
+      .then((cache) => cache.addAll(PRECACHE_ASSETS))
       .then(() => self.skipWaiting()),
   );
 });

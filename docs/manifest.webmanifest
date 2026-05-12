@@ -2,7 +2,7 @@
   "id": "./",
   "name": "English Learning Offline",
   "short_name": "EngWords",
-  "description": "离线英文单词学习应用，支持多分类、拼写练习，以及 CSV + 音频 ZIP 词库导入导出。",
+  "description": "离线英文单词学习应用，支持多音标、多例句中英对照、分类练习，以及 JSON + 音频 ZIP 词库导入导出。",
   "lang": "zh-CN",
   "start_url": "./index.html",
   "scope": "./",

@@ -1,33 +1,23 @@
 import { STORES, requestToPromise, runTransaction } from "./database.js";
-import { createId, normalizeText, uniqueStrings } from "../services/helpers.js";
+import { createCategoryKey, createId, normalizeText, uniqueStrings } from "../services/helpers.js";
 
 function sanitizeCategoryInput(input) {
   return {
     id: input.id ? String(input.id) : "",
     name: String(input.name ?? "").trim(),
-    group: String(input.group ?? "").trim(),
     description: String(input.description ?? "").trim(),
   };
 }
 
 function sortCategories(categories) {
-  return [...categories].sort((left, right) => {
-    const leftGroup = left.group || "未分组";
-    const rightGroup = right.group || "未分组";
-
-    if (leftGroup !== rightGroup) {
-      return leftGroup.localeCompare(rightGroup, "zh-CN");
-    }
-
-    return left.name.localeCompare(right.name, "zh-CN");
-  });
+  return [...categories].sort((left, right) => left.name.localeCompare(right.name, "zh-CN"));
 }
 
 async function ensureUniqueCategory(categoriesStore, normalizedName, currentId) {
-  const existing = await requestToPromise(categoriesStore.index("normalizedName").get(normalizedName));
+  const existing = await requestToPromise(categoriesStore.index("normalizedKey").get(normalizedName));
 
   if (existing && existing.id !== currentId) {
-    throw new Error("该分类名称已存在。");
+    throw new Error("已存在同名分类。");
   }
 }
 
@@ -45,7 +35,7 @@ export async function saveCategory(input) {
     throw new Error("分类名称不能为空。");
   }
 
-  const normalizedName = normalizeText(category.name);
+  const normalizedKey = createCategoryKey(category.name);
   const now = Date.now();
 
   return runTransaction([STORES.categories], "readwrite", async ({ categories }) => {
@@ -59,13 +49,12 @@ export async function saveCategory(input) {
       }
     }
 
-    await ensureUniqueCategory(categories, normalizedName, category.id);
+    await ensureUniqueCategory(categories, normalizedKey, category.id);
 
     const record = {
       id: existing?.id ?? createId(),
       name: category.name,
-      normalizedName,
-      group: category.group,
+      normalizedKey,
       description: category.description,
       createdAt: existing?.createdAt ?? now,
       updatedAt: now,

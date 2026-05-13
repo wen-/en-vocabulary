@@ -91,7 +91,10 @@ function formatAttemptMeta(attempt, word, categoriesById) {
   return `<small class="tiny-meta">${escapeHtml(metaParts.join(" · "))}</small>`;
 }
 
-function renderRecentAttempts(attempts, wordsById, categoriesById) {
+function renderRecentAttempts(attempts, wordsById, categoriesById, options = {}) {
+  const showFavoriteActions = Boolean(options.showFavoriteActions);
+  const busy = Boolean(options.busy);
+
   if (!attempts.length) {
     return '<p class="empty-inline">还没有练习记录。</p>';
   }
@@ -102,13 +105,35 @@ function renderRecentAttempts(attempts, wordsById, categoriesById) {
         .slice(0, 8)
         .map((attempt) => {
           const word = wordsById.get(attempt.wordId);
+          const statusText = attempt.correct ? "正确" : `你的答案：${escapeHtml(attempt.answer || "空")}`;
+
           return `
             <div class="history-item ${attempt.correct ? "history-item--success" : "history-item--error"}">
-              <div>
+              <div class="history-item__content">
                 <strong>${escapeHtml(word?.term || attempt.expected || "未知单词")}</strong>
                 ${formatAttemptMeta(attempt, word, categoriesById)}
+                <span class="history-item__status">${statusText}</span>
               </div>
-              <span>${attempt.correct ? "正确" : `你的答案：${escapeHtml(attempt.answer || "空")}`}</span>
+              ${
+                showFavoriteActions && word?.id
+                  ? `
+                      <div class="history-item__aside">
+                        <button
+                          type="button"
+                          class="icon-button icon-button--favorite ${word.isFavorite ? "icon-button--active" : ""}"
+                          data-action="toggle-word-favorite"
+                          data-word-id="${escapeHtml(word.id)}"
+                          data-next-favorite="${word.isFavorite ? "false" : "true"}"
+                          aria-label="${word.isFavorite ? "取消收藏" : "收藏单词"}"
+                          aria-pressed="${word.isFavorite ? "true" : "false"}"
+                          ${busy ? "disabled" : ""}
+                        >
+                          <span class="favorite-icon" aria-hidden="true">${word.isFavorite ? "&#9733;" : "&#9734;"}</span>
+                        </button>
+                      </div>
+                    `
+                  : ""
+              }
             </div>
           `;
         })
@@ -123,6 +148,10 @@ function formatSelectedPages(selectedPages) {
   }
 
   return `第 ${selectedPages.join("、")} 页`;
+}
+
+function formatPracticeScope(practiceSession) {
+  return practiceSession?.favoritesOnly ? "仅收藏单词" : "全部单词";
 }
 
 export function renderPracticeView({ categories, categoriesById, practiceConfig, practiceSession, practiceSourceInfo, currentWord, stats, recentAttempts, wordsById, busy }) {
@@ -164,6 +193,10 @@ export function renderPracticeView({ categories, categoriesById, practiceConfig,
                     <input name="pageSpec" value="${escapeHtml(practiceConfig.pageSpec || "")}" placeholder="如 1 或 1,3-5" />
                     <small>${escapeHtml(pageHint)}</small>
                   </label>
+                  <label class="inline-check ${practiceConfig.favoritesOnly ? "" : "inline-check--muted"}">
+                    <input type="checkbox" name="favoritesOnly" ${practiceConfig.favoritesOnly ? "checked" : ""} />
+                    <span>仅从已收藏单词中抽题</span>
+                  </label>
                   <div class="form-actions">
                     <button type="submit" class="primary-button" ${busy ? "disabled" : ""}>开始练习</button>
                     ${
@@ -187,7 +220,7 @@ export function renderPracticeView({ categories, categoriesById, practiceConfig,
               : `
                 <div class="question-panel">
                   <div class="question-panel__meta">
-                    <span>第 ${practiceSession.currentIndex + 1} / ${practiceSession.queueIds.length} 题，${currentWord?.hasWordAudio ? "可播放" : "无音频"}，${escapeHtml(formatSelectedPages(practiceSession.selectedPages))}</span>
+                    <span>第 ${practiceSession.currentIndex + 1} / ${practiceSession.queueIds.length} 题，${escapeHtml(formatPracticeScope(practiceSession))}，${currentWord?.hasWordAudio ? "可播放" : "无音频"}，${escapeHtml(formatSelectedPages(practiceSession.selectedPages))}</span>
                   </div>
                   <div class="question-panel__prompt">
                     <h3>${escapeHtml(currentWord?.meaning || "请根据提示拼写单词")}</h3>
@@ -253,7 +286,7 @@ export function renderPracticeView({ categories, categoriesById, practiceConfig,
               <span>正确率</span>
             </div>
           </div>
-          ${renderRecentAttempts(recentAttempts, wordsById, categoriesById)}
+          ${renderRecentAttempts(recentAttempts, wordsById, categoriesById, { showFavoriteActions: isFinished, busy })}
         </section>
       </div>
     </section>

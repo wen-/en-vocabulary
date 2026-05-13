@@ -63,6 +63,7 @@ function normalizeWordRecord(record) {
     meaning: String(record?.meaning ?? "").trim(),
     examples: normalizeExamples(record?.examples),
     categoryIds: uniqueStrings(record?.categoryIds),
+    isFavorite: Boolean(record?.isFavorite),
     hasWordAudio: Boolean(record?.hasWordAudio),
     exampleAudioIds,
     exampleAudioCount: exampleAudioIds.length,
@@ -77,6 +78,7 @@ function sanitizeWordInput(input) {
     meaning: String(input?.meaning ?? "").trim(),
     examples: normalizeExamples(input?.examples),
     categoryIds: uniqueStrings(input?.categoryIds),
+    isFavorite: typeof input?.isFavorite === "boolean" ? input.isFavorite : undefined,
   };
 }
 
@@ -179,6 +181,7 @@ export async function listWords() {
 export function filterWords(words, filters = {}) {
   const normalizedQuery = normalizeText(filters.query);
   const selectedCategoryIds = uniqueStrings(filters.categoryIds);
+  const favoritesOnly = Boolean(filters.favoritesOnly);
 
   return words.filter((word) => {
     const haystack = [
@@ -193,8 +196,9 @@ export function filterWords(words, filters = {}) {
     const matchesCategory =
       selectedCategoryIds.length === 0 ||
       selectedCategoryIds.some((categoryId) => word.categoryIds?.includes(categoryId));
+    const matchesFavorite = !favoritesOnly || Boolean(word.isFavorite);
 
-    return matchesQuery && matchesCategory;
+    return matchesQuery && matchesCategory && matchesFavorite;
   });
 }
 
@@ -287,6 +291,7 @@ export async function saveWord(input, audioChanges = {}) {
       meaning: word.meaning,
       examples: nextExamples,
       categoryIds: word.categoryIds,
+      isFavorite: typeof word.isFavorite === "boolean" ? word.isFavorite : Boolean(normalizedExisting?.isFavorite),
       createdAt: normalizedExisting?.createdAt ?? now,
       updatedAt: now,
       hasWordAudio,
@@ -307,6 +312,29 @@ export async function deleteWord(wordId) {
   await runTransaction([STORES.words, STORES.audio], "readwrite", async ({ words, audio }) => {
     await requestToPromise(words.delete(wordId));
     await deleteAudioRecordsByWord(audio, wordId);
+  });
+}
+
+export async function setWordFavorite(wordId, isFavorite) {
+  if (!wordId) {
+    throw new Error("未找到要收藏的单词。");
+  }
+
+  return runTransaction([STORES.words], "readwrite", async ({ words }) => {
+    const existing = await requestToPromise(words.get(wordId));
+
+    if (!existing) {
+      throw new Error("未找到要收藏的单词。");
+    }
+
+    const nextRecord = {
+      ...existing,
+      isFavorite: Boolean(isFavorite),
+      updatedAt: Date.now(),
+    };
+
+    await requestToPromise(words.put(nextRecord));
+    return normalizeWordRecord(nextRecord);
   });
 }
 

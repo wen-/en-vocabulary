@@ -163,6 +163,7 @@ function normalizeWord(word) {
     term: String(word?.term ?? "").trim(),
     phonetics: normalizeStringList(word?.phonetics),
     meaning: String(word?.meaning ?? "").trim(),
+    isFavorite: Boolean(word?.isFavorite),
     categories: normalizedCategories,
     examples: normalizedExamples,
     audio: normalizeArchivePath(word?.audio),
@@ -480,6 +481,7 @@ function createWordRecord(word, categoryIds, now, options = {}) {
       zh: example.zh,
     })),
     categoryIds: uniqueStrings(categoryIds),
+    isFavorite: Boolean(options.isFavorite ?? word.isFavorite),
     createdAt: options.createdAt || now,
     updatedAt: options.updatedAt || now,
     hasWordAudio: Boolean(options.hasWordAudio),
@@ -662,6 +664,7 @@ async function importLibraryFromPayload(payload, options = {}) {
           meaning: mergedMeaning,
           examples: mergedExamples,
           categoryIds: mergedCategoryIds,
+          isFavorite: Boolean(existingWord.isFavorite) || Boolean(importedWord.isFavorite),
           updatedAt: now,
           hasWordAudio: Boolean(importedWordAudio) || Boolean(existingWord.hasWordAudio),
           exampleAudioIds: [...exampleAudioIds],
@@ -674,6 +677,7 @@ async function importLibraryFromPayload(payload, options = {}) {
           mergedMeaning !== existingWord.meaning ||
           JSON.stringify(mergedCategoryIds) !== JSON.stringify(existingWord.categoryIds || []) ||
           mergedExamples.length !== existingExamples.length ||
+          nextWord.isFavorite !== Boolean(existingWord.isFavorite) ||
           nextWord.hasWordAudio !== Boolean(existingWord.hasWordAudio) ||
           nextWord.exampleAudioCount !== Number(existingWord.exampleAudioCount || 0);
 
@@ -708,6 +712,7 @@ async function importLibraryFromPayload(payload, options = {}) {
         now,
         {
           id: newWordId,
+          isFavorite: Boolean(importedWord.isFavorite),
           hasWordAudio: Boolean(importedWord.audioBlob),
           exampleAudioIds: nextExamples.filter((example) => example.audioBlob).map((example) => example.id),
         },
@@ -803,6 +808,7 @@ export async function createLibraryPackageZipBlob() {
         term: word.term,
         phonetics: normalizeStringList(word.phonetics),
         meaning: word.meaning,
+        isFavorite: Boolean(word.isFavorite),
         categories: uniqueStrings(word.categoryIds)
           .map((categoryId) => categoriesById.get(categoryId))
           .filter(Boolean)

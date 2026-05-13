@@ -78,6 +78,20 @@ function renderExamplePreview(example, canPlay) {
   `;
 }
 
+function renderWordSortOptions(selectedSortMode) {
+  const options = [
+    { value: "term-asc", label: "字母 A-Z" },
+    { value: "term-desc", label: "字母 Z-A" },
+    { value: "updated-desc", label: "最近更新" },
+  ];
+
+  return options
+    .map(
+      (option) => `<option value="${option.value}" ${selectedSortMode === option.value ? "selected" : ""}>${option.label}</option>`,
+    )
+    .join("");
+}
+
 function renderWordCards(words, categoriesById, categories, busy) {
   if (!words.length) {
     return `
@@ -101,8 +115,7 @@ function renderWordCards(words, categoriesById, categories, busy) {
       <div class="word-list-scroll-anchor" data-word-list-scroll-anchor></div>
       ${words
         .map((word) => {
-          const visibleExamples = (word.examples || []).slice(0, 2);
-          const remainingExamples = Math.max((word.examples || []).length - visibleExamples.length, 0);
+          const examples = word.examples || [];
 
           return `
             <div class="word-card-swipe">
@@ -110,33 +123,46 @@ function renderWordCards(words, categoriesById, categories, busy) {
                 <article class="item-card item-card--word">
                   <div class="item-card__header item-card__header--word">
                     <div class="item-card__title">
-                      <div class="item-card__term-row ${word.hasWordAudio ? "" : "item-card__term-row--single"}">
+                      <div class="item-card__term-row">
                         <div class="item-card__term-line">
                           <h3>${escapeHtml(word.term)}</h3>
                           <p class="item-card__phonetic">${renderPhoneticText(word.phonetics || [])}</p>
                         </div>
-                        ${
-                          word.hasWordAudio
-                            ? `
-                                <button
-                                  type="button"
-                                  class="icon-button icon-button--audio item-card__play-button"
-                                  data-action="play-word-audio"
-                                  data-word-id="${escapeHtml(word.id)}"
-                                  aria-label="播放单词音频"
-                                >
-                                  <span class="audio-icon" aria-hidden="true"></span>
-                                </button>
-                              `
-                            : ""
-                        }
+                        <div class="item-card__term-actions">
+                          <button
+                            type="button"
+                            class="icon-button icon-button--favorite ${word.isFavorite ? "icon-button--active" : ""}"
+                            data-action="toggle-word-favorite"
+                            data-word-id="${escapeHtml(word.id)}"
+                            data-next-favorite="${word.isFavorite ? "false" : "true"}"
+                            aria-label="${word.isFavorite ? "取消收藏" : "收藏单词"}"
+                            aria-pressed="${word.isFavorite ? "true" : "false"}"
+                            ${busy ? "disabled" : ""}
+                          >
+                            <span class="favorite-icon" aria-hidden="true">${word.isFavorite ? "&#9733;" : "&#9734;"}</span>
+                          </button>
+                          ${
+                            word.hasWordAudio
+                              ? `
+                                  <button
+                                    type="button"
+                                    class="icon-button icon-button--audio item-card__play-button"
+                                    data-action="play-word-audio"
+                                    data-word-id="${escapeHtml(word.id)}"
+                                    aria-label="播放单词音频"
+                                  >
+                                    <span class="audio-icon" aria-hidden="true"></span>
+                                  </button>
+                                `
+                              : ""
+                          }
+                        </div>
                       </div>
                       <p class="item-card__meaning">${escapeHtml(word.meaning)}</p>
                     </div>
                   </div>
                   <div class="tag-row">${renderCategoryBadges(word, categoriesById)}</div>
-                  ${(word.examples || []).length ? `<div class="example-preview-list">${visibleExamples.map((example) => renderExamplePreview(example, word.exampleAudioIds?.includes(example.id))).join("")}</div>` : ""}
-                  ${remainingExamples ? `<p class="tiny-meta">还有 ${remainingExamples} 条例句未展开显示</p>` : ""}
+                  ${examples.length ? `<div class="example-preview-list">${examples.map((example) => renderExamplePreview(example, word.exampleAudioIds?.includes(example.id))).join("")}</div>` : ""}
                 </article>
                 <div class="word-card-swipe__actions" aria-label="单词操作">
                   <button type="button" class="ghost-button" data-action="edit-word" data-word-id="${escapeHtml(word.id)}">编辑</button>
@@ -249,17 +275,27 @@ function renderExampleEditorRows(draft, busy) {
   `;
 }
 
-export function renderWordsView({ words, pagination, categories, categoriesById, filters, draft, isEditorOpen, busy }) {
+export function renderWordsView({ words, pagination, categories, categoriesById, filters, isFilterOpen, draft, isEditorOpen, busy }) {
   const title = draft.id ? "编辑单词" : "添加陌生单词";
-  const submitLabel = draft.id ? "保存修改" : "添加单词";
+  const submitLabel = draft.id ? "保存" : "添加";
   const shouldOpenEditor = Boolean(isEditorOpen);
+  const editorToggleLabel = draft.id ? "编辑中" : shouldOpenEditor ? "收起" : "展开";
+  const editorToolbarActionLabel = draft.id ? "取消编辑" : "清空表单";
+  const editorToolbarAction = draft.id ? "cancel-word-edit" : "reset-word-draft";
+  const editorFooterActionLabel = draft.id ? "取消" : "收起";
+  const editorFooterAction = draft.id ? "cancel-word-edit" : "collapse-word-editor";
   const selectedFilterCount = (filters.categoryIds || []).length;
+  const filterSummaryParts = [
+    selectedFilterCount ? `已选 ${selectedFilterCount} 个分类` : "",
+    filters.favoritesOnly ? "只看收藏单词" : "",
+  ].filter(Boolean);
   const phonetics = draft.phonetics?.length ? draft.phonetics : [""];
 
   return `
     <section class="view-stack">
       <div class="section-grid section-grid--wide">
         <section class="panel">
+          <div class="word-editor-scroll-anchor" data-word-editor-scroll-anchor></div>
           <details class="disclosure-panel" data-ui="word-editor-disclosure" ${shouldOpenEditor ? "open" : ""}>
             <summary class="disclosure-toggle">
               <div>
@@ -267,11 +303,11 @@ export function renderWordsView({ words, pagination, categories, categoriesById,
                 <h2>${title}</h2>
                 <p class="tiny-meta">${draft.id ? "正在编辑已有词条" : "点击后展开录入单词、音标、例句和音频。"}</p>
               </div>
-              <span class="counter-pill">${draft.id ? "编辑中" : "展开"}</span>
+              <span class="counter-pill counter-pill--toggle">${editorToggleLabel}</span>
             </summary>
             <div class="disclosure-panel__body">
               <div class="form-actions form-actions--toolbar">
-                <button type="button" class="ghost-button" data-action="reset-word-draft">清空表单</button>
+                <button type="button" class="ghost-button" data-action="${editorToolbarAction}" ${busy ? "disabled" : ""}>${editorToolbarActionLabel}</button>
               </div>
               <form data-form="word-editor" class="form-stack">
                 <input type="hidden" name="id" value="${escapeHtml(draft.id || "")}" />
@@ -315,9 +351,10 @@ export function renderWordsView({ words, pagination, categories, categoriesById,
                   </div>
                   ${renderCategorySelector(categories, draft.categoryIds || [], "categoryId")}
                 </div>
-                <div class="form-actions">
+                <div class="form-actions form-actions--triple-mobile">
+                  <button type="button" class="ghost-button" data-action="${editorFooterAction}" ${busy ? "disabled" : ""}>${editorFooterActionLabel}</button>
+                  <button type="button" class="ghost-button" data-action="play-word-audio" data-word-id="${escapeHtml(draft.id || "")}" ${draft.id && draft.hasWordAudio ? "" : "disabled"}>播放</button>
                   <button type="submit" class="primary-button" ${busy ? "disabled" : ""}>${submitLabel}</button>
-                  <button type="button" class="ghost-button" data-action="play-word-audio" data-word-id="${escapeHtml(draft.id || "")}" ${draft.id && draft.hasWordAudio ? "" : "disabled"}>播放当前单词音频</button>
                 </div>
               </form>
             </div>
@@ -337,16 +374,26 @@ export function renderWordsView({ words, pagination, categories, categoriesById,
               <span>搜索</span>
               <input name="query" value="${escapeHtml(filters.query || "")}" placeholder="搜索单词、音标、释义、例句英文或中文翻译" />
             </label>
-            <details class="disclosure-panel disclosure-panel--compact" ${selectedFilterCount ? "open" : ""}>
+            <label class="field field--inline-control">
+              <span>排序</span>
+              <select name="sortMode">
+                ${renderWordSortOptions(filters.sortMode || "term-asc")}
+              </select>
+            </label>
+            <details class="disclosure-panel disclosure-panel--compact" data-ui="word-filter-disclosure" ${isFilterOpen ? "open" : ""}>
               <summary class="disclosure-toggle disclosure-toggle--compact">
                 <div>
                   <span>分类筛选</span>
-                  <small>${selectedFilterCount ? `已选 ${selectedFilterCount} 个分类` : "点击展开分类筛选"}</small>
+                  <small>${filterSummaryParts.length ? filterSummaryParts.join(" · ") : "点击展开分类筛选"}</small>
                 </div>
                 <span class="counter-pill counter-pill--soft">并集</span>
               </summary>
               <div class="disclosure-panel__body disclosure-panel__body--compact">
                 ${renderCategorySelector(categories, filters.categoryIds || [], "filterCategoryId", { variant: "compact" })}
+                <label class="inline-check ${filters.favoritesOnly ? "" : "inline-check--muted"}">
+                  <input type="checkbox" name="favoritesOnly" ${filters.favoritesOnly ? "checked" : ""} />
+                  <span>只看收藏单词</span>
+                </label>
               </div>
             </details>
             <div class="form-actions form-actions--inline-mobile">

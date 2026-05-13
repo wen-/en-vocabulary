@@ -1,5 +1,13 @@
 import { openDatabase } from "./src/db/database.js";
-import { listWords, saveWord, deleteWord, filterWords, getWordAudioRecord, getExampleAudioRecord } from "./src/db/wordRepository.js";
+import {
+  listWords,
+  saveWord,
+  deleteWord,
+  filterWords,
+  getWordAudioRecord,
+  getExampleAudioRecord,
+  setWordFavorite,
+} from "./src/db/wordRepository.js";
 import { listCategories, saveCategory, deleteCategory } from "./src/db/categoryRepository.js";
 import { listPracticeAttempts, recordPracticeAttempt, summarizeAttempts } from "./src/db/practiceRepository.js";
 import { AUDIO_ACCEPT, validateAudioFile, playAudioBlob } from "./src/services/audioService.js";
@@ -33,6 +41,12 @@ const VIEWS = {
 const MOBILE_WORDS_PER_PAGE = 10;
 const DESKTOP_WORDS_PER_PAGE = 20;
 const DESKTOP_WORDS_MEDIA_QUERY = "(min-width: 980px)";
+const DEFAULT_WORD_SORT_MODE = "term-asc";
+const DEFAULT_NOTICE_DURATION_MS = 3000;
+const ENGLISH_TERM_COLLATOR = new Intl.Collator("en", {
+  sensitivity: "base",
+  numeric: true,
+});
 
 function isStandaloneMode() {
   return window.matchMedia("(display-mode: standalone)").matches || window.navigator.standalone === true;
@@ -54,12 +68,15 @@ const state = {
   loading: true,
   busy: false,
   wordEditorExpanded: false,
+  wordFilterDisclosureOpen: false,
   words: [],
   categories: [],
   practiceAttempts: [],
   filters: {
     query: "",
     categoryIds: [],
+    favoritesOnly: false,
+    sortMode: DEFAULT_WORD_SORT_MODE,
   },
   wordDraft: createEmptyWordDraft(),
   categoryDraft: createEmptyCategoryDraft(),
@@ -67,6 +84,7 @@ const state = {
     categoryIds: [],
     limit: 10,
     pageSpec: "",
+    favoritesOnly: false,
   },
   wordListPagination: createWordListPagination(),
   practiceSession: createEmptyPracticeSession(),
@@ -78,7 +96,7 @@ const state = {
   serviceWorkerState: "idle",
 };
 
-let noticeTimerId;
+let noticeTimerId = 0;
 
 function createEmptyWordDraft() {
   return {
@@ -88,6 +106,7 @@ function createEmptyWordDraft() {
     meaning: "",
     examples: [createEmptyExampleDraft()],
     categoryIds: [],
+    isFavorite: false,
     hasWordAudio: false,
     removeWordAudio: false,
     wordAudioFile: null,
@@ -121,6 +140,7 @@ function createEmptyPracticeSession() {
     currentResult: null,
     selectedCategoryIds: [],
     selectedPages: [],
+    favoritesOnly: false,
     summary: {
       total: 0,
       correct: 0,
@@ -261,13 +281,30 @@ function matchesPreviewFile(preview, file) {
   );
 }
 
-function setNotice(text, type = "info") {
+function setNotice(text, type = "info", autoCloseMs = DEFAULT_NOTICE_DURATION_MS) {
   state.notice = { text, type };
   window.clearTimeout(noticeTimerId);
-  noticeTimerId = window.setTimeout(() => {
-    state.notice = null;
-    render();
-  }, 3200);
+
+  if (autoCloseMs > 0) {
+    noticeTimerId = window.setTimeout(() => {
+      state.notice = null;
+      noticeTimerId = 0;
+      render();
+    }, autoCloseMs);
+  }
+
+  render();
+}
+
+function clearNotice() {
+  window.clearTimeout(noticeTimerId);
+  noticeTimerId = 0;
+
+  if (!state.notice) {
+    return;
+  }
+
+  state.notice = null;
   render();
 }
 
@@ -290,6 +327,16 @@ async function runAction(task, successMessage) {
   } finally {
     state.busy = false;
     render();
+  }
+}
+
+async function runPassiveAction(task) {
+  try {
+    return await task();
+  } catch (error) {
+    console.error(error);
+    setNotice(error instanceof Error ? error.message : "操作失败。", "error");
+    return null;
   }
 }
 
@@ -341,6 +388,38 @@ async function refreshData() {
   await updateStorageEstimate();
 }
 
+function compareWordsByTerm(left, right) {
+  const byTerm = ENGLISH_TERM_COLLATOR.compare(left?.term || "", right?.term || "");
+
+  if (byTerm !== 0) {
+    return byTerm;
+  }
+
+  return (right?.updatedAt || 0) - (left?.updatedAt || 0);
+}
+
+function sortWordsForDisplay(words, sortMode = DEFAULT_WORD_SORT_MODE) {
+  const items = [...words];
+
+  switch (sortMode) {
+    case "term-desc":
+      return items.sort((left, right) => compareWordsByTerm(right, left));
+    case "updated-desc":
+      return items.sort((left, right) => {
+        const updatedDelta = (right?.updatedAt || 0) - (left?.updatedAt || 0);
+
+        if (updatedDelta !== 0) {
+          return updatedDelta;
+        }
+
+        return compareWordsByTerm(left, right);
+      });
+    case DEFAULT_WORD_SORT_MODE:
+    default:
+      return items.sort(compareWordsByTerm);
+  }
+}
+
 function getCategoriesById() {
   return new Map(state.categories.map((category) => [category.id, category]));
 }
@@ -350,7 +429,7 @@ function getWordsById() {
 }
 
 function getFilteredWords() {
-  return filterWords(state.words, state.filters);
+  return sortWordsForDisplay(filterWords(state.words, state.filters), state.filters.sortMode || DEFAULT_WORD_SORT_MODE);
 }
 
 function getPaginatedWords(filteredWords = getFilteredWords()) {
@@ -415,11 +494,15 @@ function parsePageSpec(pageSpec) {
   return [...pages].sort((left, right) => left - right);
 }
 
-function getPracticeSourceInfo(selectedCategoryIds = [], pageSpec = "") {
-  const words = filterWords(state.words, {
-    query: "",
-    categoryIds: selectedCategoryIds,
-  });
+function getPracticeSourceInfo(selectedCategoryIds = [], pageSpec = "", options = {}) {
+  const words = sortWordsForDisplay(
+    filterWords(state.words, {
+      query: "",
+      categoryIds: selectedCategoryIds,
+      favoritesOnly: Boolean(options.favoritesOnly),
+    }),
+    state.filters.sortMode || DEFAULT_WORD_SORT_MODE,
+  );
   const pageSize = getResponsiveWordsPerPage();
   const totalPages = words.length ? Math.ceil(words.length / pageSize) : 0;
   const selectedPages = parsePageSpec(pageSpec);
@@ -453,6 +536,21 @@ function getPracticeSourceInfo(selectedCategoryIds = [], pageSpec = "") {
 function scrollToWordListStart() {
   window.requestAnimationFrame(() => {
     const anchor = document.querySelector("[data-word-list-scroll-anchor]");
+
+    if (!(anchor instanceof HTMLElement)) {
+      return;
+    }
+
+    anchor.scrollIntoView({
+      behavior: "smooth",
+      block: "start",
+    });
+  });
+}
+
+function scrollToWordEditorStart() {
+  window.requestAnimationFrame(() => {
+    const anchor = document.querySelector("[data-word-editor-scroll-anchor]");
 
     if (!(anchor instanceof HTMLElement)) {
       return;
@@ -532,7 +630,19 @@ function renderNotice() {
     return "";
   }
 
-  return `<div class="notice notice--${state.notice.type}">${escapeHtml(state.notice.text)}</div>`;
+  const role = state.notice.type === "error" ? "alert" : "status";
+  const live = state.notice.type === "error" ? "assertive" : "polite";
+
+  return `
+    <div class="notice-layer" aria-live="${live}">
+      <div class="notice notice--${state.notice.type}" role="${role}">
+        <div class="notice__body">
+          <p class="notice__text">${escapeHtml(state.notice.text)}</p>
+        </div>
+        <button type="button" class="ghost-button ghost-button--tiny notice__close" data-action="dismiss-notice">关闭</button>
+      </div>
+    </div>
+  `;
 }
 
 function renderView() {
@@ -550,6 +660,7 @@ function renderView() {
       const practiceSourceInfo = getPracticeSourceInfo(
         state.practiceConfig.categoryIds,
         state.practiceConfig.pageSpec,
+        { favoritesOnly: state.practiceConfig.favoritesOnly },
       );
 
       return renderPracticeView({
@@ -585,6 +696,7 @@ function renderView() {
         categories: state.categories,
         categoriesById,
         filters: state.filters,
+        isFilterOpen: state.wordFilterDisclosureOpen,
         draft: state.wordDraft,
         isEditorOpen: state.wordEditorExpanded || Boolean(state.wordDraft.id),
         busy: state.busy,
@@ -602,6 +714,11 @@ function onToggle(event) {
 
   if (target.dataset.ui === "word-editor-disclosure") {
     state.wordEditorExpanded = target.open;
+    return;
+  }
+
+  if (target.dataset.ui === "word-filter-disclosure") {
+    state.wordFilterDisclosureOpen = target.open;
   }
 }
 
@@ -650,8 +767,8 @@ async function registerServiceWorker() {
   }
 }
 
-async function startPracticeSession(selectedCategoryIds, limit, pageSpec = "") {
-  const sourceInfo = getPracticeSourceInfo(selectedCategoryIds, pageSpec);
+async function startPracticeSession(selectedCategoryIds, limit, pageSpec = "", favoritesOnly = false) {
+  const sourceInfo = getPracticeSourceInfo(selectedCategoryIds, pageSpec, { favoritesOnly });
   const candidateWords = sourceInfo.words;
 
   if (!candidateWords.length) {
@@ -669,6 +786,7 @@ async function startPracticeSession(selectedCategoryIds, limit, pageSpec = "") {
     currentResult: null,
     selectedCategoryIds,
     selectedPages: sourceInfo.selectedPages,
+    favoritesOnly,
     summary: {
       total: queueIds.length,
       correct: 0,
@@ -787,6 +905,7 @@ async function handleWordSubmit(form) {
       term: draft.term,
       phonetics: draft.phonetics,
       meaning: draft.meaning,
+      isFavorite: draft.isFavorite,
       examples: draft.examples.map((example) => ({
         id: example.id,
         en: example.en,
@@ -822,7 +941,10 @@ async function handleWordFiltersSubmit(form) {
   state.filters = {
     query: String(formData.get("query") || ""),
     categoryIds: uniqueStrings(formData.getAll("filterCategoryId")),
+    favoritesOnly: formData.get("favoritesOnly") === "on",
+    sortMode: String(formData.get("sortMode") || DEFAULT_WORD_SORT_MODE),
   };
+  state.wordFilterDisclosureOpen = false;
   resetWordListPage();
 }
 
@@ -844,13 +966,20 @@ async function handlePracticeStart(form) {
   const limit = Number(formData.get("limit") || 10);
   const selectedCategoryIds = uniqueStrings(formData.getAll("practiceCategoryId"));
   const pageSpec = String(formData.get("pageSpec") || "").trim();
+  const favoritesOnly = formData.get("favoritesOnly") === "on";
   const nextPracticeConfig = {
     categoryIds: selectedCategoryIds,
     limit: Math.max(1, Math.min(50, Number.isFinite(limit) ? limit : 10)),
     pageSpec,
+    favoritesOnly,
   };
 
-  await startPracticeSession(nextPracticeConfig.categoryIds, nextPracticeConfig.limit, nextPracticeConfig.pageSpec);
+  await startPracticeSession(
+    nextPracticeConfig.categoryIds,
+    nextPracticeConfig.limit,
+    nextPracticeConfig.pageSpec,
+    nextPracticeConfig.favoritesOnly,
+  );
   state.practiceConfig = nextPracticeConfig;
 }
 
@@ -1059,6 +1188,7 @@ function populateWordDraft(wordId) {
         }))
       : [createEmptyExampleDraft()],
     categoryIds: [...(word.categoryIds || [])],
+    isFavorite: Boolean(word.isFavorite),
     hasWordAudio: Boolean(word.hasWordAudio),
     removeWordAudio: false,
     wordAudioFile: null,
@@ -1135,6 +1265,9 @@ async function onClick(event) {
       state.view = trigger.dataset.view || VIEWS.words;
       render();
       return;
+    case "dismiss-notice":
+      clearNotice();
+      return;
     case "add-phonetic": {
       const form = trigger.closest("form");
 
@@ -1192,12 +1325,29 @@ async function onClick(event) {
       state.wordDraft = createEmptyWordDraft();
       render();
       return;
+    case "collapse-word-editor": {
+      const form = trigger.closest("form");
+
+      if (form) {
+        syncWordDraftFromForm(form);
+      }
+
+      state.wordEditorExpanded = false;
+      render();
+      return;
+    }
+    case "cancel-word-edit":
+      state.wordDraft = createEmptyWordDraft();
+      state.wordEditorExpanded = false;
+      render();
+      return;
     case "reset-category-draft":
       state.categoryDraft = createEmptyCategoryDraft();
       render();
       return;
     case "reset-word-filters":
-      state.filters = { query: "", categoryIds: [] };
+      state.filters = { query: "", categoryIds: [], favoritesOnly: false, sortMode: DEFAULT_WORD_SORT_MODE };
+      state.wordFilterDisclosureOpen = false;
       resetWordListPage();
       render();
       return;
@@ -1223,6 +1373,23 @@ async function onClick(event) {
       populateWordDraft(trigger.dataset.wordId);
       state.wordEditorExpanded = true;
       render();
+      scrollToWordEditorStart();
+      return;
+    case "toggle-word-favorite":
+      await runAction(async () => {
+        const nextFavorite = trigger.dataset.nextFavorite === "true";
+
+        await setWordFavorite(trigger.dataset.wordId, nextFavorite);
+
+        if (state.wordDraft.id === trigger.dataset.wordId) {
+          state.wordDraft = {
+            ...state.wordDraft,
+            isFavorite: nextFavorite,
+          };
+        }
+
+        await refreshData();
+      });
       return;
     case "delete-word":
       if (!window.confirm("确认删除这个单词吗？相关音频也会一起删除。")) {
@@ -1237,12 +1404,12 @@ async function onClick(event) {
       return;
     case "play-word-audio":
     case "play-practice-audio":
-      await runAction(async () => {
+      await runPassiveAction(async () => {
         await handlePlayWordAudio(trigger.dataset.wordId);
       });
       return;
     case "play-example-audio":
-      await runAction(async () => {
+      await runPassiveAction(async () => {
         await handlePlayExampleAudio(trigger.dataset.exampleId);
       });
       return;

@@ -46,6 +46,15 @@ textarea {
   font: inherit;
 }
 
+input[type="checkbox"] {
+  appearance: auto;
+  -webkit-appearance: checkbox;
+  accent-color: var(--accent);
+  inline-size: 18px;
+  block-size: 18px;
+  margin: 0;
+}
+
 button {
   cursor: pointer;
 }
@@ -450,6 +459,12 @@ textarea:disabled {
   color: var(--text);
 }
 
+.settings-template-button {
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-touch-callout: none;
+}
+
 .danger-button {
   background: rgba(167, 60, 65, 0.1);
   border-color: rgba(167, 60, 65, 0.16);
@@ -542,7 +557,7 @@ textarea:disabled {
   font-weight: 600;
 }
 
-.field input,
+.field input:not([type="checkbox"]),
 .field select,
 .field textarea {
   width: 100%;
@@ -553,7 +568,7 @@ textarea:disabled {
   color: var(--text);
 }
 
-.field input:focus,
+.field input:not([type="checkbox"]):focus,
 .field textarea:focus {
   outline: 2px solid rgba(204, 108, 67, 0.26);
   border-color: rgba(204, 108, 67, 0.42);
@@ -668,13 +683,6 @@ textarea:disabled {
   border-radius: 14px;
 }
 
-.check-chip input {
-  width: 18px;
-  height: 18px;
-  margin: 0;
-  accent-color: var(--accent);
-}
-
 .check-chip span {
   font-weight: 600;
 }
@@ -701,13 +709,6 @@ textarea:disabled {
 
 .inline-check--muted {
   color: var(--muted);
-}
-
-.inline-check input {
-  width: 18px;
-  height: 18px;
-  margin: 0;
-  accent-color: var(--accent);
 }
 
 .form-actions,

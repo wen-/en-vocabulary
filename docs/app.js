@@ -10,6 +10,7 @@ import {
 } from "./src/db/wordRepository.js";
 import { listCategories, saveCategory, deleteCategory } from "./src/db/categoryRepository.js";
 import { listPracticeAttempts, recordPracticeAttempt, summarizeAttempts } from "./src/db/practiceRepository.js";
+import { APP_SETTING_KEYS, getBooleanSetting, setBooleanSetting } from "./src/db/settingsRepository.js";
 import { AUDIO_ACCEPT, validateAudioFile, playAudioBlob } from "./src/services/audioService.js";
 import { DEMO_CATEGORIES, DEMO_WORDS } from "./src/services/demoData.js";
 import {
@@ -26,6 +27,7 @@ import { renderPracticeView } from "./src/views/practiceView.js";
 import { renderSettingsView } from "./src/views/settingsView.js";
 
 const appRoot = document.querySelector("#app");
+const LIBRARY_EXPORT_REVEAL_HOLD_MS = 5000;
 
 if (!appRoot) {
   throw new Error("App root not found.");
@@ -94,6 +96,7 @@ const state = {
   wordListPagination: createWordListPagination(),
   practiceSession: createEmptyPracticeSession(),
   importPreviews: createEmptyImportPreviews(),
+  showLibraryExportAction: false,
   notice: null,
   exampleWordHint: null,
   storageEstimate: null,
@@ -103,6 +106,7 @@ const state = {
 };
 
 let noticeTimerId = 0;
+let libraryExportRevealTimerId = 0;
 
 function createEmptyWordDraft() {
   return {
@@ -559,15 +563,17 @@ function withCategoryCounts(categories, words) {
 }
 
 async function refreshData() {
-  const [words, categories, practiceAttempts] = await Promise.all([
+  const [words, categories, practiceAttempts, showLibraryExportAction] = await Promise.all([
     listWords(),
     listCategories(),
     listPracticeAttempts(),
+    getBooleanSetting(APP_SETTING_KEYS.showLibraryExportAction, false),
   ]);
 
   state.words = words;
   state.categories = withCategoryCounts(categories, words);
   state.practiceAttempts = practiceAttempts;
+  state.showLibraryExportAction = showLibraryExportAction;
   state.wordDraft.categoryIds = state.wordDraft.categoryIds.filter((categoryId) =>
     state.categories.some((category) => category.id === categoryId),
   );
@@ -890,6 +896,7 @@ function renderView() {
         busy: state.busy,
         pwaStatus: getPwaStatus(),
         importPreviews: state.importPreviews,
+        showLibraryExportAction: state.showLibraryExportAction,
       });
     case VIEWS.words:
     default:
@@ -978,12 +985,42 @@ async function registerServiceWorker() {
 }
 
 function onPointerDown(event) {
-  if (!shouldDismissExampleWordHint(event.target)) {
+  if (shouldDismissExampleWordHint(event.target)) {
+    event.preventDefault();
+    closeExampleWordHint();
+  }
+
+  const templateButton = event.target instanceof Element
+    ? event.target.closest('[data-action="download-library-template"]')
+    : null;
+
+  if (!(templateButton instanceof HTMLButtonElement) || templateButton.disabled || state.showLibraryExportAction) {
     return;
   }
 
-  event.preventDefault();
-  closeExampleWordHint();
+  window.clearTimeout(libraryExportRevealTimerId);
+  libraryExportRevealTimerId = window.setTimeout(() => {
+    libraryExportRevealTimerId = 0;
+
+    if (state.showLibraryExportAction) {
+      return;
+    }
+
+    void runPassiveAction(async () => {
+      await setBooleanSetting(APP_SETTING_KEYS.showLibraryExportAction, true);
+      state.showLibraryExportAction = true;
+      setNotice("已显示导出 JSON + 音频 ZIP 按钮，并已持久保存。", "success");
+    });
+  }, LIBRARY_EXPORT_REVEAL_HOLD_MS);
+}
+
+function clearLibraryExportRevealTimer() {
+  if (!libraryExportRevealTimerId) {
+    return;
+  }
+
+  window.clearTimeout(libraryExportRevealTimerId);
+  libraryExportRevealTimerId = 0;
 }
 
 function onScroll() {
@@ -1743,11 +1780,8 @@ async function onClick(event) {
       const hasData = state.words.length > 0 || state.categories.length > 0;
 
       if (hasData) {
-        const confirmed = window.confirm("将把示例分类和示例单词补充到当前数据中，已存在的同名单词会跳过，是否继续？");
-
-        if (!confirmed) {
-          return;
-        }
+        setNotice("已经有数据存在，未执行加载示例数据。", "info");
+        return;
       }
 
       const result = await runAction(async () => seedDemoData());
@@ -1816,6 +1850,8 @@ async function initialize() {
 
   window.addEventListener("online", render);
   window.addEventListener("offline", render);
+  window.addEventListener("pointerup", clearLibraryExportRevealTimer);
+  window.addEventListener("pointercancel", clearLibraryExportRevealTimer);
   window.addEventListener("scroll", onScroll, { passive: true });
   window.addEventListener("resize", () => {
     if (!syncWordListPageSize()) {

@@ -99,7 +99,7 @@ function renderPreviewCard(preview) {
   `;
 }
 
-export function renderSettingsView({ summary, storageEstimate, pwaStatus, busy, importPreviews }) {
+export function renderSettingsView({ summary, storageEstimate, pwaStatus, busy, importPreviews, showLibraryExportAction }) {
   const usage = storageEstimate?.usage ? bytesToSize(storageEstimate.usage) : "未知";
   const quota = storageEstimate?.quota ? bytesToSize(storageEstimate.quota) : "未知";
   const hasData = summary.words > 0 || summary.categories > 0;
@@ -137,8 +137,12 @@ export function renderSettingsView({ summary, storageEstimate, pwaStatus, busy, 
               <span>${hasData ? "可以继续录入、练习，或用统一词库包在设备间同步。" : "可一键加载示例分类和示例单词，先体验完整流程。"}</span>
             </div>
             <button type="button" class="ghost-button" data-action="load-demo-data" ${busy ? "disabled" : ""}>加载示例数据</button>
-            <button type="button" class="ghost-button" data-action="download-library-template" ${busy ? "disabled" : ""}>下载 JSON 词库模板</button>
-            <button type="button" class="primary-button" data-action="export-library-package" ${busy ? "disabled" : ""}>导出 JSON + 音频 ZIP</button>
+            <button type="button" class="ghost-button settings-template-button" data-action="download-library-template" ${busy ? "disabled" : ""}>下载 JSON 词库模板</button>
+            ${
+              showLibraryExportAction
+                ? `<button type="button" class="primary-button" data-action="export-library-package" ${busy ? "disabled" : ""}>导出 JSON + 音频 ZIP</button>`
+                : ""
+            }
             <form data-form="import-library" class="form-stack compact-form">
               <label class="field">
                 <span>导入词库 ZIP / JSON</span>

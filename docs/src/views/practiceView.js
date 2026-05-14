@@ -1,4 +1,4 @@
-import { escapeHtml } from "../services/helpers.js";
+import { escapeHtml, renderAudioIcon } from "../services/helpers.js";
 
 function renderPracticeExamples(word) {
   const examples = Array.isArray(word?.examples) ? word.examples : [];
@@ -22,14 +22,26 @@ function renderPracticeExamples(word) {
               <div class="example-pair">
                 <div class="example-pair__header">
                   <strong>例句 ${index + 1}</strong>
+                </div>
+                <p class="supporting-text example-pair__english">
+                  ${escapeHtml(example.en)}
                   ${
                     word.exampleAudioIds?.includes(example.id)
-                      ? `<button type="button" class="ghost-button ghost-button--tiny" data-action="play-example-audio" data-example-id="${escapeHtml(example.id)}">播放例句音频</button>`
+                      ? `
+                          <button
+                            type="button"
+                            class="icon-button icon-button--audio inline-audio-button example-pair__play-button"
+                            data-action="play-example-audio"
+                            data-example-id="${escapeHtml(example.id)}"
+                            aria-label="播放例句音频"
+                          >
+                            ${renderAudioIcon()}
+                          </button>
+                        `
                       : ""
                   }
-                </div>
-                <p class="supporting-text">${escapeHtml(example.en)}</p>
-                <p class="supporting-text">${escapeHtml(example.zh)}</p>
+                </p>
+                <p class="supporting-text example-pair__translation">${escapeHtml(example.zh)}</p>
               </div>
             `,
           )
@@ -240,7 +252,7 @@ export function renderPracticeView({ categories, categoriesById, practiceConfig,
                       aria-label="播放"
                       ${currentWord?.hasWordAudio ? `data-word-id="${escapeHtml(currentWord.id)}"` : "disabled"}
                     >
-                      <span class="audio-icon" aria-hidden="true"></span>
+                      ${renderAudioIcon()}
                     </button>
                   </div>
                   ${renderPracticeExamples(currentWord)}

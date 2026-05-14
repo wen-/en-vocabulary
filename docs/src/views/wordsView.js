@@ -1,5 +1,5 @@
 import { AUDIO_ACCEPT } from "../services/audioService.js";
-import { escapeHtml } from "../services/helpers.js";
+import { escapeHtml, renderAudioIcon } from "../services/helpers.js";
 
 const EXAMPLE_WORD_TOKEN_PATTERN = /[A-Za-z]+(?:[\-'][A-Za-z]+)*/;
 
@@ -80,24 +80,24 @@ function renderPhoneticText(phonetics) {
 function renderExamplePreview(example, canPlay) {
   return `
     <div class="example-preview-item">
-      <div class="example-preview-item__english-row">
-        <p class="supporting-text">${renderExampleEnglishText(example.en)}</p>
+      <p class="supporting-text example-preview-item__english">
+        ${renderExampleEnglishText(example.en)}
         ${
           canPlay
             ? `
                 <button
                   type="button"
-                  class="icon-button icon-button--audio example-preview-item__play-button"
+                  class="icon-button icon-button--audio inline-audio-button example-preview-item__play-button"
                   data-action="play-example-audio"
                   data-example-id="${escapeHtml(example.id)}"
                   aria-label="播放例句音频"
                 >
-                  <span class="audio-icon" aria-hidden="true"></span>
+                  ${renderAudioIcon()}
                 </button>
               `
             : ""
         }
-      </div>
+      </p>
       <p class="supporting-text example-preview-item__translation">${escapeHtml(example.zh)}</p>
     </div>
   `;
@@ -177,7 +177,7 @@ function renderWordCards(words, categoriesById, categories, busy) {
                                   data-word-id="${escapeHtml(word.id)}"
                                   aria-label="播放单词音频"
                                 >
-                                  <span class="audio-icon" aria-hidden="true"></span>
+                                  ${renderAudioIcon()}
                                 </button>
                               `
                             : ""

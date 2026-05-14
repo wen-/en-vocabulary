@@ -19,7 +19,7 @@ import {
   importLibraryFromFile,
   inspectLibraryImportFile,
 } from "./src/services/importExportService.js";
-import { createDownload, createId, escapeHtml, normalizeText, shuffle, uniqueStrings } from "./src/services/helpers.js";
+import { createDownload, createId, escapeHtml, normalizeText, renderAudioIcon, shuffle, uniqueStrings } from "./src/services/helpers.js";
 import { renderWordsView } from "./src/views/wordsView.js";
 import { renderCategoriesView } from "./src/views/categoriesView.js";
 import { renderPracticeView } from "./src/views/practiceView.js";
@@ -493,7 +493,7 @@ function renderExampleWordHint() {
             aria-label="播放单词音频"
             ${state.exampleWordHint.hasWordAudio ? "" : "disabled"}
           >
-            <span class="audio-icon" aria-hidden="true"></span>
+            ${renderAudioIcon()}
           </button>
         </div>
         <p class="word-hint-card__meaning">${escapeHtml(state.exampleWordHint.meaning || "暂无释义")}</p>
@@ -1337,6 +1337,27 @@ async function handlePlayExampleAudio(exampleId) {
   await playAudioBlob(record.blob);
 }
 
+async function playAudioWithFeedback(button, task) {
+  if (!(button instanceof HTMLElement)) {
+    await task();
+    return;
+  }
+
+  if (button.dataset.audioPlaying === "true") {
+    return;
+  }
+
+  button.dataset.audioPlaying = "true";
+  button.classList.add("is-playing");
+
+  try {
+    await task();
+  } finally {
+    delete button.dataset.audioPlaying;
+    button.classList.remove("is-playing");
+  }
+}
+
 async function seedDemoData() {
   const categoryByName = new Map(state.categories.map((category) => [normalizeText(category.name), category]));
   const categoryIdByKey = new Map();
@@ -1654,12 +1675,16 @@ async function onClick(event) {
     case "play-word-audio":
     case "play-practice-audio":
       await runPassiveAction(async () => {
-        await handlePlayWordAudio(trigger.dataset.wordId);
+        await playAudioWithFeedback(trigger, async () => {
+          await handlePlayWordAudio(trigger.dataset.wordId);
+        });
       });
       return;
     case "play-example-audio":
       await runPassiveAction(async () => {
-        await handlePlayExampleAudio(trigger.dataset.exampleId);
+        await playAudioWithFeedback(trigger, async () => {
+          await handlePlayExampleAudio(trigger.dataset.exampleId);
+        });
       });
       return;
     case "edit-category":

@@ -22,6 +22,17 @@ export function escapeHtml(value) {
     .replace(/'/g, "&#39;");
 }
 
+export function renderAudioIcon() {
+  return `
+    <span class="audio-icon" aria-hidden="true">
+      <span class="audio-icon__speaker"></span>
+      <span class="audio-icon__wave audio-icon__wave--small"></span>
+      <span class="audio-icon__wave audio-icon__wave--medium"></span>
+      <span class="audio-icon__wave audio-icon__wave--large"></span>
+    </span>
+  `;
+}
+
 export function formatDateTime(value) {
   if (!value) {
     return "未记录";

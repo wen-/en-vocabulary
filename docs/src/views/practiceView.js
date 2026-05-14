@@ -45,7 +45,7 @@ function renderCategorySelector(categories, selectedIds, fieldName) {
   }
 
   return `
-    <div class="selector-grid">
+    <div class="selector-grid selector-grid--practice">
       ${categories
         .map(
           (category) => `
@@ -94,6 +94,16 @@ function formatAttemptMeta(attempt, word, categoriesById) {
 function renderRecentAttempts(attempts, wordsById, categoriesById, options = {}) {
   const showFavoriteActions = Boolean(options.showFavoriteActions);
   const busy = Boolean(options.busy);
+  const orderedAttempts = [...attempts]
+    .sort((left, right) => (right.attemptedAt || 0) - (left.attemptedAt || 0))
+    .slice(0, 20)
+    .sort((left, right) => {
+      if (left.correct !== right.correct) {
+        return Number(left.correct) - Number(right.correct);
+      }
+
+      return (right.attemptedAt || 0) - (left.attemptedAt || 0);
+    });
 
   if (!attempts.length) {
     return '<p class="empty-inline">还没有练习记录。</p>';
@@ -101,8 +111,7 @@ function renderRecentAttempts(attempts, wordsById, categoriesById, options = {})
 
   return `
     <div class="history-list">
-      ${attempts
-        .slice(0, 8)
+      ${orderedAttempts
         .map((attempt) => {
           const word = wordsById.get(attempt.wordId);
           const statusText = attempt.correct ? "正确" : `你的答案：${escapeHtml(attempt.answer || "空")}`;
@@ -184,6 +193,10 @@ export function renderPracticeView({ categories, categoriesById, practiceConfig,
                     </div>
                     ${renderCategorySelector(categories, practiceConfig.categoryIds || [], "practiceCategoryId")}
                   </div>
+                  <label class="inline-check ${practiceConfig.favoritesOnly ? "" : "inline-check--muted"}">
+                    <input type="checkbox" name="favoritesOnly" ${practiceConfig.favoritesOnly ? "checked" : ""} />
+                    <span>仅从已收藏单词中抽题</span>
+                  </label>
                   <label class="field field--inline-control">
                     <span>题目数量</span>
                     <input name="limit" type="number" min="1" max="50" value="${escapeHtml(String(practiceConfig.limit || 10))}" />
@@ -192,10 +205,6 @@ export function renderPracticeView({ categories, categoriesById, practiceConfig,
                     <span>练习页码</span>
                     <input name="pageSpec" value="${escapeHtml(practiceConfig.pageSpec || "")}" placeholder="如 1 或 1,3-5" />
                     <small>${escapeHtml(pageHint)}</small>
-                  </label>
-                  <label class="inline-check ${practiceConfig.favoritesOnly ? "" : "inline-check--muted"}">
-                    <input type="checkbox" name="favoritesOnly" ${practiceConfig.favoritesOnly ? "checked" : ""} />
-                    <span>仅从已收藏单词中抽题</span>
                   </label>
                   <div class="form-actions">
                     <button type="submit" class="primary-button" ${busy ? "disabled" : ""}>开始练习</button>

@@ -1,15 +1,40 @@
 import { AUDIO_ACCEPT } from "../services/audioService.js";
 import { escapeHtml } from "../services/helpers.js";
 
+const EXAMPLE_WORD_TOKEN_PATTERN = /[A-Za-z]+(?:[\-'][A-Za-z]+)*/;
+
+function renderExampleEnglishText(text) {
+  return String(text ?? "")
+    .split(new RegExp(`(${EXAMPLE_WORD_TOKEN_PATTERN.source})`, "g"))
+    .filter((part) => part !== "")
+    .map((part) => {
+      if (EXAMPLE_WORD_TOKEN_PATTERN.test(part)) {
+        return `<span class="example-word-token" data-example-word-token="${escapeHtml(part)}">${escapeHtml(part)}</span>`;
+      }
+
+      return escapeHtml(part);
+    })
+    .join("");
+}
+
 function renderCategorySelector(categories, selectedIds, fieldName, options = {}) {
   const variant = options.variant || "default";
+  const gridClasses = ["selector-grid"];
+
+  if (variant === "compact") {
+    gridClasses.push("selector-grid--compact");
+  }
+
+  if (variant === "editor") {
+    gridClasses.push("selector-grid--editor");
+  }
 
   if (!categories.length) {
     return '<p class="empty-inline">还没有分类，先去“分类”页创建几个类别。</p>';
   }
 
   return `
-    <div class="selector-grid ${variant === "compact" ? "selector-grid--compact" : ""}">
+    <div class="${gridClasses.join(" ")}">
       ${categories
         .map(
           (category) => `
@@ -56,7 +81,7 @@ function renderExamplePreview(example, canPlay) {
   return `
     <div class="example-preview-item">
       <div class="example-preview-item__english-row">
-        <p class="supporting-text">${escapeHtml(example.en)}</p>
+        <p class="supporting-text">${renderExampleEnglishText(example.en)}</p>
         ${
           canPlay
             ? `
@@ -126,37 +151,37 @@ function renderWordCards(words, categoriesById, categories, busy) {
                       <div class="item-card__term-row">
                         <div class="item-card__term-line">
                           <h3>${escapeHtml(word.term)}</h3>
-                          <p class="item-card__phonetic">${renderPhoneticText(word.phonetics || [])}</p>
+                          <div class="item-card__phonetic-row">
+                            <p class="item-card__phonetic">${renderPhoneticText(word.phonetics || [])}</p>
+                            <button
+                              type="button"
+                              class="favorite-inline-button ${word.isFavorite ? "favorite-inline-button--active" : ""}"
+                              data-action="toggle-word-favorite"
+                              data-word-id="${escapeHtml(word.id)}"
+                              data-next-favorite="${word.isFavorite ? "false" : "true"}"
+                              aria-label="${word.isFavorite ? "取消收藏" : "收藏单词"}"
+                              aria-pressed="${word.isFavorite ? "true" : "false"}"
+                              ${busy ? "disabled" : ""}
+                            >
+                              <span class="favorite-icon" aria-hidden="true">${word.isFavorite ? "&#9733;" : "&#9734;"}</span>
+                            </button>
+                          </div>
                         </div>
-                        <div class="item-card__term-actions">
-                          <button
-                            type="button"
-                            class="icon-button icon-button--favorite ${word.isFavorite ? "icon-button--active" : ""}"
-                            data-action="toggle-word-favorite"
-                            data-word-id="${escapeHtml(word.id)}"
-                            data-next-favorite="${word.isFavorite ? "false" : "true"}"
-                            aria-label="${word.isFavorite ? "取消收藏" : "收藏单词"}"
-                            aria-pressed="${word.isFavorite ? "true" : "false"}"
-                            ${busy ? "disabled" : ""}
-                          >
-                            <span class="favorite-icon" aria-hidden="true">${word.isFavorite ? "&#9733;" : "&#9734;"}</span>
-                          </button>
-                          ${
-                            word.hasWordAudio
-                              ? `
-                                  <button
-                                    type="button"
-                                    class="icon-button icon-button--audio item-card__play-button"
-                                    data-action="play-word-audio"
-                                    data-word-id="${escapeHtml(word.id)}"
-                                    aria-label="播放单词音频"
-                                  >
-                                    <span class="audio-icon" aria-hidden="true"></span>
-                                  </button>
-                                `
-                              : ""
-                          }
-                        </div>
+                        ${
+                          word.hasWordAudio
+                            ? `
+                                <button
+                                  type="button"
+                                  class="icon-button icon-button--audio item-card__play-button"
+                                  data-action="play-word-audio"
+                                  data-word-id="${escapeHtml(word.id)}"
+                                  aria-label="播放单词音频"
+                                >
+                                  <span class="audio-icon" aria-hidden="true"></span>
+                                </button>
+                              `
+                            : ""
+                        }
                       </div>
                       <p class="item-card__meaning">${escapeHtml(word.meaning)}</p>
                     </div>
@@ -349,7 +374,7 @@ export function renderWordsView({ words, pagination, categories, categoriesById,
                     <span>分类</span>
                     <small>同一个单词可同时属于多个分类</small>
                   </div>
-                  ${renderCategorySelector(categories, draft.categoryIds || [], "categoryId")}
+                  ${renderCategorySelector(categories, draft.categoryIds || [], "categoryId", { variant: "editor" })}
                 </div>
                 <div class="form-actions form-actions--triple-mobile">
                   <button type="button" class="ghost-button" data-action="${editorFooterAction}" ${busy ? "disabled" : ""}>${editorFooterActionLabel}</button>
@@ -372,7 +397,7 @@ export function renderWordsView({ words, pagination, categories, categoriesById,
           <form data-form="word-filters" class="form-stack compact-form">
             <label class="field field--inline-control">
               <span>搜索</span>
-              <input name="query" value="${escapeHtml(filters.query || "")}" placeholder="搜索单词、音标、释义、例句英文或中文翻译" />
+              <input name="query" value="${escapeHtml(filters.query || "")}" placeholder="搜索单词" />
             </label>
             <label class="field field--inline-control">
               <span>排序</span>

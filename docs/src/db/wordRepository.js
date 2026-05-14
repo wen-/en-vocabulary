@@ -184,15 +184,8 @@ export function filterWords(words, filters = {}) {
   const favoritesOnly = Boolean(filters.favoritesOnly);
 
   return words.filter((word) => {
-    const haystack = [
-      word.term,
-      ...(word.phonetics || []),
-      word.meaning,
-      ...(word.examples || []).flatMap((example) => [example.en, example.zh]),
-    ]
-      .map((value) => normalizeText(value))
-      .join(" ");
-    const matchesQuery = !normalizedQuery || haystack.includes(normalizedQuery);
+    const normalizedTerm = normalizeText(word.term);
+    const matchesQuery = !normalizedQuery || normalizedTerm.includes(normalizedQuery);
     const matchesCategory =
       selectedCategoryIds.length === 0 ||
       selectedCategoryIds.some((categoryId) => word.categoryIds?.includes(categoryId));

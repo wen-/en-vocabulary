@@ -43,6 +43,11 @@ const DESKTOP_WORDS_PER_PAGE = 20;
 const DESKTOP_WORDS_MEDIA_QUERY = "(min-width: 980px)";
 const DEFAULT_WORD_SORT_MODE = "term-asc";
 const DEFAULT_NOTICE_DURATION_MS = 3000;
+const EXAMPLE_WORD_HINT_CARD_WIDTH_PX = 340;
+const EXAMPLE_WORD_HINT_VIEWPORT_MARGIN_PX = 12;
+const EXAMPLE_WORD_HINT_VERTICAL_OFFSET_PX = 12;
+const EXAMPLE_WORD_HINT_MIN_ANCHOR_TOP_PX = 156;
+const EXAMPLE_WORD_HINT_ARROW_EDGE_PADDING_PX = 22;
 const ENGLISH_TERM_COLLATOR = new Intl.Collator("en", {
   sensitivity: "base",
   numeric: true,
@@ -90,6 +95,7 @@ const state = {
   practiceSession: createEmptyPracticeSession(),
   importPreviews: createEmptyImportPreviews(),
   notice: null,
+  exampleWordHint: null,
   storageEstimate: null,
   installPromptEvent: null,
   standalone: isStandaloneMode(),
@@ -306,6 +312,194 @@ function clearNotice() {
 
   state.notice = null;
   render();
+}
+
+function formatWordHintPhonetics(word) {
+  if (!word?.phonetics?.length) {
+    return "无音标";
+  }
+
+  return word.phonetics.join("，");
+}
+
+function addExampleWordHintStemCandidates(candidates, stem) {
+  const normalizedStem = normalizeText(stem);
+
+  if (!normalizedStem) {
+    return;
+  }
+
+  candidates.push(normalizedStem);
+  candidates.push(`${normalizedStem}e`);
+
+  if (/([b-df-hj-np-tv-z])\1$/i.test(normalizedStem)) {
+    candidates.push(normalizedStem.slice(0, -1));
+  }
+}
+
+function getExampleWordHintCandidates(token) {
+  const normalizedToken = normalizeText(token)
+    .replace(/^[^a-z0-9]+|[^a-z0-9]+$/gi, "")
+    .replace(/[’]/g, "'");
+
+  const candidates = [normalizedToken];
+
+  if (normalizedToken.endsWith("'s")) {
+    candidates.push(normalizedToken.slice(0, -2));
+  }
+
+  if (normalizedToken.endsWith("ies") && normalizedToken.length > 3) {
+    candidates.push(`${normalizedToken.slice(0, -3)}y`);
+  }
+
+  if (normalizedToken.endsWith("es") && normalizedToken.length > 2) {
+    candidates.push(normalizedToken.slice(0, -2));
+  }
+
+  if (normalizedToken.endsWith("s") && normalizedToken.length > 1) {
+    candidates.push(normalizedToken.slice(0, -1));
+  }
+
+  if (normalizedToken.endsWith("ied") && normalizedToken.length > 3) {
+    candidates.push(`${normalizedToken.slice(0, -3)}y`);
+  }
+
+  if (normalizedToken.endsWith("ed") && normalizedToken.length > 2) {
+    addExampleWordHintStemCandidates(candidates, normalizedToken.slice(0, -2));
+  }
+
+  if (normalizedToken.endsWith("ying") && normalizedToken.length > 4) {
+    candidates.push(`${normalizedToken.slice(0, -4)}ie`);
+  }
+
+  if (normalizedToken.endsWith("ing") && normalizedToken.length > 3) {
+    addExampleWordHintStemCandidates(candidates, normalizedToken.slice(0, -3));
+  }
+
+  if (normalizedToken.endsWith("iest") && normalizedToken.length > 4) {
+    candidates.push(`${normalizedToken.slice(0, -4)}y`);
+  }
+
+  if (normalizedToken.endsWith("est") && normalizedToken.length > 3) {
+    addExampleWordHintStemCandidates(candidates, normalizedToken.slice(0, -3));
+  }
+
+  if (normalizedToken.endsWith("ier") && normalizedToken.length > 3) {
+    candidates.push(`${normalizedToken.slice(0, -3)}y`);
+  }
+
+  if (normalizedToken.endsWith("er") && normalizedToken.length > 2) {
+    addExampleWordHintStemCandidates(candidates, normalizedToken.slice(0, -2));
+  }
+
+  return uniqueStrings(candidates.filter(Boolean));
+}
+
+function findWordByExampleToken(token) {
+  const candidates = getExampleWordHintCandidates(token);
+
+  for (const candidate of candidates) {
+    const matchedWord = state.words.find((word) => normalizeText(word.term) === candidate);
+
+    if (matchedWord) {
+      return matchedWord;
+    }
+  }
+
+  return null;
+}
+
+function openExampleWordHint(token, anchorElement) {
+  const matchedWord = findWordByExampleToken(token);
+
+  if (!matchedWord || !(anchorElement instanceof HTMLElement)) {
+    return;
+  }
+
+  const rect = anchorElement.getBoundingClientRect();
+  const viewportWidth = window.innerWidth || document.documentElement.clientWidth || EXAMPLE_WORD_HINT_CARD_WIDTH_PX;
+  const cardWidth = Math.min(EXAMPLE_WORD_HINT_CARD_WIDTH_PX, viewportWidth - EXAMPLE_WORD_HINT_VIEWPORT_MARGIN_PX * 2);
+  const anchorCenterX = rect.left + rect.width / 2;
+  const cardLeft = Math.min(
+    Math.max(EXAMPLE_WORD_HINT_VIEWPORT_MARGIN_PX, anchorCenterX - cardWidth / 2),
+    viewportWidth - EXAMPLE_WORD_HINT_VIEWPORT_MARGIN_PX - cardWidth,
+  );
+  const cardAnchorTop = Math.max(
+    EXAMPLE_WORD_HINT_MIN_ANCHOR_TOP_PX,
+    rect.top - EXAMPLE_WORD_HINT_VERTICAL_OFFSET_PX,
+  );
+  const arrowLeft = Math.min(
+    Math.max(EXAMPLE_WORD_HINT_ARROW_EDGE_PADDING_PX, anchorCenterX - cardLeft),
+    cardWidth - EXAMPLE_WORD_HINT_ARROW_EDGE_PADDING_PX,
+  );
+
+  state.exampleWordHint = {
+    id: matchedWord.id,
+    term: matchedWord.term,
+    phonetics: [...(matchedWord.phonetics || [])],
+    meaning: matchedWord.meaning,
+    hasWordAudio: Boolean(matchedWord.hasWordAudio),
+    cardLeft,
+    cardAnchorTop,
+    cardWidth,
+    arrowLeft,
+  };
+  render();
+}
+
+function closeExampleWordHint() {
+  if (!state.exampleWordHint) {
+    return;
+  }
+
+  state.exampleWordHint = null;
+  render();
+}
+
+function shouldDismissExampleWordHint(target) {
+  return Boolean(
+    state.exampleWordHint &&
+      target instanceof Element &&
+      target.closest('[data-action="dismiss-example-word-hint"]') &&
+      !target.closest("[data-word-hint-card]"),
+  );
+}
+
+function renderExampleWordHint() {
+  if (!state.exampleWordHint || state.view !== VIEWS.words) {
+    return "";
+  }
+
+  return `
+    <div class="word-hint-overlay" data-action="dismiss-example-word-hint">
+      <div
+        class="word-hint-card"
+        data-word-hint-card
+        role="dialog"
+        aria-modal="true"
+        aria-label="单词提示"
+        style="left:${state.exampleWordHint.cardLeft}px;top:${state.exampleWordHint.cardAnchorTop}px;width:${state.exampleWordHint.cardWidth}px;--word-hint-arrow-left:${state.exampleWordHint.arrowLeft}px;"
+      >
+        <div class="word-hint-card__header">
+          <div class="word-hint-card__title-block">
+            <strong class="word-hint-card__term">${escapeHtml(state.exampleWordHint.term)}</strong>
+            <p class="word-hint-card__phonetic">${escapeHtml(formatWordHintPhonetics(state.exampleWordHint))}</p>
+          </div>
+          <button
+            type="button"
+            class="icon-button icon-button--audio"
+            data-action="play-word-audio"
+            data-word-id="${escapeHtml(state.exampleWordHint.id)}"
+            aria-label="播放单词音频"
+            ${state.exampleWordHint.hasWordAudio ? "" : "disabled"}
+          >
+            <span class="audio-icon" aria-hidden="true"></span>
+          </button>
+        </div>
+        <p class="word-hint-card__meaning">${escapeHtml(state.exampleWordHint.meaning || "暂无释义")}</p>
+      </div>
+    </div>
+  `;
 }
 
 async function runAction(task, successMessage) {
@@ -645,6 +839,20 @@ function renderNotice() {
   `;
 }
 
+function renderBackToTopButton() {
+  return `
+    <button
+      type="button"
+      class="icon-button scroll-top-button"
+      data-action="scroll-to-top"
+      aria-label="回到顶部"
+      title="回到顶部"
+    >
+      <span class="scroll-top-button__icon" aria-hidden="true">⌅</span>
+    </button>
+  `;
+}
+
 function renderView() {
   const categoriesById = getCategoriesById();
   const wordsById = getWordsById();
@@ -747,6 +955,8 @@ function render() {
       <div class="status-pill ${navigator.onLine ? "status-pill--online" : "status-pill--offline"}">${navigator.onLine ? "在线" : "离线"}</div>
     </section>
     ${renderNotice()}
+    ${renderBackToTopButton()}
+    ${renderExampleWordHint()}
     ${renderNavigation()}
     ${renderView()}
   `;
@@ -765,6 +975,23 @@ async function registerServiceWorker() {
     state.serviceWorkerState = "error";
     console.error(error);
   }
+}
+
+function onPointerDown(event) {
+  if (!shouldDismissExampleWordHint(event.target)) {
+    return;
+  }
+
+  event.preventDefault();
+  closeExampleWordHint();
+}
+
+function onScroll() {
+  if (!state.exampleWordHint) {
+    return;
+  }
+
+  closeExampleWordHint();
 }
 
 async function startPracticeSession(selectedCategoryIds, limit, pageSpec = "", favoritesOnly = false) {
@@ -1252,6 +1479,17 @@ async function onSubmit(event) {
 }
 
 async function onClick(event) {
+  const exampleWordToken = event.target.closest("[data-example-word-token]");
+
+  if (exampleWordToken instanceof HTMLElement) {
+    const token = String(exampleWordToken.dataset.exampleWordToken || "").trim();
+
+    if (token) {
+      openExampleWordHint(token, exampleWordToken);
+      return;
+    }
+  }
+
   const trigger = event.target.closest("[data-action]");
 
   if (!trigger) {
@@ -1262,11 +1500,22 @@ async function onClick(event) {
 
   switch (action) {
     case "switch-view":
+      closeExampleWordHint();
       state.view = trigger.dataset.view || VIEWS.words;
       render();
       return;
+    case "scroll-to-top":
+      window.scrollTo({ top: 0, behavior: "smooth" });
+      return;
     case "dismiss-notice":
       clearNotice();
+      return;
+    case "dismiss-example-word-hint":
+      if (!shouldDismissExampleWordHint(event.target)) {
+        return;
+      }
+
+      closeExampleWordHint();
       return;
     case "add-phonetic": {
       const form = trigger.closest("form");
@@ -1542,6 +1791,7 @@ async function initialize() {
 
   window.addEventListener("online", render);
   window.addEventListener("offline", render);
+  window.addEventListener("scroll", onScroll, { passive: true });
   window.addEventListener("resize", () => {
     if (!syncWordListPageSize()) {
       return;
@@ -1551,6 +1801,7 @@ async function initialize() {
   });
 
   appRoot.addEventListener("submit", onSubmit);
+  appRoot.addEventListener("pointerdown", onPointerDown);
   appRoot.addEventListener("click", onClick);
   appRoot.addEventListener("change", onChange);
   appRoot.addEventListener("toggle", onToggle, true);

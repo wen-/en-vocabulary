@@ -118,6 +118,78 @@ textarea:disabled {
   margin: 0;
 }
 
+.example-word-token {
+  border-radius: 8px;
+  padding: 1px 2px;
+  -webkit-touch-callout: none;
+  user-select: none;
+  cursor: pointer;
+}
+
+.word-hint-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 45;
+  background: transparent;
+}
+
+.word-hint-card {
+  position: fixed;
+  display: grid;
+  gap: 14px;
+  padding: 18px;
+  border-radius: 22px;
+  border: 1px solid var(--line);
+  background: #fff;
+  box-shadow: 0 18px 36px rgba(23, 50, 77, 0.18);
+  transform: translateY(-100%);
+}
+
+.word-hint-card::after {
+  content: "";
+  position: absolute;
+  left: var(--word-hint-arrow-left, 50%);
+  bottom: -8px;
+  width: 16px;
+  height: 16px;
+  background: #fff;
+  border-right: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+  transform: translateX(-50%) rotate(45deg);
+}
+
+.word-hint-card__header {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 12px;
+  align-items: start;
+}
+
+.word-hint-card__title-block {
+  min-width: 0;
+}
+
+.word-hint-card__term,
+.word-hint-card__phonetic,
+.word-hint-card__meaning {
+  margin: 0;
+}
+
+.word-hint-card__term {
+  display: block;
+  font-size: 1.15rem;
+}
+
+.word-hint-card__phonetic {
+  margin-top: 6px;
+  color: var(--accent-strong);
+}
+
+.word-hint-card__meaning {
+  color: var(--text);
+  line-height: 1.6;
+}
+
 .example-preview-item__play-button {
   flex: 0 0 auto;
 }
@@ -277,6 +349,23 @@ textarea:disabled {
   background: #f6ecec;
   border-color: #f1e0e1;
   color: var(--error);
+}
+
+.scroll-top-button {
+  position: fixed;
+  right: calc(env(safe-area-inset-right, 0px) + 18px);
+  bottom: calc(env(safe-area-inset-bottom, 0px) + 18px);
+  z-index: 35;
+  width: 44px;
+  height: 44px;
+  border-color: rgba(204, 108, 67, 0.16);
+  background: rgba(255, 255, 255, 0.96);
+  box-shadow: 0 14px 28px rgba(23, 50, 77, 0.14);
+}
+
+.scroll-top-button__icon {
+  font-size: 1.1rem;
+  line-height: 1;
 }
 
 .tab-row {
@@ -476,8 +565,44 @@ textarea:disabled {
   gap: 10px;
 }
 
-.selector-grid--compact {
+.selector-grid--practice {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 8px;
+}
+
+.selector-grid--editor {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.selector-grid--practice .check-chip {
+  min-width: 0;
+  padding: 10px 12px;
+}
+
+.selector-grid--editor .check-chip {
+  min-width: 0;
+  padding: 10px 12px;
+}
+
+.selector-grid--practice .check-chip__content--single-line span,
+.selector-grid--editor .check-chip__content--single-line span,
+.selector-grid--compact .check-chip__content--single-line span {
+  white-space: normal;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+  font-size: 0.8rem;
+  font-weight: 400;
+  line-height: 1.35;
+}
+
+.selector-grid--compact {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.selector-grid--compact .check-chip {
+  min-width: 0;
 }
 
 .check-chip {
@@ -889,6 +1014,13 @@ textarea:disabled {
   min-width: 0;
 }
 
+.item-card__phonetic-row {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+}
+
 .item-card__term-actions {
   display: inline-flex;
   align-items: center;
@@ -905,6 +1037,30 @@ textarea:disabled {
   color: var(--accent-strong);
   font-size: 0.96rem;
   letter-spacing: 0.02em;
+}
+
+.favorite-inline-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  margin: 0;
+  border: none;
+  background: transparent;
+  color: var(--muted-strong);
+  line-height: 1;
+}
+
+.favorite-inline-button--active {
+  color: var(--accent-strong);
+}
+
+.favorite-inline-button .favorite-icon {
+  font-size: 0.95rem;
+}
+
+.favorite-inline-button:disabled {
+  color: var(--muted);
 }
 
 .item-card__meaning {
@@ -1174,6 +1330,16 @@ textarea:disabled {
   }
 
   .selector-grid {
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 12px;
+  }
+
+  .selector-grid--practice {
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 12px;
+  }
+
+  .selector-grid--editor {
     grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
     gap: 12px;
   }

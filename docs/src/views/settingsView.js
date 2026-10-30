@@ -1,4 +1,5 @@
 import { bytesToSize, escapeHtml } from "../services/helpers.js";
+import { renderImportProgress } from "./importProgress.js";
 
 function getInstallStatus(pwaStatus) {
   if (pwaStatus?.standalone) {
@@ -89,7 +90,7 @@ function renderPreviewCard(preview) {
           <strong>${escapeHtml(preview.filename || "未命名文件")}</strong>
           <p class="tiny-meta">${preview.format ? escapeHtml(preview.format.toUpperCase()) : "文件"} · ${bytesToSize(preview.size || 0)}</p>
         </div>
-        <span class="counter-pill">${preview.status === "error" ? "预检失败" : "预检完成"}</span>
+        <span class="counter-pill">${preview.status === "loading" ? "正在预检" : preview.status === "error" ? "预检失败" : "预检完成"}</span>
       </div>
       <div class="import-preview__stats">
         ${stats.map((item) => `<span class="preview-stat">${escapeHtml(item)}</span>`).join("")}
@@ -99,7 +100,7 @@ function renderPreviewCard(preview) {
   `;
 }
 
-export function renderSettingsView({ summary, storageEstimate, pwaStatus, busy, importPreviews, showLibraryExportAction }) {
+export function renderSettingsView({ summary, storageEstimate, pwaStatus, busy, importPreviews, importProgress, showLibraryExportAction }) {
   const usage = storageEstimate?.usage ? bytesToSize(storageEstimate.usage) : "未知";
   const quota = storageEstimate?.quota ? bytesToSize(storageEstimate.quota) : "未知";
   const hasData = summary.words > 0 || summary.categories > 0;
@@ -146,18 +147,18 @@ export function renderSettingsView({ summary, storageEstimate, pwaStatus, busy, 
             <form data-form="import-library" class="form-stack compact-form">
               <label class="field">
                 <span>导入词库 ZIP / JSON</span>
-                <input type="file" name="libraryFile" accept="application/json,.json,application/zip,.zip" ${hasLibraryPreview ? "" : "required"} />
+                <input type="file" name="libraryFile" accept="application/json,.json,application/zip,.zip" ${hasLibraryPreview ? "" : "required"} ${busy ? "disabled" : ""} />
               </label>
               <label class="field">
                 <span>导入模式</span>
-                <select name="importMode">
+                <select name="importMode" ${busy ? "disabled" : ""}>
                   <option value="merge">合并导入，保留现有数据</option>
                   <option value="replace">覆盖词库，保留文章</option>
                 </select>
               </label>
               <label class="field">
                 <span>重复单词策略</span>
-                <select name="duplicateMode">
+                <select name="duplicateMode" ${busy ? "disabled" : ""}>
                   <option value="skip">跳过同名单词，保留现有内容</option>
                   <option value="merge">合并同名单词的音标、释义、例句、分类和音频</option>
                 </select>
@@ -165,6 +166,7 @@ export function renderSettingsView({ summary, storageEstimate, pwaStatus, busy, 
               <div class="form-actions">
                 <button type="submit" class="primary-button" ${busy ? "disabled" : ""}>导入词库</button>
               </div>
+              <div data-import-progress>${renderImportProgress(importProgress)}</div>
               <p class="help-text">词库统一使用 JSON 结构。文本模板使用 library.json，完整词库包使用 ZIP，其中包含 library.json 以及可选的 audio/words 和 audio/examples 目录。JSON 词库适合维护文本数据，ZIP 词库适合同时携带单词音频和例句音频。</p>
               ${renderPreviewCard(importPreviews?.library)}
             </form>

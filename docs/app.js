@@ -30,6 +30,7 @@ import { renderWordsView } from "./src/views/wordsView.js";
 import { renderCategoriesView } from "./src/views/categoriesView.js";
 import { renderPracticeView } from "./src/views/practiceView.js";
 import { renderSettingsView } from "./src/views/settingsView.js";
+import { renderImportProgress } from "./src/views/importProgress.js";
 
 const appRoot = document.querySelector("#app");
 const LIBRARY_EXPORT_REVEAL_HOLD_MS = 5000;
@@ -106,6 +107,7 @@ const state = {
   wordListPagination: createWordListPagination(),
   practiceSession: createEmptyPracticeSession(),
   importPreviews: createEmptyImportPreviews(),
+  importProgress: null,
   showLibraryExportAction: false,
   notice: null,
   exampleWordHint: null,
@@ -551,6 +553,7 @@ async function runAction(task, successMessage) {
     return null;
   } finally {
     state.busy = false;
+    state.importProgress = null;
     render();
   }
 }
@@ -935,6 +938,7 @@ function renderView() {
         busy: state.busy,
         pwaStatus: getPwaStatus(),
         importPreviews: state.importPreviews,
+        importProgress: state.importProgress,
         showLibraryExportAction: state.showLibraryExportAction,
       });
     case VIEWS.words:
@@ -1001,6 +1005,26 @@ function render() {
     ${renderNavigation()}
     ${renderView()}
   `;
+
+  const libraryInput = appRoot.querySelector('input[name="libraryFile"]');
+  const libraryFile = state.importPreviews.library?.file;
+  if (libraryInput && libraryFile) {
+    const transfer = new DataTransfer();
+    transfer.items.add(libraryFile);
+    libraryInput.files = transfer.files;
+  }
+}
+
+let lastImportProgressPaint = 0;
+
+function updateImportProgress(progress) {
+  const previous = state.importProgress;
+  state.importProgress = progress;
+  const now = performance.now();
+  if (previous?.phase === progress.phase && now - lastImportProgressPaint < 100 && progress.completed !== progress.total) return;
+  lastImportProgressPaint = now;
+  const container = appRoot.querySelector("[data-import-progress]");
+  if (container) container.innerHTML = renderImportProgress(progress);
 }
 
 async function registerServiceWorker() {
@@ -1135,11 +1159,13 @@ async function previewImportFile(file) {
     return;
   }
 
+  state.importPreviews.library = createImportPreview(file, {}, { status: "loading" });
   state.busy = true;
+  state.importProgress = { phase: "reading", completed: 0, total: 0 };
   render();
 
   try {
-    const summary = await inspectLibraryImportFile(file);
+    const summary = await inspectLibraryImportFile(file, { onProgress: updateImportProgress });
 
     if (summary.requiresZipForAudio) {
       state.importPreviews.library = createImportPreview(file, summary, {
@@ -1157,6 +1183,7 @@ async function previewImportFile(file) {
     });
   } finally {
     state.busy = false;
+    state.importProgress = null;
     render();
   }
 }
@@ -1327,7 +1354,7 @@ async function handleImportLibrary(form) {
 
   const inspection = preview?.status === "ready" && matchesPreviewFile(preview, file)
     ? preview
-    : await inspectLibraryImportFile(file);
+    : await inspectLibraryImportFile(file, { onProgress: updateImportProgress });
   const confirmed = window.confirm(
     importMode === "replace"
       ? `将先清空当前本地单词、分类、音频和练习记录，再从${inspection.format === "zip" ? " ZIP 词库包" : " JSON 词库"}导入 ${inspection.words} 个单词、${inspection.examples} 条例句和 ${inspection.categories} 个分类${inspection.audioRefs ? `，并引用 ${inspection.audioRefs} 个音频文件` : ""}。\n该操作不可恢复，是否继续？`
@@ -1339,6 +1366,7 @@ async function handleImportLibrary(form) {
   }
 
   if (importMode === "replace") {
+    updateImportProgress({ phase: "clearing", completed: 0, total: 0 });
     audioPlayer.stop();
     await clearVocabularyData();
     resetPracticeSession();
@@ -1346,6 +1374,7 @@ async function handleImportLibrary(form) {
 
   const summary = await importLibraryFromFile(file, {
     duplicateMode: importMode === "replace" ? "merge" : duplicateMode,
+    onProgress: updateImportProgress,
   });
   state.wordDraft = createEmptyWordDraft();
   state.categoryDraft = createEmptyCategoryDraft();
@@ -1357,6 +1386,7 @@ async function handleImportLibrary(form) {
 }
 
 async function onChange(event) {
+  if (state.busy) return;
   const target = event.target;
 
   if (!(target instanceof HTMLInputElement) || target.type !== "file") {
@@ -1540,6 +1570,7 @@ function populateCategoryDraft(categoryId) {
 
 async function onSubmit(event) {
   event.preventDefault();
+  if (state.busy) return;
   const form = event.target.closest("form");
 
   if (!form) {

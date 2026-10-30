@@ -367,6 +367,9 @@ function findLibraryJsonEntry(zip) {
 
 async function parseLibraryFile(file, options = {}) {
   const includeAudio = Boolean(options.includeAudio);
+  const onProgress = options.onProgress;
+  onProgress?.({ phase: "reading", completed: 0, total: 0 });
+  if (onProgress) await new Promise((resolve) => setTimeout(resolve, 0));
 
   if (!isZipFile(file)) {
     const payload = sanitizeLibraryPayload(JSON.parse(await file.text()));
@@ -394,6 +397,9 @@ async function parseLibraryFile(file, options = {}) {
   }
 
   const hydratedWords = [];
+  const audioTotal = countAudioReferences(payload);
+  let audioCompleted = 0;
+  onProgress?.({ phase: "audio", completed: 0, total: audioTotal });
 
   for (const word of payload.words) {
     const hydratedWord = {
@@ -409,6 +415,7 @@ async function parseLibraryFile(file, options = {}) {
       hydratedWord.audioName = resolved.path.split("/").pop() || `${word.term}.bin`;
       hydratedWord.audioType = blob.type || inferAudioMimeType(hydratedWord.audioName);
       hydratedWord.audioSize = blob.size;
+      onProgress?.({ phase: "audio", completed: ++audioCompleted, total: audioTotal });
     }
 
     for (const example of word.examples) {
@@ -422,6 +429,7 @@ async function parseLibraryFile(file, options = {}) {
         hydratedExample.audioName = resolved.path.split("/").pop() || `${word.term}-example.bin`;
         hydratedExample.audioType = blob.type || inferAudioMimeType(hydratedExample.audioName);
         hydratedExample.audioSize = blob.size;
+        onProgress?.({ phase: "audio", completed: ++audioCompleted, total: audioTotal });
       }
 
       hydratedWord.examples.push(hydratedExample);
@@ -519,6 +527,8 @@ function countImportedAudioBlobs(word) {
 
 async function importLibraryFromPayload(payload, options = {}) {
   const duplicateMode = options.duplicateMode === "skip" ? "skip" : "merge";
+  const onProgress = options.onProgress;
+  onProgress?.({ phase: "writing", completed: 0, total: payload.words.length });
 
   return runTransaction([STORES.categories, STORES.words, STORES.audio], "readwrite", async ({ categories, words, audio }) => {
     const now = Date.now();
@@ -572,7 +582,9 @@ async function importLibraryFromPayload(payload, options = {}) {
       await ensureCategory(categorySpec);
     }
 
+    let completed = 0;
     for (const importedWord of payload.words) {
+      onProgress?.({ phase: "writing", completed: completed++, total: payload.words.length });
       const normalizedTerm = normalizeText(importedWord.term);
       const existingWord = wordsByTerm.get(normalizedTerm);
 
@@ -749,6 +761,8 @@ async function importLibraryFromPayload(payload, options = {}) {
       }
     }
 
+    onProgress?.({ phase: "writing", completed: payload.words.length, total: payload.words.length });
+    onProgress?.({ phase: "committing", completed: 0, total: 0 });
     return summary;
   });
 }
@@ -837,8 +851,8 @@ export async function createLibraryPackageZipBlob() {
   });
 }
 
-export async function inspectLibraryImportFile(file) {
-  const { format, payload } = await parseLibraryFile(file, { includeAudio: false });
+export async function inspectLibraryImportFile(file, options = {}) {
+  const { format, payload } = await parseLibraryFile(file, { includeAudio: false, onProgress: options.onProgress });
   const audioRefs = countAudioReferences(payload);
 
   return {
@@ -852,8 +866,10 @@ export async function inspectLibraryImportFile(file) {
 }
 
 export async function importLibraryFromFile(file, options = {}) {
-  const { payload } = await parseLibraryFile(file, { includeAudio: true });
-  return importLibraryFromPayload(payload, options);
+  const { payload } = await parseLibraryFile(file, { includeAudio: true, onProgress: options.onProgress });
+  const summary = await importLibraryFromPayload(payload, options);
+  options.onProgress?.({ phase: "refreshing", completed: 0, total: 0 });
+  return summary;
 }
 
 export async function clearAllData() {

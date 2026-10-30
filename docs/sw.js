@@ -1,4 +1,4 @@
-const CACHE_NAME = "english-learning-shell-v28";
+const CACHE_NAME = "english-learning-shell-v34";
 
 const APP_ASSETS = [
   "./",
@@ -28,6 +28,7 @@ const APP_ASSETS = [
   "./src/views/categoriesView.js",
   "./src/views/practiceView.js",
   "./src/views/settingsView.js",
+  "./src/views/importProgress.js",
   "./assets/icons/icon.svg",
   "./assets/icons/icon-maskable.svg",
   "./assets/icons/icon-maskable-192.png",

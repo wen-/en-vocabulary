@@ -51,15 +51,15 @@ export function renderArticlesView({ articles, selectedId, section = "list", bus
         </div>
       ` : article ? `
         <div class="section-heading"><h2>文章</h2></div>
-        <div class="form-actions">
-          <button class="ghost-button" data-action="article-back">返回标题列表</button>
-          <button class="ghost-button" data-action="article-export-one" data-article-id="${escapeHtml(article.id)}" ${busy ? "disabled" : ""}>导出这篇文章 ZIP</button>
-          <button class="danger-button" data-action="article-delete" data-article-id="${escapeHtml(article.id)}" ${busy ? "disabled" : ""}>删除文章</button>
+        <div class="form-actions form-actions--triple-mobile">
+          <button class="ghost-button" data-action="article-back">返回</button>
+          <button class="ghost-button" data-action="article-export-one" data-article-id="${escapeHtml(article.id)}" ${busy ? "disabled" : ""}>导出</button>
+          <button class="danger-button" data-action="article-delete" data-article-id="${escapeHtml(article.id)}" ${busy ? "disabled" : ""}>删除</button>
         </div>
         <h3>${escapeHtml(article.title)}</h3>
-        <div class="form-actions">
-          <button class="primary-button" data-action="article-play-all" ${article.sentences.some((s) => s.hasAudio) ? "" : "disabled"}>连续播放英文</button>
-          <button class="ghost-button" data-action="article-stop">停止播放</button>
+        <div class="form-actions form-actions--inline-mobile">
+          <button class="primary-button" data-action="article-play-all" ${article.sentences.some((s) => s.hasAudio) ? "" : "disabled"}>连续播放</button>
+          <button class="ghost-button" data-action="article-stop">停止</button>
         </div>
         <p class="help-text" data-article-playback-status role="status">${playback.ownerId === article.id && playback.status === "playing" ? "正在播放英文" : "未播放。有音频的句子按顺序播放，无音频的句子跳过。"}</p>
         <div class="article-sentences">

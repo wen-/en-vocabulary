@@ -1,0 +1,18 @@
+{"items":[
+{"article":97,"segment":1,"ok":true},
+{"article":97,"segment":2,"ok":true},
+{"article":97,"segment":3,"ok":true},
+{"article":97,"segment":4,"zh_starts":["● 适度运动","如果你知道当","比如走到同事","经常锻炼的"],"note":"Chinese sentence Z1 translates both E1 and E2; cut at 比如走到同事."},
+{"article":97,"segment":5,"ok":true},
+{"article":97,"segment":6,"ok":true},
+{"article":98,"segment":1,"ok":true,"zh_fixed":{"0":{"text":"在商务活动中，人们不得不亲自与各种各样的人打交道。","why":"原译文漏译 deal with（打交道），句子不完整。"}}},
+{"article":98,"segment":2,"en_groups":[[0],[1,2,3]],"zh_starts":["与他人的关系","例如，在与大公司"],"note":"The script split one English sentence at the closing quotation marks (E1-E3); Chinese is one sentence also split at the comma after the quote, so both are merged into one piece."},
+{"article":98,"segment":3,"ok":true},
+{"article":99,"segment":1,"ok":true},
+{"article":99,"segment":2,"ok":true},
+{"article":99,"segment":3,"ok":true,"zh_fixed":{"1":{"text":"项目还教授美国经济和世界经济知识以及商务运作方式。","why":"原译文漏译 and（以及），“知识商务运作方式”连在一起不通顺，与英文 economies and business operations 不符。"}}},
+{"article":100,"segment":1,"ok":true},
+{"article":100,"segment":2,"ok":true},
+{"article":100,"segment":3,"en_groups":[[0],[1],[2],[3,4,5,6,7],[8]],"zh_starts":["第二类是","有时，某种","也许任务的","主管需要回答","要让员工知"],"note":"English E3-E7 (What? Where? How? Why? and When?) were split by the script; they are one sentence translated by Z3."},
+{"article":100,"segment":4,"ok":true}
+]}

@@ -3,7 +3,7 @@ import { escapeHtml, renderAudioIcon } from "../services/helpers.js";
 
 const EXAMPLE_WORD_TOKEN_PATTERN = /[A-Za-z]+(?:[\-'][A-Za-z]+)*/;
 
-function renderExampleEnglishText(text) {
+export function renderExampleEnglishText(text) {
   return String(text ?? "")
     .split(new RegExp(`(${EXAMPLE_WORD_TOKEN_PATTERN.source})`, "g"))
     .filter((part) => part !== "")
@@ -301,14 +301,9 @@ function renderExampleEditorRows(draft, busy) {
 }
 
 export function renderWordsView({ words, pagination, categories, categoriesById, filters, isFilterOpen, draft, isEditorOpen, busy }) {
-  const title = draft.id ? "编辑单词" : "添加陌生单词";
+  const title = draft.id ? "编辑单词" : "添加新单词";
   const submitLabel = draft.id ? "保存" : "添加";
-  const shouldOpenEditor = Boolean(isEditorOpen);
-  const editorToggleLabel = draft.id ? "编辑中" : shouldOpenEditor ? "收起" : "展开";
-  const editorToolbarActionLabel = draft.id ? "取消编辑" : "清空表单";
-  const editorToolbarAction = draft.id ? "cancel-word-edit" : "reset-word-draft";
-  const editorFooterActionLabel = draft.id ? "取消" : "收起";
-  const editorFooterAction = draft.id ? "cancel-word-edit" : "collapse-word-editor";
+  const editorCloseAction = draft.id ? "cancel-word-edit" : "collapse-word-editor";
   const selectedFilterCount = (filters.categoryIds || []).length;
   const filterSummaryParts = [
     selectedFilterCount ? `已选 ${selectedFilterCount} 个分类` : "",
@@ -316,24 +311,22 @@ export function renderWordsView({ words, pagination, categories, categoriesById,
   ].filter(Boolean);
   const phonetics = draft.phonetics?.length ? draft.phonetics : [""];
 
-  return `
+  if (isEditorOpen) {
+    return `
     <section class="view-stack">
-      <div class="section-grid section-grid--wide">
         <section class="panel">
           <div class="word-editor-scroll-anchor" data-word-editor-scroll-anchor></div>
-          <details class="disclosure-panel" data-ui="word-editor-disclosure" ${shouldOpenEditor ? "open" : ""}>
-            <summary class="disclosure-toggle">
-              <div>
-                <p class="eyebrow">Words</p>
-                <h2>${title}</h2>
-                <p class="tiny-meta">${draft.id ? "正在编辑已有词条" : "点击后展开录入单词、音标、例句和音频。"}</p>
-              </div>
-              <span class="counter-pill counter-pill--toggle">${editorToggleLabel}</span>
-            </summary>
-            <div class="disclosure-panel__body">
-              <div class="form-actions form-actions--toolbar">
-                <button type="button" class="ghost-button" data-action="${editorToolbarAction}" ${busy ? "disabled" : ""}>${editorToolbarActionLabel}</button>
-              </div>
+          <div class="section-heading section-heading--inline-mobile">
+            <div>
+              <p class="eyebrow">Words</p>
+              <h2>${title}</h2>
+            </div>
+            <button type="button" class="ghost-button" data-action="${editorCloseAction}" ${busy ? "disabled" : ""}>关闭</button>
+          </div>
+          ${draft.id ? "" : `
+          <div class="form-actions form-actions--toolbar">
+            <button type="button" class="ghost-button" data-action="reset-word-draft" ${busy ? "disabled" : ""}>清空表单</button>
+          </div>`}
               <form data-form="word-editor" class="form-stack">
                 <input type="hidden" name="id" value="${escapeHtml(draft.id || "")}" />
                 <label class="field">
@@ -377,14 +370,21 @@ export function renderWordsView({ words, pagination, categories, categoriesById,
                   ${renderCategorySelector(categories, draft.categoryIds || [], "categoryId", { variant: "editor" })}
                 </div>
                 <div class="form-actions form-actions--triple-mobile">
-                  <button type="button" class="ghost-button" data-action="${editorFooterAction}" ${busy ? "disabled" : ""}>${editorFooterActionLabel}</button>
+                  <button type="button" class="ghost-button" data-action="${editorCloseAction}" ${busy ? "disabled" : ""}>${draft.id ? "取消" : "关闭"}</button>
                   <button type="button" class="ghost-button" data-action="play-word-audio" data-word-id="${escapeHtml(draft.id || "")}" ${draft.id && draft.hasWordAudio ? "" : "disabled"}>播放</button>
                   <button type="submit" class="primary-button" ${busy ? "disabled" : ""}>${submitLabel}</button>
                 </div>
               </form>
-            </div>
-          </details>
         </section>
+    </section>
+  `;
+  }
+
+  return `
+    <section class="view-stack">
+        <div class="form-actions">
+          <button type="button" class="primary-button" data-action="open-word-editor" ${busy ? "disabled" : ""}>新增</button>
+        </div>
 
         <section class="panel">
           <div class="section-heading section-heading--inline-mobile">
@@ -430,7 +430,6 @@ export function renderWordsView({ words, pagination, categories, categoriesById,
           ${renderWordCards(words, categoriesById, categories, busy)}
           ${renderWordPagination(pagination, busy)}
         </section>
-      </div>
     </section>
   `;
 }

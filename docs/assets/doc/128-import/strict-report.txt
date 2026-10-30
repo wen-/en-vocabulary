@@ -1,0 +1,9 @@
+complete: True
+articles: 128
+sentence pairs: 2308
+undecided paragraph segments: 0
+decision errors: 0
+English pieces without Chinese: 0
+corrected or supplied Chinese pieces: 110
+stray decisions: 0
+decorative fragments left out: 6

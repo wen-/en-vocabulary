@@ -1,0 +1,16 @@
+{"items":[
+{"article":109,"segment":1,"ok":true},
+{"article":109,"segment":4,"ok":true},
+{"article":109,"segment":6,"ok":true,"note":"English has a line break between the two sentences; Chinese is on one line. Pairing is 1:1."},
+{"article":109,"segment":8,"ok":true},
+{"article":109,"segment":9,"ok":true},
+{"article":110,"segment":1,"ok":true,"zh_fixed":{"1":{"text":"从一台电脑到一家工厂，你公司拥有的每样东西都视同资产。","why":"英文是 every single thing（每样东西），原中文“每个零件”是错译。"}}},
+{"article":110,"segment":2,"en_starts":["Assets can be","Some assets are physical","Others are legally","Still others","No matter what form"],"zh_starts":["资产分成不同","有些资产是实物","有些是具有","还有一些更多","无论何种形式"],"zh_fixed":{"2":{"text":"有些是具有法律约束力的承诺，如应收账款、他人所欠公司的款项。","why":"英文是 the money owed to your company（别人欠公司的钱），原中文“公司所拥有的款项”意思不符。"}},"note":"The script left 'Assets can be in different forms. Some assets are physical...' as one English sentence; re-cut the English into five pieces."},
+{"article":110,"segment":3,"ok":true},
+{"article":110,"segment":4,"zh_starts":["不过，资产","还是公司籍以","没有资产，就","例如做产品","这也同样","至少，你需","服务型公司","资产对任何"],"note":"Chinese Z0 translates both E0 and E1; cut at 还是公司籍以."},
+{"article":111,"segment":1,"zh_starts":["国际贸易是国家","为这些国家","在国际市场上","服务也可以","在全球市场上"],"note":"Chinese Z0 translates both E0 and E1; cut at 为这些国家."},
+{"article":111,"segment":2,"ok":true},
+{"article":111,"segment":3,"ok":true},
+{"article":112,"segment":1,"ok":true},
+{"article":112,"segment":2,"ok":true}
+]}

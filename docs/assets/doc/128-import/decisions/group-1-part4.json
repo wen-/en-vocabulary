@@ -1,0 +1,15 @@
+{"items":[
+{"article":14,"segment":1,"ok":true},
+{"article":14,"segment":2,"ok":true},
+{"article":14,"segment":3,"zh_starts":["对于中小学生","试想","不用再背","你所需要","也不用再买"],"note":"Chinese Z1 translates 'Think of it.' and 'No more carrying heavy backpacks...' together; cut at the comma."},
+{"article":14,"segment":4,"ok":true},
+{"article":14,"segment":5,"ok":true},
+{"article":15,"segment":1,"ok":true},
+{"article":15,"segment":2,"ok":true},
+{"article":15,"segment":3,"en_starts":["Lifelong learning is both","and the boundaries"],"zh_starts":["终身学习既是","同时，面授"],"note":"One English sentence with a semicolon; Chinese is two sentences. English cut at the semicolon to match."},
+{"article":15,"segment":4,"ok":true},
+{"article":16,"segment":1,"ok":true},
+{"article":16,"segment":2,"ok":true},
+{"article":16,"segment":3,"ok":true},
+{"article":16,"segment":5,"ok":true}
+]}

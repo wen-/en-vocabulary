@@ -1,0 +1,16 @@
+{"items":[
+{"article":46,"segment":2,"ok":true},
+{"article":46,"segment":3,"en_starts":["Another important","He strongly believed","In Deming’s own words","He believed that strong"],"zh_starts":["另一个戴明","他深信工人","用戴明的原话","他坚信强有力"],"note":"Script split the English after 'manage.' and put the closing quote mark at the start of the next sentence; re-cut so the quote stays with the quoted sentence."},
+{"article":46,"segment":4,"zh_starts":["最早实践戴明","所有这些得以","1970年代晚期"],"zh_fixed":{"0":{"text":"如果说强有力的领导是质量环境中对管理者的要求，那么授权就是戴明体系中对工人的关键理念。","why":"原中文是 A46 S5 英文（日本人最早实践十四要点）的译文，与本句英文无关，属错位；按英文重译。"},"1":{"text":"加强教育和培训是触达员工、让他们相信自己更多地参与工作过程是提高质量的重要组成部分的关键因素。","why":"同上，原中文属 A46 S5 的英文，按英文重译。"},"2":{"text":"如果要建立质量型工作场所，参与、投入和团队合作被视为绝对“必不可少”的条件。","why":"同上，原中文属 A46 S5 的英文，按英文重译。"}},"note":"SOURCE MISALIGNMENT: the Chinese of this paragraph translates A46 S5's English, not these three English sentences. Cut only to satisfy the assembler; all pieces replaced with new translations."},
+{"article":46,"segment":5,"zh_starts":["由于威廉","他的“十四要点","当战后世界","它会在产品","统计质量控制"],"zh_fixed":{"0":{"text":"最早实践戴明十四要点的是日本人，并且他们取得了巨大的成功。","why":"原中文是 A46 S2 英文的重复译文（质量控制历史），与本句英文无关；改用 A46 S4 段中原有的对应译文。"},"1":{"text":"举一个例子，一个日本工厂在一年内将产量翻了一番，并且下一年在不增加工作时间的情况下将获得额外25%的产能增加。","why":"同上，改用 A46 S4 段中原有的对应译文。"},"2":{"text":"所有这些得以实现不过是由于提高了质量而已。","why":"同上，改用 A46 S4 段中原有的对应译文。"},"3":{"text":"1970年代晚期美国的制造业工厂才意识到质量控制是一个重大问题。","why":"同上，改用 A46 S4 段中原有的对应译文。"},"4":{"text":"在那时，像本田和索尼这样的日本公司已经占领了大部分的美国消费者市场，而大多数美国公司直到1990年代才开始实行质量控制。","why":"同上，改用 A46 S4 段中原有的对应译文。"}},"note":"SOURCE MISALIGNMENT: Chinese here duplicates the translation of A46 S2; the real translation of this English sits in A46 S4's Chinese."},
+{"article":47,"segment":1,"ok":true},
+{"article":47,"segment":2,"ok":true},
+{"article":47,"segment":3,"en_groups":[[0,1],[2],[3],[4]],"zh_starts":["2014年9月2日","“世界越早","我们知道","现在已经"],"note":"Script split the English wrongly at the abbreviation 'Sept.'; merged back."},
+{"article":47,"segment":4,"zh_starts":["美国疾病预防"],"note":"One long English sentence; Chinese has two sentences (second one translates the 'activated at Level 1' clause); kept as one piece."},
+{"article":47,"segment":6,"ok":true},
+{"article":48,"segment":1,"ok":true},
+{"article":48,"segment":2,"ok":true},
+{"article":48,"segment":5,"ok":true},
+{"article":48,"segment":10,"zh_starts":["•颁布具体","这里有一个应急"]},
+{"article":48,"segment":12,"zh_starts":["•一年至少",null],"zh_fixed":{"1":{"text":"保存此类演练的记录。","why":"源文本没有这句英文 'Keep records of such drills.' 的中文，按英文补译。"}}}
+]}

@@ -1,0 +1,22 @@
+{"items":[
+{"article":61,"segment":1,"ok":true},
+{"article":61,"segment":2,"zh_starts":["任何企业的","组织文化规范","企业文化指的","是企业非常珍惜","体现企业文化","大胆创新","从这七个","这一画面"],"note":"Chinese Z2 translates E2+E3 (cut at the comma before 是企业非常珍惜); Z3 translates E4+E5 (cut at the colon)."},
+{"article":61,"segment":3,"zh_starts":["企业文化具备","第一，","第二，","第三，","第四，","最后，文化"],"note":"Chinese Z1 packs E1-E4 (First to Fourth) into one semicolon-separated sentence; cut at the semicolons."},
+{"article":61,"segment":4,"ok":true},
+{"article":62,"segment":1,"ok":true,"zh_fixed":{"1":{"text":"积极的企业文化提升员工满意度，员工满意度越高，工作就越出色；工作越出色，客户成果就越好；客户成果越好，服务质量就越好。","why":"Original renders 'improved client outcomes' as 顾客就越多 (more customers), which is not what the English says."}}},
+{"article":62,"segment":2,"ok":true},
+{"article":62,"segment":4,"ok":true},
+{"article":62,"segment":6,"ok":true},
+{"article":62,"segment":7,"ok":true},
+{"article":62,"segment":8,"ok":true},
+{"article":62,"segment":9,"ok":true},
+{"article":63,"segment":1,"ok":true},
+{"article":63,"segment":2,"ok":true},
+{"article":63,"segment":3,"ok":true},
+{"article":63,"segment":4,"ok":true},
+{"article":64,"segment":1,"ok":true},
+{"article":64,"segment":2,"ok":true},
+{"article":64,"segment":3,"ok":true,"zh_fixed":{"5":{"text":"对于3M而言，这就是便利贴。","why":"Original 这种企业文化就是自己的身份标签 does not translate 'it was the Post-it note'; the English names the Post-it note as the blockbuster product."}}},
+{"article":64,"segment":4,"ok":true},
+{"article":64,"segment":5,"ok":true}
+]}

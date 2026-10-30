@@ -1,0 +1,16 @@
+{"items":[
+{"article":10,"segment":2,"ok":true},
+{"article":10,"segment":3,"ok":true},
+{"article":10,"segment":4,"ok":true},
+{"article":11,"segment":1,"ok":true},
+{"article":11,"segment":2,"ok":true},
+{"article":11,"segment":3,"ok":true},
+{"article":11,"segment":4,"ok":true},
+{"article":11,"segment":5,"ok":true},
+{"article":12,"segment":1,"zh_starts":["世界上以英语","英语作为第二","把英语当成","英语在75个国家","英语全球化","英语是国际交流","令人惊讶的是"],"zh_fixed":{"3":{"text":"英语在75个国家占据一定官方地位或特别地位，总人口超过20亿。","why":"English says 'a total population of over 2 billion'; the source '约占20亿人口' says 'about' and changes the meaning of 'over'."},"5":{"text":"英语是国际交流、商务、旅游、教育、科技、电脑技术、媒体和网络等方面通用语言。","why":"The source omits 'education' from the English list; inserted 教育."}},"note":"Chinese Z4 translates E4 and E5 together; cut at the comma."},
+{"article":12,"segment":2,"en_groups":[[0],[1],[2],[3,4],[5]],"zh_starts":["19世纪的英国","15世纪以来","他们将英语","在上个世纪","好莱坞蓬勃"],"note":"The script split the English wrongly at the abbreviation 'U.S.A.'; E3 and E4 merged back into one sentence."},
+{"article":13,"segment":1,"ok":true},
+{"article":13,"segment":2,"ok":true},
+{"article":13,"segment":4,"ok":true},
+{"article":13,"segment":5,"ok":true}
+]}

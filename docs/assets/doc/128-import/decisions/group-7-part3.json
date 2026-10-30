@@ -1,0 +1,17 @@
+{"items":[
+{"article":105,"segment":2,"ok":true},
+{"article":105,"segment":3,"ok":true},
+{"article":105,"segment":4,"ok":true,"zh_fixed":{"0":{"text":"C．运输：产品从卖方到买方的物资移动就是运输。","why":"原译文把方向译反了：英文是 from the seller to the buyer（从卖方到买方），原中文写成“从买方到卖方”。"}}},
+{"article":105,"segment":5,"ok":true},
+{"article":105,"segment":6,"ok":true},
+{"article":105,"segment":8,"ok":true},
+{"article":105,"segment":9,"ok":true,"note":"English heading says 'Selling Risk' while the Chinese 风险承担 translates 'Taking/Bearing Risk'; English body says 'bearing the uncertainties', so the English heading looks like a source typo. Left unchanged."},
+{"article":106,"segment":1,"ok":true},
+{"article":106,"segment":2,"ok":true,"zh_fixed":{"1":{"text":"虽然电话推销能有效地利用时间，但是面对面交流却更加有效。","why":"英文是 much more effective（更有效），原中文写成“更加让人印象深刻”，意思不符。"}}},
+{"article":106,"segment":3,"ok":true},
+{"article":107,"segment":1,"ok":true},
+{"article":107,"segment":2,"zh_starts":["管理者必须清楚","这就要求信息","信息技术在供应","例如，个人电","管理者可以先"],"note":"Chinese Z0 translates both E0 and E1; cut at 这就要求信息."},
+{"article":107,"segment":3,"ok":true},
+{"article":108,"segment":1,"ok":true,"zh_fixed":{"0":{"text":"物流指的是物品从产品生产地向消费点的实物流转过程，其中包括运输、仓储、装卸、物品搬运、包装、配送加工、配送以及信息管理。","why":"原译文漏译 distribution processing（配送加工），本文 S2 将其译为“配送加工”，这里补上。"}}},
+{"article":108,"segment":2,"ok":true}
+]}

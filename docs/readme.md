@@ -1,0 +1,119 @@
+运行本地服务（80端口属于特权端口，需要管理员权限）：
+python3 -m http.server 8000 --bind 127.0.0.1
+
+## 导入和阅读文章
+
+1. 打开“文章”。默认显示“文章列表”，导入表单不会占用列表顶部空间。
+2. 切换到“导入文章”板块，点击“下载文章 ZIP 模板（含音频）”。模板包含原创短句、中译和可播放的英文 WAV。
+3. 按模板准备 ZIP，选择文件，再点击“导入文章”。同名文章另存为新文章，不覆盖旧文章。导入成功后自动返回列表；失败时保留已选文件，修正问题后可重新选择文件并重试。切换子板块不会丢失已选文件。
+4. 点击标题进入详情。英文下方显示对应中文。点击英文后的扬声器播放该句；未导入音频的按钮禁用。
+5. 点击“连续播放英文”按顺序播放有音频的句子。无音频的句子跳过。点击“停止播放”结束播放。
+
+点击英文单词可查看本地词库中的释义、音标和单词音频。词库中没有的词显示“未收录”，不会联网查询。中文没有音频。
+返回列表、打开另一篇文章、切换栏目、删除文章或播放词库音频都会停止当前文章播放。播放出错会停止连续播放并显示错误。
+
+## 文章 ZIP 格式
+
+ZIP 根目录包含 UTF-8 的 `articles.json`。`audio` 是可选字段，指定 ZIP 中 `audio/` 下的文件路径。没有音频时省略该字段。
+
+```json
+{
+	"schemaVersion": 1,
+	"articles": [
+		{
+			"title": "A Quiet Morning",
+			"sentences": [
+				{
+					"en": "A new day begins.",
+					"zh": "新的一天开始了。",
+					"audio": "audio/morning.wav"
+				}
+			]
+		}
+	]
+}
+```
+
+标题和每句中英文均不能为空。句子按 JSON 数组顺序显示和播放。路径区分大小写，不允许绝对路径、网址或 `..`。支持 WAV、MP3、OGG 和 M4A，实际解码支持由浏览器决定。PCM WAV 的兼容性最好。
+
+每包最多 200 篇文章、5000 个句子、2000 个 ZIP 条目。ZIP 和解压后总大小均不超过 100 MB。`articles.json` 不超过 1 MB，每个音频不超过 4 MB 且不超过 5 分钟。标题最多 300 个字符，每句英文和中文分别最多 10000 个字符。
+导入会先校验全部文本、路径及引用音频，包括浏览器解码。格式错误、音频缺失或损坏时显示错误，不写入任何文章。校验需要支持 Web Audio 的浏览器。
+
+## 文章持久化和备份
+
+文章和音频保存在独立的 IndexedDB 存储中。数据库升级保留原有单词、分类、练习和音频。首次在线加载并完成离线缓存后，文章阅读、播放、导入、导出和模板下载均可离线使用。
+
+在“文章列表”点击“导出全部文章 ZIP”导出文章及其音频。详情页可逐篇导出。超过单包限制时逐篇导出。重新导入备份会创建新文章，不会按标题去重。
+词库页的导出仅包含词汇，不包含文章或练习记录。覆盖词库保留文章。清空全部本地数据会停止播放并删除文章及其音频。删除文章会同时删除该文章的音频。
+浏览器清理站点数据会删除本机内容，定期下载词库和文章两种备份。
+
+## 运行文章测试
+
+在 `docs` 目录运行，无需安装依赖。
+
+```sh
+node --test tests/articles.test.mjs
+```
+
+测试覆盖格式校验、ZIP 音频完整性、导出再导入、共享词语渲染、缓存升级，以及连续播放的顺序、取消、资源释放和错误处理。浏览器内的 IndexedDB 升级、实际音频解码及离线缓存仍需浏览器验证。
+
+## 导入128篇文章的补充词库
+
+词库数据位于 `assets/doc/vocabulary/library.json`。按 `assets/doc/128-import/articles-strict.json` 中128篇文章的正文和英文标题匹配，原词库5130条，新增3339条，补齐后共8469条。复数、时态、缩写和专名单独收录，不合并到原形。
+
+新增内容包含正文缺失词形3309条、标题额外缺失词形18条，以及页面分词器拆分弯引号缩写后产生的12个额外片段。片段、原文连写和断词均在释义中注明，不作为标准拼写推荐。补齐时原词条、收藏状态和音频保持不变；后续释义去重只修改 `meaning`，不改动音标、例句、音频、分类或收藏。新增词条归入“128篇文章补充”，默认不收藏。
+
+每条补充数据包含中文释义、参考音标、文章原句及中译和单词音频。只出现在标题中的词使用原英文标题及中译作为例句。例句音频优先复用现有文章包；标题音频和单词音频使用 macOS 的 Samantha 语音合成。连写词和缩写片段的音频可采用释义中注明的分词形式或展开形式，不是人工录音。
+
+普通词汇的释义和音标取自 ECDICT；部分读音取自 CMUdict 并转换为不带重音标记的宽式音标。规则词形的读音可由原形推导；专名和复合词的人工标注读音仅供参考。来源许可位于 `assets/doc/vocabulary/dictionary-licenses.txt`。
+
+在“词库”的词库导入功能选择项目上级目录 `单词导入包/词库-128篇文章缺失补充.zip`，使用合并导入可保留本机已有词汇和音频。首次导入完整词库可选择同目录的 `词库-完整词库含文章补充.zip`。单独导入 JSON 不包含音频。修改磁盘上的词库不会自动更新浏览器已经保存的 IndexedDB 数据。
+
+逐词缺失清单位于 `assets/doc/vocabulary/article-vocabulary-missing.tsv`，包含出现次数、文章数量、释义、音标和首次出现的文章。`article-vocabulary-report.json` 记录补齐后的覆盖统计、原词条摘要及新增音频校验值。
+
+## 复查或重新生成补充词库
+
+在 `docs` 目录运行以下命令。验证和打包无需安装 Python 依赖。
+
+```sh
+python3 scripts/sync_article_vocabulary.py verify
+python3 scripts/sync_article_vocabulary.py verify --decode-audio
+python3 -m unittest discover -s tests -p 'test_article_vocabulary.py' -v
+python3 scripts/sync_article_vocabulary.py package
+```
+
+`--decode-audio` 使用 macOS 的 `afconvert` 逐个解码新增音频。检查失败时命令退出，不报告覆盖成功。打包命令生成补充词库和完整词库两种 ZIP，均包含音频和词典许可。
+
+重新合成音频需要 macOS 的 `say`、Samantha 语音及 `lameenc`。先安装缺失的编码依赖，再运行构建；构建复用已存在的音频，重复运行不重复添加词条。
+
+```sh
+python3 -m venv .venv-vocabulary
+.venv-vocabulary/bin/pip install lameenc
+.venv-vocabulary/bin/python scripts/sync_article_vocabulary.py build
+```
+
+`article-vocabulary-entries.json` 保存经补充标注的完整新增词条、原词条摘要及文章摘要。重新从词典生成该文件时，将 ECDICT 的 `ecdict.csv` 和 CMUdict 的 `cmudict.dict` 下载到本机，运行以下命令。`article-vocabulary-overrides.tsv` 中的语境标注优先于通用词典释义。
+
+```sh
+python3 scripts/prepare_article_vocabulary.py --dictionary /path/to/ecdict.csv --cmu /path/to/cmudict.dict
+```
+
+构建拒绝覆盖已被修改的补充词条，验证也拒绝原词条或文章内容发生变化后的旧统计。需要修改补充释义时，先调整语境标注并重新生成词条清单，再人工同步相应词库条目。音频摘要变化也需要人工确认，不能用重新运行验证掩盖文件变化。
+
+## 检查和清理重复中文释义
+
+在 `docs` 目录运行预览，确认后再写入。
+
+```sh
+python3 scripts/vocabulary_meanings.py
+python3 scripts/vocabulary_meanings.py --write
+python3 scripts/vocabulary_meanings.py --check
+python3 -m unittest discover -s tests -p 'test_*vocabulary*.py' -v
+python3 scripts/sync_article_vocabulary.py package
+```
+
+清理按同一词条内的词性、领域和中文释义去重，统一识别 `a.` 与 `adj.`、`ad.` 与 `adv.`。不同词性、不同领域、近义词以及括号或引号内的完整说明不合并。无词性标记的释义与相同的已标记释义重复时，保留有词性标记的一项。不同词条之间可以有相同中文释义，不作删除。
+
+本次全库检查修改2187条释义，删除5402个重复释义片段，词条总数仍为8469。清理前后对照位于 `assets/doc/vocabulary/meaning-cleanup.tsv`。脚本同时同步补充词条清单和语境标注，并记录旧摘要及清理后的原词条摘要，继续保留后续修改检查。重复运行不会再次修改已清理的数据。
+
+重新从词典生成补充词条时也会执行相同的去重规则。已导入浏览器的词库不会自动更新，合并导入也会保留旧释义。要完整替换为清理后的释义，先导出本机词库备份，再导入 `单词导入包/词库-完整词库含文章补充.zip`，选择“覆盖词库，保留文章”。覆盖会清除本机原单词、分类、单词音频和练习记录，自定义内容需要先备份；文章及其音频保留。

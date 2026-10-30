@@ -1,0 +1,29 @@
+{
+  "items": [
+    {"article": 21, "segment": 1, "ok": true},
+    {"article": 21, "segment": 2, "ok": true},
+    {"article": 21, "segment": 3, "ok": true},
+    {"article": 21, "segment": 4, "ok": true},
+    {"article": 22, "segment": 1, "zh_starts": ["全国学生联合会"],
+     "note": "One English sentence; the Chinese splits it into two sentences (the quoted part comes second). Kept as one piece."},
+    {"article": 22, "segment": 2, "ok": true},
+    {"article": 22, "segment": 5, "ok": true},
+    {"article": 22, "segment": 6, "ok": true},
+    {"article": 23, "segment": 1, "ok": true},
+    {"article": 23, "segment": 2, "ok": true},
+    {"article": 23, "segment": 3, "zh_starts": ["多年来", "对于公立学校", "时间不容浪费", null],
+     "zh_fixed": {"3": {"text": "我们现在都必须参与进来。",
+                        "why": "The source has no Chinese for the English sentence 'We must all get involved now.'"}}},
+    {"article": 23, "segment": 4, "ok": true,
+     "zh_fixed": {"0": {"text": "教育工作者需要有适合的教学资源，让学生能够取得成就。",
+                        "why": "English 'achieve' (students achieve) was rendered as 获得 with no object, which is incomplete and does not match the meaning."}}},
+    {"article": 23, "segment": 6, "ok": true,
+     "zh_fixed": {"0": {"text": "与几乎所有其他州相比，佛罗里达州获得的公共教育的财政支持最少，但这不会阻止我们对成功的追求。",
+                        "why": "English says 'compared to nearly all other states'; the source drops 'nearly' (几乎) and claims all other states."}}},
+    {"article": 24, "segment": 1, "ok": true},
+    {"article": 24, "segment": 2, "zh_starts": ["然而，提高"],
+     "note": "One long English sentence; the Chinese splits it into two sentences. Kept as one piece."},
+    {"article": 24, "segment": 3, "ok": true},
+    {"article": 24, "segment": 4, "ok": true}
+  ]
+}

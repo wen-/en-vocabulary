@@ -1,0 +1,23 @@
+{"items":[
+{"article":101,"segment":1,"ok":true},
+{"article":101,"segment":2,"ok":true},
+{"article":101,"segment":3,"ok":true},
+{"article":101,"segment":4,"ok":true},
+{"article":101,"segment":5,"ok":true},
+{"article":102,"segment":1,"ok":true},
+{"article":102,"segment":2,"ok":true},
+{"article":102,"segment":3,"ok":true},
+{"article":103,"segment":9,"ok":true},
+{"article":103,"segment":10,"en_starts":["Room size","30\t$80","40\t$100","50\t$120"],"zh_starts":["面积/每平方米","30\t$80","40\t$100","50\t$120"],"note":"Price table; cut into header row plus three data rows, one piece per row."},
+{"article":103,"segment":11,"ok":true},
+{"article":103,"segment":12,"ok":true},
+{"article":103,"segment":13,"ok":true},
+{"article":103,"segment":14,"ok":true},
+{"article":103,"segment":15,"ok":true},
+{"article":103,"segment":19,"ok":true,"note":"P.<TAB>S. letter postscript, one line; Chinese 注: is the translation of P.S."},
+{"article":104,"segment":1,"zh_starts":["硬推销和软","二者都很奏效","其效果取决"],"note":"Chinese Z1 translates both E1 and E2; cut at 其效果取决."},
+{"article":104,"segment":2,"ok":true},
+{"article":104,"segment":3,"zh_starts":["软推销是一","销售人员竭力","并不给他们"],"note":"Chinese Z1 translates both E1 and E2; cut at 并不给他们."},
+{"article":104,"segment":4,"zh_starts":["软推销的一个","企业可以使","朋友间推荐","人们实际上","他们只是想"],"note":"Chinese Z2 translates E2, E3 and E4; cut at the commas before 人们实际上 and 他们只是想."},
+{"article":104,"segment":5,"ok":true}
+]}

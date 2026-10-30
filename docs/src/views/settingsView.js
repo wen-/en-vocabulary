@@ -114,7 +114,7 @@ export function renderSettingsView({ summary, storageEstimate, pwaStatus, busy, 
           <div class="section-heading">
             <div>
               <p class="eyebrow">Library</p>
-              <h2>词库导入与导出</h2>
+              <h2>词库导入与导出（仅词汇）</h2>
             </div>
           </div>
           <div class="stats-grid">
@@ -152,7 +152,7 @@ export function renderSettingsView({ summary, storageEstimate, pwaStatus, busy, 
                 <span>导入模式</span>
                 <select name="importMode">
                   <option value="merge">合并导入，保留现有数据</option>
-                  <option value="replace">覆盖导入，先清空本地数据</option>
+                  <option value="replace">覆盖词库，保留文章</option>
                 </select>
               </label>
               <label class="field">
@@ -169,7 +169,7 @@ export function renderSettingsView({ summary, storageEstimate, pwaStatus, busy, 
               ${renderPreviewCard(importPreviews?.library)}
             </form>
             <button type="button" class="danger-button" data-action="clear-local-data" ${busy ? "disabled" : ""}>清空全部本地数据</button>
-            <p class="help-text">统一词库包只包含分类、单词、音标、释义、例句及单词/例句音频，不包含练习记录；练习记录仅保留在当前浏览器本地。</p>
+            <p class="help-text">词库备份仅包含分类、单词、音标、释义、例句及单词/例句音频，不包含文章或练习记录。请在“文章”页单独导出文章 ZIP。覆盖词库不会删除文章；清空全部本地数据会删除文章及其音频。</p>
           </div>
         </section>
 

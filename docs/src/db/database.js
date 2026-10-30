@@ -1,5 +1,5 @@
 export const DATABASE_NAME = "english-learning-library-v3";
-export const DATABASE_VERSION = 1;
+export const DATABASE_VERSION = 2;
 
 export const AUDIO_OWNER_TYPES = {
   word: "word",
@@ -12,6 +12,8 @@ export const STORES = {
   audio: "audio",
   practiceAttempts: "practiceAttempts",
   settings: "settings",
+  articles: "articles",
+  articleAudio: "articleAudio",
 };
 
 export function normalizeAudioOwnerType(value) {
@@ -49,6 +51,13 @@ function createAudioStore(database) {
 }
 
 function createStores(database) {
+  if (!database.objectStoreNames.contains(STORES.articles)) {
+    database.createObjectStore(STORES.articles, { keyPath: "id" });
+  }
+  if (!database.objectStoreNames.contains(STORES.articleAudio)) {
+    const store = database.createObjectStore(STORES.articleAudio, { keyPath: "id" });
+    store.createIndex("articleId", "articleId", { unique: false });
+  }
   if (!database.objectStoreNames.contains(STORES.words)) {
     const wordsStore = database.createObjectStore(STORES.words, { keyPath: "id" });
     wordsStore.createIndex("normalizedTerm", "normalizedTerm", { unique: true });

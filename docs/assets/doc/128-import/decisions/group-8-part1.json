@@ -1,0 +1,18 @@
+{"items":[
+{"article":113,"segment":1,"ok":true},
+{"article":113,"segment":2,"ok":true},
+{"article":114,"segment":1,"ok":true},
+{"article":114,"segment":5,"ok":true},
+{"article":114,"segment":6,"ok":true},
+{"article":114,"segment":7,"en_starts":["● a valid","● evidence","● proof of medical","● a round-trip","● proof of funds"],"zh_starts":["● 有效的","● 旅行目的","● 医疗保险","● 往返机票","● 资金证明"]},
+{"article":114,"segment":8,"ok":true},
+{"article":115,"segment":1,"ok":true},
+{"article":115,"segment":2,"ok":true},
+{"article":115,"segment":3,"ok":true},
+{"article":115,"segment":4,"ok":true},
+{"article":115,"segment":5,"ok":true},
+{"article":116,"segment":1,"ok":true},
+{"article":116,"segment":2,"ok":true},
+{"article":116,"segment":3,"ok":true},
+{"article":116,"segment":4,"ok":true}
+]}

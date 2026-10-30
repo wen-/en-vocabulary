@@ -1,0 +1,652 @@
+source_file	128.txt
+source_sha256	ba92e804b395c197e0c007d8f2987b3311025f72a521689ed9fc410ac89e9a42
+articles	128
+segments	835
+grouped_multi_sentence_segments	626
+unpaired_or_nonlinguistic_segments	6
+review_items	644
+
+人文英语3 Passage 1 lines EN [6] / ZH [7]: equal multi-sentence counts retained as paragraph; semantics not certified
+人文英语3 Passage 1 lines EN [8] / ZH [9]: equal multi-sentence counts retained as paragraph; semantics not certified
+人文英语3 Passage 1 lines EN [10] / ZH [11]: sentence counts 3/4; kept as paragraph
+人文英语3 Passage 1 lines EN [12] / ZH [13]: equal multi-sentence counts retained as paragraph; semantics not certified
+人文英语3 Passage 2 lines EN [17] / ZH [18]: equal multi-sentence counts retained as paragraph; semantics not certified
+人文英语3 Passage 2 lines EN [19, 20] / ZH [21]: equal multi-sentence counts retained as paragraph; semantics not certified
+人文英语3 Passage 2 lines EN [22] / ZH [23]: sentence counts 5/3; kept as paragraph
+人文英语3 Passage 2 lines EN [24] / ZH [25]: equal multi-sentence counts retained as paragraph; semantics not certified
+人文英语3 Passage 3 lines EN [29] / ZH [31]: equal multi-sentence counts retained as paragraph; semantics not certified
+人文英语3 Passage 3 lines EN [34] / ZH [35]: equal multi-sentence counts retained as paragraph; semantics not certified
+人文英语3 Passage 3 lines EN [38] / ZH [39]: equal multi-sentence counts retained as paragraph; semantics not certified
+人文英语3 Passage 3 lines EN [42] / ZH [43]: sentence counts 4/5; kept as paragraph
+人文英语3 Passage 3 lines EN [46] / ZH [47]: equal multi-sentence counts retained as paragraph; semantics not certified
+人文英语3 Passage 3 lines EN [50] / ZH [51]: equal multi-sentence counts retained as paragraph; semantics not certified
+人文英语3 Passage 4 lines EN [56] / ZH [57]: equal multi-sentence counts retained as paragraph; semantics not certified
+人文英语3 Passage 4 lines EN [58] / ZH [59]: equal multi-sentence counts retained as paragraph; semantics not certified
+人文英语3 Passage 4 lines EN [62] / ZH [63]: sentence counts 3/4; kept as paragraph
+人文英语3 Passage 5 lines EN [69] / ZH [70]: equal multi-sentence counts retained as paragraph; semantics not certified
+人文英语3 Passage 5 lines EN [75] / ZH [76]: sentence counts 2/3; kept as paragraph
+人文英语3 Passage 5 lines EN [81] / ZH [82]: sentence counts 1/2; kept as paragraph
+人文英语3 Passage 6 lines EN [89] / ZH [90]: equal multi-sentence counts retained as paragraph; semantics not certified
+人文英语3 Passage 6 lines EN [91] / ZH [92]: equal multi-sentence counts retained as paragraph; semantics not certified
+人文英语3 Passage 6 lines EN [93] / ZH [94]: equal multi-sentence counts retained as paragraph; semantics not certified
+人文英语3 Passage 6 lines EN [95] / ZH [96]: equal multi-sentence counts retained as paragraph; semantics not certified
+人文英语3 Passage 6 lines EN [97] / ZH [98]: sentence counts 2/1; kept as paragraph
+人文英语3 Passage 6 lines EN [99] / ZH [100]: equal multi-sentence counts retained as paragraph; semantics not certified
+人文英语3 Passage 6 lines EN [101] / ZH [102]: sentence counts 2/1; kept as paragraph
+人文英语3 Passage 6 lines EN [103] / ZH [104]: equal multi-sentence counts retained as paragraph; semantics not certified
+人文英语3 Passage 7 lines EN [108] / ZH [109]: equal multi-sentence counts retained as paragraph; semantics not certified
+人文英语3 Passage 7 lines EN [110] / ZH [111]: equal multi-sentence counts retained as paragraph; semantics not certified
+人文英语3 Passage 7 lines EN [112] / ZH [113]: equal multi-sentence counts retained as paragraph; semantics not certified
+人文英语3 Passage 7 lines EN [114] / ZH [115]: equal multi-sentence counts retained as paragraph; semantics not certified
+人文英语3 Passage 7 lines EN [116] / ZH [117]: equal multi-sentence counts retained as paragraph; semantics not certified
+人文英语3 Passage 7 lines EN [118] / ZH [119]: equal multi-sentence counts retained as paragraph; semantics not certified
+人文英语3 Passage 8 lines EN [124] / ZH [125]: equal multi-sentence counts retained as paragraph; semantics not certified
+人文英语3 Passage 8 lines EN [126] / ZH [127]: equal multi-sentence counts retained as paragraph; semantics not certified
+人文英语3 Passage 8 lines EN [128] / ZH [129]: sentence counts 2/1; kept as paragraph
+人文英语3 Passage 8 lines EN [130] / ZH [131]: equal multi-sentence counts retained as paragraph; semantics not certified
+人文英语3 Passage 8 lines EN [132] / ZH [133]: sentence counts 2/3; kept as paragraph
+人文英语3 Passage 8 lines EN [134] / ZH [135]: equal multi-sentence counts retained as paragraph; semantics not certified
+人文英语3 Passage 8 lines EN [136] / ZH [137]: equal multi-sentence counts retained as paragraph; semantics not certified
+人文英语3 Passage 9 lines EN [141] / ZH [142]: equal multi-sentence counts retained as paragraph; semantics not certified
+人文英语3 Passage 9 lines EN [143] / ZH [144]: equal multi-sentence counts retained as paragraph; semantics not certified
+人文英语3 Passage 10 lines EN [153] / ZH [154]: sentence counts 4/5; kept as paragraph
+人文英语3 Passage 10 lines EN [155] / ZH [156]: equal multi-sentence counts retained as paragraph; semantics not certified
+人文英语3 Passage 10 lines EN [157] / ZH [158]: equal multi-sentence counts retained as paragraph; semantics not certified
+人文英语3 Passage 10 lines EN [159] / ZH [160]: equal multi-sentence counts retained as paragraph; semantics not certified
+人文英语3 Passage 11 lines EN [165] / ZH [166]: equal multi-sentence counts retained as paragraph; semantics not certified
+人文英语3 Passage 11 lines EN [167] / ZH [168]: equal multi-sentence counts retained as paragraph; semantics not certified
+人文英语3 Passage 11 lines EN [169] / ZH [170]: equal multi-sentence counts retained as paragraph; semantics not certified
+人文英语3 Passage 11 lines EN [171] / ZH [172]: equal multi-sentence counts retained as paragraph; semantics not certified
+人文英语3 Passage 11 lines EN [173] / ZH [174]: equal multi-sentence counts retained as paragraph; semantics not certified
+人文英语3 Passage 12 lines EN [179, 180] / ZH [181]: sentence counts 7/6; kept as paragraph
+人文英语3 Passage 12 lines EN [182] / ZH [183]: sentence counts 6/5; kept as paragraph
+人文英语3 Passage 13 lines EN [190] / ZH [191]: equal multi-sentence counts retained as paragraph; semantics not certified
+人文英语3 Passage 13 lines EN [192] / ZH [193]: equal multi-sentence counts retained as paragraph; semantics not certified
+人文英语3 Passage 13 lines EN [196] / ZH [197]: equal multi-sentence counts retained as paragraph; semantics not certified
+人文英语3 Passage 13 lines EN [198] / ZH [199]: equal multi-sentence counts retained as paragraph; semantics not certified
+人文英语3 Passage 14 lines EN [204] / ZH [205]: equal multi-sentence counts retained as paragraph; semantics not certified
+人文英语3 Passage 14 lines EN [206] / ZH [207]: equal multi-sentence counts retained as paragraph; semantics not certified
+人文英语3 Passage 14 lines EN [208] / ZH [209]: sentence counts 5/4; kept as paragraph
+人文英语3 Passage 14 lines EN [210] / ZH [211]: equal multi-sentence counts retained as paragraph; semantics not certified
+人文英语3 Passage 14 lines EN [212] / ZH [213]: equal multi-sentence counts retained as paragraph; semantics not certified
+人文英语3 Passage 15 lines EN [218] / ZH [219]: equal multi-sentence counts retained as paragraph; semantics not certified
+人文英语3 Passage 15 lines EN [220] / ZH [221]: equal multi-sentence counts retained as paragraph; semantics not certified
+人文英语3 Passage 15 lines EN [222] / ZH [223]: sentence counts 1/2; kept as paragraph
+人文英语3 Passage 15 lines EN [224] / ZH [225]: equal multi-sentence counts retained as paragraph; semantics not certified
+人文英语3 Passage 16 lines EN [230] / ZH [231]: equal multi-sentence counts retained as paragraph; semantics not certified
+人文英语3 Passage 16 lines EN [232] / ZH [233]: equal multi-sentence counts retained as paragraph; semantics not certified
+人文英语3 Passage 16 lines EN [234] / ZH [235]: equal multi-sentence counts retained as paragraph; semantics not certified
+人文英语3 Passage 16 lines EN [238] / ZH [239]: equal multi-sentence counts retained as paragraph; semantics not certified
+人文英语3 Passage 16 lines [240]: Non-linguistic source fragment preserved.
+人文英语4 Passage 17 lines EN [245] / ZH [246]: equal multi-sentence counts retained as paragraph; semantics not certified
+人文英语4 Passage 17 lines EN [247] / ZH [248]: sentence counts 3/4; kept as paragraph
+人文英语4 Passage 17 lines EN [249] / ZH [250]: equal multi-sentence counts retained as paragraph; semantics not certified
+人文英语4 Passage 17 lines EN [251] / ZH [252]: equal multi-sentence counts retained as paragraph; semantics not certified
+人文英语4 Passage 18 lines EN [256] / ZH [257]: equal multi-sentence counts retained as paragraph; semantics not certified
+人文英语4 Passage 18 lines EN [258] / ZH [259]: sentence counts 8/7; kept as paragraph
+人文英语4 Passage 18 lines EN [260] / ZH [261]: equal multi-sentence counts retained as paragraph; semantics not certified
+人文英语4 Passage 19 lines EN [265] / ZH [266]: equal multi-sentence counts retained as paragraph; semantics not certified
+人文英语4 Passage 19 lines EN [267] / ZH [268]: equal multi-sentence counts retained as paragraph; semantics not certified
+人文英语4 Passage 19 lines EN [269] / ZH [270]: equal multi-sentence counts retained as paragraph; semantics not certified
+人文英语4 Passage 19 lines EN [271] / ZH [272]: equal multi-sentence counts retained as paragraph; semantics not certified
+人文英语4 Passage 20 lines EN [276] / ZH [277]: sentence counts 5/6; kept as paragraph
+人文英语4 Passage 20 lines EN [278] / ZH [279]: sentence counts 8/7; kept as paragraph
+人文英语4 Passage 20 lines EN [280] / ZH [281]: equal multi-sentence counts retained as paragraph; semantics not certified
+人文英语4 Passage 21 lines EN [286] / ZH [287]: equal multi-sentence counts retained as paragraph; semantics not certified
+人文英语4 Passage 21 lines EN [288] / ZH [289]: equal multi-sentence counts retained as paragraph; semantics not certified
+人文英语4 Passage 21 lines EN [290] / ZH [291]: equal multi-sentence counts retained as paragraph; semantics not certified
+人文英语4 Passage 21 lines EN [292] / ZH [293]: equal multi-sentence counts retained as paragraph; semantics not certified
+人文英语4 Passage 22 lines EN [298] / ZH [299]: sentence counts 1/2; kept as paragraph
+人文英语4 Passage 22 lines EN [300] / ZH [301]: equal multi-sentence counts retained as paragraph; semantics not certified
+人文英语4 Passage 22 lines EN [306] / ZH [307]: equal multi-sentence counts retained as paragraph; semantics not certified
+人文英语4 Passage 22 lines EN [308] / ZH [309]: equal multi-sentence counts retained as paragraph; semantics not certified
+人文英语4 Passage 23 lines EN [314] / ZH [315]: equal multi-sentence counts retained as paragraph; semantics not certified
+人文英语4 Passage 23 lines EN [316] / ZH [317]: equal multi-sentence counts retained as paragraph; semantics not certified
+人文英语4 Passage 23 lines EN [318] / ZH [319]: sentence counts 4/3; kept as paragraph
+人文英语4 Passage 23 lines EN [320] / ZH [321]: equal multi-sentence counts retained as paragraph; semantics not certified
+人文英语4 Passage 23 lines EN [324] / ZH [325]: equal multi-sentence counts retained as paragraph; semantics not certified
+人文英语4 Passage 24 lines EN [330] / ZH [331]: equal multi-sentence counts retained as paragraph; semantics not certified
+人文英语4 Passage 24 lines EN [332] / ZH [333]: sentence counts 1/2; kept as paragraph
+人文英语4 Passage 24 lines EN [334] / ZH [335]: equal multi-sentence counts retained as paragraph; semantics not certified
+人文英语4 Passage 24 lines EN [336] / ZH [337]: equal multi-sentence counts retained as paragraph; semantics not certified
+人文英语4 Passage 25 lines EN [342] / ZH [343]: equal multi-sentence counts retained as paragraph; semantics not certified
+人文英语4 Passage 25 lines EN [344] / ZH [345]: equal multi-sentence counts retained as paragraph; semantics not certified
+人文英语4 Passage 25 lines EN [346] / ZH [347]: sentence counts 3/2; kept as paragraph
+人文英语4 Passage 25 lines EN [348] / ZH [349]: equal multi-sentence counts retained as paragraph; semantics not certified
+人文英语4 Passage 26 lines EN [356] / ZH [357]: equal multi-sentence counts retained as paragraph; semantics not certified
+人文英语4 Passage 26 lines EN [360] / ZH [361]: equal multi-sentence counts retained as paragraph; semantics not certified
+人文英语4 Passage 26 lines EN [364] / ZH [365]: equal multi-sentence counts retained as paragraph; semantics not certified
+人文英语4 Passage 26 lines EN [368] / ZH [369]: sentence counts 4/5; kept as paragraph
+人文英语4 Passage 26 lines EN [372] / ZH [373]: equal multi-sentence counts retained as paragraph; semantics not certified
+人文英语4 Passage 27 lines EN [378, 379, 380, 381, 382, 383, 384, 385, 386, 387, 388, 389] / ZH [390, 391, 392, 393, 394, 395, 396, 397, 398, 399, 400, 401]: sentence counts 2/1; kept as paragraph
+人文英语4 Passage 27 lines EN [408] / ZH [409]: equal multi-sentence counts retained as paragraph; semantics not certified
+人文英语4 Passage 27 lines EN [410] / ZH [411]: equal multi-sentence counts retained as paragraph; semantics not certified
+人文英语4 Passage 27 lines EN [412] / ZH [413]: equal multi-sentence counts retained as paragraph; semantics not certified
+人文英语4 Passage 27 lines EN [416] / ZH [417]: equal multi-sentence counts retained as paragraph; semantics not certified
+人文英语4 Passage 27 lines EN [418, 419] / ZH [420, 421]: structural or multi-line block retained; semantics not certified
+人文英语4 Passage 28 lines EN [426] / ZH [427]: sentence counts 2/3; kept as paragraph
+人文英语4 Passage 28 lines EN [428] / ZH [429]: equal multi-sentence counts retained as paragraph; semantics not certified
+人文英语4 Passage 28 lines EN [430] / ZH [431]: sentence counts 7/6; kept as paragraph
+人文英语4 Passage 29 lines EN [440] / ZH [441]: sentence counts 2/1; kept as paragraph
+人文英语4 Passage 29 lines EN [448] / ZH [449]: sentence counts 2/1; kept as paragraph
+人文英语4 Passage 29 lines EN [457] / ZH [458]: sentence counts 2/1; kept as paragraph
+人文英语4 Passage 29 lines EN [459] / ZH [460]: sentence counts 2/1; kept as paragraph
+人文英语4 Passage 29 lines EN [464] / ZH [465]: equal multi-sentence counts retained as paragraph; semantics not certified
+人文英语4 Passage 29 lines EN [466] / ZH [467]: equal multi-sentence counts retained as paragraph; semantics not certified
+人文英语4 Passage 29 lines EN [468] / ZH [469]: equal multi-sentence counts retained as paragraph; semantics not certified
+人文英语4 Passage 29 lines EN [476, 477, 478, 479, 480, 481, 482] / ZH [483, 484, 485, 486, 487, 488, 489]: sentence counts 7/1; kept as paragraph
+人文英语4 Passage 30 lines EN [494, 495] / ZH [496, 497]: sentence counts 2/1; kept as paragraph
+人文英语4 Passage 30 lines EN [501] / ZH [502]: sentence counts 6/3; kept as paragraph
+人文英语4 Passage 30 lines EN [503] / ZH [504]: sentence counts 6/1; kept as paragraph
+人文英语4 Passage 30 lines EN [505] / ZH [506]: sentence counts 9/4; kept as paragraph
+人文英语4 Passage 30 lines EN [507] / ZH [508]: equal multi-sentence counts retained as paragraph; semantics not certified
+人文英语4 Passage 30 lines EN [510, 511, 512] / ZH [513, 514, 515]: structural or multi-line block retained; semantics not certified
+人文英语4 Passage 31 lines EN [523] / ZH [524]: sentence counts 3/2; kept as paragraph
+人文英语4 Passage 31 lines EN [527] / ZH [528]: equal multi-sentence counts retained as paragraph; semantics not certified
+人文英语4 Passage 31 lines EN [529] / ZH [530]: equal multi-sentence counts retained as paragraph; semantics not certified
+人文英语4 Passage 31 lines EN [535] / ZH [536]: equal multi-sentence counts retained as paragraph; semantics not certified
+人文英语4 Passage 31 lines EN [539] / ZH [540]: sentence counts 2/1; kept as paragraph
+人文英语4 Passage 31 lines EN [541] / ZH [542]: equal multi-sentence counts retained as paragraph; semantics not certified
+人文英语4 Passage 32 lines EN [547] / ZH [548]: equal multi-sentence counts retained as paragraph; semantics not certified
+人文英语4 Passage 32 lines EN [551] / ZH [552]: sentence counts 2/3; kept as paragraph
+人文英语4 Passage 32 lines EN [555] / ZH [556]: sentence counts 3/2; kept as paragraph
+人文英语4 Passage 32 lines EN [559] / ZH [560]: equal multi-sentence counts retained as paragraph; semantics not certified
+人文英语4 Passage 32 lines EN [565] / ZH [566]: equal multi-sentence counts retained as paragraph; semantics not certified
+人文英语4 Passage 32 lines [567]: Non-linguistic source fragment preserved.
+管理英语3 Passage 1 lines EN [573] / ZH [574]: equal multi-sentence counts retained as paragraph; semantics not certified
+管理英语3 Passage 1 lines EN [575] / ZH [576]: equal multi-sentence counts retained as paragraph; semantics not certified
+管理英语3 Passage 2 lines EN [581] / ZH [582]: sentence counts 5/4; kept as paragraph
+管理英语3 Passage 2 lines EN [583] / ZH [584]: equal multi-sentence counts retained as paragraph; semantics not certified
+管理英语3 Passage 2 lines EN [585] / ZH [586]: sentence counts 6/4; kept as paragraph
+管理英语3 Passage 2 lines EN [587] / ZH [588]: equal multi-sentence counts retained as paragraph; semantics not certified
+管理英语3 Passage 3 lines EN [593] / ZH [594]: equal multi-sentence counts retained as paragraph; semantics not certified
+管理英语3 Passage 3 lines EN [595] / ZH [596]: equal multi-sentence counts retained as paragraph; semantics not certified
+管理英语3 Passage 3 lines EN [597] / ZH [598]: sentence counts 4/3; kept as paragraph
+管理英语3 Passage 3 lines EN [599] / ZH [600]: equal multi-sentence counts retained as paragraph; semantics not certified
+管理英语3 Passage 4 lines EN [604] / ZH [605]: sentence counts 2/1; kept as paragraph
+管理英语3 Passage 4 lines EN [606] / ZH [607]: sentence counts 3/2; kept as paragraph
+管理英语3 Passage 4 lines EN [608] / ZH [609]: sentence counts 6/4; kept as paragraph
+管理英语3 Passage 4 lines EN [610] / ZH [611]: sentence counts 4/3; kept as paragraph
+管理英语3 Passage 4 lines EN [612] / ZH [613]: equal multi-sentence counts retained as paragraph; semantics not certified
+管理英语3 Passage 5 lines EN [618] / ZH [619]: equal multi-sentence counts retained as paragraph; semantics not certified
+管理英语3 Passage 5 lines EN [622] / ZH [623]: equal multi-sentence counts retained as paragraph; semantics not certified
+管理英语3 Passage 5 lines EN [626] / ZH [627]: equal multi-sentence counts retained as paragraph; semantics not certified
+管理英语3 Passage 5 lines EN [630] / ZH [631]: equal multi-sentence counts retained as paragraph; semantics not certified
+管理英语3 Passage 5 lines EN [634] / ZH [635]: equal multi-sentence counts retained as paragraph; semantics not certified
+管理英语3 Passage 6 lines EN [640] / ZH [641]: equal multi-sentence counts retained as paragraph; semantics not certified
+管理英语3 Passage 6 lines EN [644] / ZH [645]: equal multi-sentence counts retained as paragraph; semantics not certified
+管理英语3 Passage 6 lines EN [646] / ZH [647]: equal multi-sentence counts retained as paragraph; semantics not certified
+管理英语3 Passage 6 lines EN [650, 651] / ZH [652, 653]: sentence counts 5/4; kept as paragraph
+管理英语3 Passage 6 lines EN [656] / ZH [657]: equal multi-sentence counts retained as paragraph; semantics not certified
+管理英语3 Passage 6 lines EN [658] / ZH [659]: equal multi-sentence counts retained as paragraph; semantics not certified
+管理英语3 Passage 6 lines EN [660] / ZH [661]: equal multi-sentence counts retained as paragraph; semantics not certified
+管理英语3 Passage 7 lines EN [666] / ZH [667]: sentence counts 4/3; kept as paragraph
+管理英语3 Passage 7 lines EN [670] / ZH [671]: sentence counts 4/3; kept as paragraph
+管理英语3 Passage 7 lines EN [672] / ZH [673]: sentence counts 2/3; kept as paragraph
+管理英语3 Passage 8 lines EN [680] / ZH [681]: equal multi-sentence counts retained as paragraph; semantics not certified
+管理英语3 Passage 8 lines EN [686] / ZH [687]: sentence counts 2/1; kept as paragraph
+管理英语3 Passage 8 lines EN [688] / ZH [689]: equal multi-sentence counts retained as paragraph; semantics not certified
+管理英语3 Passage 9 lines EN [693] / ZH [694]: sentence counts 2/3; kept as paragraph
+管理英语3 Passage 9 lines EN [695] / ZH [696]: equal multi-sentence counts retained as paragraph; semantics not certified
+管理英语3 Passage 9 lines EN [697] / ZH [698]: equal multi-sentence counts retained as paragraph; semantics not certified
+管理英语3 Passage 9 lines EN [699] / ZH [700]: sentence counts 4/2; kept as paragraph
+管理英语3 Passage 9 lines EN [701] / ZH [702]: equal multi-sentence counts retained as paragraph; semantics not certified
+管理英语3 Passage 10 lines EN [707] / ZH [708]: equal multi-sentence counts retained as paragraph; semantics not certified
+管理英语3 Passage 10 lines EN [709] / ZH [710]: equal multi-sentence counts retained as paragraph; semantics not certified
+管理英语3 Passage 10 lines EN [711, 712, 713, 714, 715] / ZH [716, 717, 718, 719, 720]: structural or multi-line block retained; semantics not certified
+管理英语3 Passage 10 lines EN [723] / ZH [724]: sentence counts 2/3; kept as paragraph
+管理英语3 Passage 10 lines EN [725] / ZH [726]: equal multi-sentence counts retained as paragraph; semantics not certified
+管理英语3 Passage 11 lines EN [730] / ZH [731]: equal multi-sentence counts retained as paragraph; semantics not certified
+管理英语3 Passage 11 lines EN [736] / ZH [737]: equal multi-sentence counts retained as paragraph; semantics not certified
+管理英语3 Passage 11 lines EN [740] / ZH [741]: sentence counts 2/1; kept as paragraph
+管理英语3 Passage 11 lines EN [744] / ZH [745]: equal multi-sentence counts retained as paragraph; semantics not certified
+管理英语3 Passage 11 lines EN [748] / ZH [749]: sentence counts 4/3; kept as paragraph
+管理英语3 Passage 11 lines EN [754] / ZH [755]: sentence counts 4/3; kept as paragraph
+管理英语3 Passage 11 lines EN [758] / ZH [759]: equal multi-sentence counts retained as paragraph; semantics not certified
+管理英语3 Passage 11 lines EN [762] / ZH [763]: equal multi-sentence counts retained as paragraph; semantics not certified
+管理英语3 Passage 12 lines EN [769] / ZH [770]: sentence counts 2/1; kept as paragraph
+管理英语3 Passage 12 lines EN [771, 772, 773] / ZH [774, 775, 776]: structural or multi-line block retained; semantics not certified
+管理英语3 Passage 12 lines EN [785] / ZH [786]: equal multi-sentence counts retained as paragraph; semantics not certified
+管理英语3 Passage 12 lines EN [789] / ZH [790]: sentence counts 1/2; kept as paragraph
+管理英语3 Passage 12 lines EN [793] / ZH [794]: equal multi-sentence counts retained as paragraph; semantics not certified
+管理英语3 Passage 13 lines EN [801] / ZH [802]: equal multi-sentence counts retained as paragraph; semantics not certified
+管理英语3 Passage 13 lines EN [807] / ZH [808]: equal multi-sentence counts retained as paragraph; semantics not certified
+管理英语3 Passage 13 lines EN [811] / ZH [812]: equal multi-sentence counts retained as paragraph; semantics not certified
+管理英语3 Passage 13 lines EN [815] / ZH [816]: equal multi-sentence counts retained as paragraph; semantics not certified
+管理英语3 Passage 14 lines EN [824] / ZH [825]: equal multi-sentence counts retained as paragraph; semantics not certified
+管理英语3 Passage 14 lines EN [826] / ZH [827]: equal multi-sentence counts retained as paragraph; semantics not certified
+管理英语3 Passage 14 lines EN [828] / ZH [829]: sentence counts 3/5; kept as paragraph
+管理英语3 Passage 14 lines EN [830] / ZH [831]: sentence counts 5/7; kept as paragraph
+管理英语3 Passage 15 lines EN [836] / ZH [837]: equal multi-sentence counts retained as paragraph; semantics not certified
+管理英语3 Passage 15 lines EN [838] / ZH [839]: equal multi-sentence counts retained as paragraph; semantics not certified
+管理英语3 Passage 15 lines EN [840] / ZH [841]: sentence counts 5/4; kept as paragraph
+管理英语3 Passage 15 lines EN [842] / ZH [843]: sentence counts 1/2; kept as paragraph
+管理英语3 Passage 15 lines EN [846] / ZH [847]: equal multi-sentence counts retained as paragraph; semantics not certified
+管理英语3 Passage 16 lines EN [854] / ZH [855]: equal multi-sentence counts retained as paragraph; semantics not certified
+管理英语3 Passage 16 lines EN [856] / ZH [857]: equal multi-sentence counts retained as paragraph; semantics not certified
+管理英语3 Passage 16 lines EN [862] / ZH [863]: equal multi-sentence counts retained as paragraph; semantics not certified
+管理英语3 Passage 16 lines EN [872] / ZH [873]: sentence counts 2/1; kept as paragraph
+管理英语3 Passage 16 lines EN [876] / ZH [877]: sentence counts 2/1; kept as paragraph
+管理英语4 Passage 17 lines EN [890] / ZH [891]: equal multi-sentence counts retained as paragraph; semantics not certified
+管理英语4 Passage 17 lines EN [894] / ZH [895]: equal multi-sentence counts retained as paragraph; semantics not certified
+管理英语4 Passage 17 lines EN [898] / ZH [899]: equal multi-sentence counts retained as paragraph; semantics not certified
+管理英语4 Passage 17 lines EN [902] / ZH [903]: equal multi-sentence counts retained as paragraph; semantics not certified
+管理英语4 Passage 17 lines EN [906] / ZH [907]: equal multi-sentence counts retained as paragraph; semantics not certified
+管理英语4 Passage 17 lines EN [910] / ZH [911]: equal multi-sentence counts retained as paragraph; semantics not certified
+管理英语4 Passage 17 lines EN [914] / ZH [915]: sentence counts 2/1; kept as paragraph
+管理英语4 Passage 17 lines EN [916] / ZH [917]: sentence counts 2/1; kept as paragraph
+管理英语4 Passage 18 lines EN [923] / ZH [924]: equal multi-sentence counts retained as paragraph; semantics not certified
+管理英语4 Passage 18 lines EN [925] / ZH [926, 927]: sentence counts 1/6; kept as paragraph
+管理英语4 Passage 18 lines EN [928] / ZH [929]: equal multi-sentence counts retained as paragraph; semantics not certified
+管理英语4 Passage 18 lines EN [930] / ZH [931]: sentence counts 2/1; kept as paragraph
+管理英语4 Passage 18 lines EN [934] / ZH [935]: equal multi-sentence counts retained as paragraph; semantics not certified
+管理英语4 Passage 18 lines EN [936] / ZH [937]: equal multi-sentence counts retained as paragraph; semantics not certified
+管理英语4 Passage 19 lines EN [943] / ZH [944]: equal multi-sentence counts retained as paragraph; semantics not certified
+管理英语4 Passage 19 lines EN [945] / ZH [946]: sentence counts 2/1; kept as paragraph
+管理英语4 Passage 19 lines EN [947] / ZH [948]: equal multi-sentence counts retained as paragraph; semantics not certified
+管理英语4 Passage 19 lines EN [949] / ZH [950]: sentence counts 2/1; kept as paragraph
+管理英语4 Passage 19 lines EN [951] / ZH [952]: equal multi-sentence counts retained as paragraph; semantics not certified
+管理英语4 Passage 19 lines EN [953] / ZH [954]: sentence counts 2/1; kept as paragraph
+管理英语4 Passage 19 lines EN [955] / ZH [956]: equal multi-sentence counts retained as paragraph; semantics not certified
+管理英语4 Passage 19 lines EN [957] / ZH [958]: sentence counts 2/1; kept as paragraph
+管理英语4 Passage 19 lines EN [959] / ZH [960]: equal multi-sentence counts retained as paragraph; semantics not certified
+管理英语4 Passage 19 lines EN [961] / ZH [962]: sentence counts 2/1; kept as paragraph
+管理英语4 Passage 19 lines EN [963] / ZH [964]: equal multi-sentence counts retained as paragraph; semantics not certified
+管理英语4 Passage 20 lines EN [968] / ZH [969]: equal multi-sentence counts retained as paragraph; semantics not certified
+管理英语4 Passage 20 lines EN [970] / ZH [971]: equal multi-sentence counts retained as paragraph; semantics not certified
+管理英语4 Passage 20 lines EN [972] / ZH [973]: equal multi-sentence counts retained as paragraph; semantics not certified
+管理英语4 Passage 20 lines EN [974] / ZH [975]: equal multi-sentence counts retained as paragraph; semantics not certified
+管理英语4 Passage 20 lines EN [976] / ZH [977]: equal multi-sentence counts retained as paragraph; semantics not certified
+管理英语4 Passage 20 lines EN [978] / ZH [979]: sentence counts 2/3; kept as paragraph
+管理英语4 Passage 20 lines EN [980] / ZH [981]: equal multi-sentence counts retained as paragraph; semantics not certified
+管理英语4 Passage 21 lines EN [985] / ZH [986]: equal multi-sentence counts retained as paragraph; semantics not certified
+管理英语4 Passage 21 lines EN [987] / ZH [988]: equal multi-sentence counts retained as paragraph; semantics not certified
+管理英语4 Passage 21 lines EN [989] / ZH [990]: equal multi-sentence counts retained as paragraph; semantics not certified
+管理英语4 Passage 21 lines EN [991] / ZH [992]: equal multi-sentence counts retained as paragraph; semantics not certified
+管理英语4 Passage 22 lines EN [996] / ZH [997]: equal multi-sentence counts retained as paragraph; semantics not certified
+管理英语4 Passage 22 lines EN [998] / ZH [999]: equal multi-sentence counts retained as paragraph; semantics not certified
+管理英语4 Passage 22 lines EN [1000] / ZH [1001]: equal multi-sentence counts retained as paragraph; semantics not certified
+管理英语4 Passage 22 lines EN [1002] / ZH [1003]: equal multi-sentence counts retained as paragraph; semantics not certified
+管理英语4 Passage 22 lines EN [1004] / ZH [1005]: equal multi-sentence counts retained as paragraph; semantics not certified
+管理英语4 Passage 22 lines EN [1008] / ZH [1009]: equal multi-sentence counts retained as paragraph; semantics not certified
+管理英语4 Passage 23 lines EN [1016] / ZH [1017]: equal multi-sentence counts retained as paragraph; semantics not certified
+管理英语4 Passage 23 lines EN [1018] / ZH [1019]: equal multi-sentence counts retained as paragraph; semantics not certified
+管理英语4 Passage 23 lines EN [1020] / ZH [1021]: equal multi-sentence counts retained as paragraph; semantics not certified
+管理英语4 Passage 23 lines EN [1022] / ZH [1023]: equal multi-sentence counts retained as paragraph; semantics not certified
+管理英语4 Passage 23 lines EN [1024] / ZH [1025]: equal multi-sentence counts retained as paragraph; semantics not certified
+管理英语4 Passage 23 lines EN [1026] / ZH [1027]: equal multi-sentence counts retained as paragraph; semantics not certified
+管理英语4 Passage 23 lines EN [1030] / ZH [1031]: equal multi-sentence counts retained as paragraph; semantics not certified
+管理英语4 Passage 24 lines EN [1040, 1041] / ZH [1042, 1043]: equal multi-sentence counts retained as paragraph; semantics not certified
+管理英语4 Passage 24 lines EN [1046] / ZH [1047]: equal multi-sentence counts retained as paragraph; semantics not certified
+管理英语4 Passage 24 lines EN [1048] / ZH [1049]: equal multi-sentence counts retained as paragraph; semantics not certified
+管理英语4 Passage 24 lines EN [1050] / ZH [1051]: equal multi-sentence counts retained as paragraph; semantics not certified
+管理英语4 Passage 24 lines EN [1052, 1053, 1054] / ZH [1055, 1056, 1057]: equal multi-sentence counts retained as paragraph; semantics not certified
+管理英语4 Passage 25 lines EN [1062] / ZH [1063]: equal multi-sentence counts retained as paragraph; semantics not certified
+管理英语4 Passage 25 lines EN [1064] / ZH [1065]: equal multi-sentence counts retained as paragraph; semantics not certified
+管理英语4 Passage 25 lines EN [1066, 1067, 1068, 1069] / ZH [1070, 1071, 1072, 1073]: structural or multi-line block retained; semantics not certified
+管理英语4 Passage 25 lines EN [1074] / ZH [1075]: equal multi-sentence counts retained as paragraph; semantics not certified
+管理英语4 Passage 25 lines EN [1076] / ZH [1077]: equal multi-sentence counts retained as paragraph; semantics not certified
+管理英语4 Passage 26 lines EN [1082] / ZH [1083]: sentence counts 5/4; kept as paragraph
+管理英语4 Passage 26 lines EN [1084] / ZH [1085]: sentence counts 6/4; kept as paragraph
+管理英语4 Passage 26 lines EN [1088] / ZH [1089]: equal multi-sentence counts retained as paragraph; semantics not certified
+管理英语4 Passage 26 lines EN [1092] / ZH [1093]: sentence counts 3/4; kept as paragraph
+管理英语4 Passage 26 lines EN [1096] / ZH [1097]: equal multi-sentence counts retained as paragraph; semantics not certified
+管理英语4 Passage 27 lines EN [1102] / ZH [1103]: sentence counts 4/3; kept as paragraph
+管理英语4 Passage 27 lines EN [1104] / ZH [1105]: equal multi-sentence counts retained as paragraph; semantics not certified
+管理英语4 Passage 27 lines EN [1108] / ZH [1109]: equal multi-sentence counts retained as paragraph; semantics not certified
+管理英语4 Passage 27 lines EN [1110] / ZH [1111]: equal multi-sentence counts retained as paragraph; semantics not certified
+管理英语4 Passage 27 lines EN [1112] / ZH [1113]: sentence counts 6/5; kept as paragraph
+管理英语4 Passage 27 lines EN [1114] / ZH [1115]: equal multi-sentence counts retained as paragraph; semantics not certified
+管理英语4 Passage 27 lines EN [1116] / ZH [1117]: equal multi-sentence counts retained as paragraph; semantics not certified
+管理英语4 Passage 27 lines EN [1118] / ZH [1119]: sentence counts 4/3; kept as paragraph
+管理英语4 Passage 27 lines EN [1120] / ZH [1121]: equal multi-sentence counts retained as paragraph; semantics not certified
+管理英语4 Passage 28 lines EN [1126] / ZH [1127]: equal multi-sentence counts retained as paragraph; semantics not certified
+管理英语4 Passage 28 lines EN [1128] / ZH [1129]: equal multi-sentence counts retained as paragraph; semantics not certified
+管理英语4 Passage 28 lines EN [1130] / ZH [1131]: sentence counts 8/7; kept as paragraph
+管理英语4 Passage 28 lines EN [1132] / ZH [1133]: sentence counts 3/2; kept as paragraph
+管理英语4 Passage 28 lines EN [1134] / ZH [1135]: equal multi-sentence counts retained as paragraph; semantics not certified
+管理英语4 Passage 29 lines EN [1140] / ZH [1141]: equal multi-sentence counts retained as paragraph; semantics not certified
+管理英语4 Passage 29 lines EN [1142] / ZH [1143]: sentence counts 8/6; kept as paragraph
+管理英语4 Passage 29 lines EN [1144] / ZH [1145]: sentence counts 6/3; kept as paragraph
+管理英语4 Passage 29 lines EN [1146] / ZH [1147]: equal multi-sentence counts retained as paragraph; semantics not certified
+管理英语4 Passage 30 lines EN [1151] / ZH [1152]: equal multi-sentence counts retained as paragraph; semantics not certified
+管理英语4 Passage 30 lines EN [1153] / ZH [1154]: equal multi-sentence counts retained as paragraph; semantics not certified
+管理英语4 Passage 30 lines EN [1157] / ZH [1158]: equal multi-sentence counts retained as paragraph; semantics not certified
+管理英语4 Passage 30 lines EN [1161] / ZH [1162]: equal multi-sentence counts retained as paragraph; semantics not certified
+管理英语4 Passage 30 lines EN [1163] / ZH [1164]: equal multi-sentence counts retained as paragraph; semantics not certified
+管理英语4 Passage 30 lines EN [1165] / ZH [1166]: equal multi-sentence counts retained as paragraph; semantics not certified
+管理英语4 Passage 30 lines EN [1167] / ZH [1168]: equal multi-sentence counts retained as paragraph; semantics not certified
+管理英语4 Passage 31 lines EN [1175] / ZH [1176]: equal multi-sentence counts retained as paragraph; semantics not certified
+管理英语4 Passage 31 lines EN [1177] / ZH [1178]: equal multi-sentence counts retained as paragraph; semantics not certified
+管理英语4 Passage 31 lines EN [1179] / ZH [1180]: equal multi-sentence counts retained as paragraph; semantics not certified
+管理英语4 Passage 31 lines EN [1181] / ZH [1182]: equal multi-sentence counts retained as paragraph; semantics not certified
+管理英语4 Passage 32 lines EN [1187] / ZH [1188]: equal multi-sentence counts retained as paragraph; semantics not certified
+管理英语4 Passage 32 lines EN [1189] / ZH [1190]: equal multi-sentence counts retained as paragraph; semantics not certified
+管理英语4 Passage 32 lines EN [1191] / ZH [1192]: equal multi-sentence counts retained as paragraph; semantics not certified
+管理英语4 Passage 32 lines EN [1193] / ZH [1194]: equal multi-sentence counts retained as paragraph; semantics not certified
+管理英语4 Passage 32 lines EN [1195] / ZH [1196]: equal multi-sentence counts retained as paragraph; semantics not certified
+管理英语4 Passage 32 lines [1200]: Non-linguistic source fragment preserved.
+理工英语3 Passage 1 lines EN [1205] / ZH [1206]: sentence counts 4/1; kept as paragraph
+理工英语3 Passage 1 lines EN [1207] / ZH [1208]: equal multi-sentence counts retained as paragraph; semantics not certified
+理工英语3 Passage 1 lines EN [1209] / ZH [1210]: sentence counts 2/1; kept as paragraph
+理工英语3 Passage 1 lines EN [1211] / ZH [1212]: sentence counts 5/2; kept as paragraph
+理工英语3 Passage 1 lines EN [1213] / ZH [1214]: sentence counts 2/1; kept as paragraph
+理工英语3 Passage 1 lines EN [1215] / ZH [1216]: equal multi-sentence counts retained as paragraph; semantics not certified
+理工英语3 Passage 1 lines EN [1217] / ZH [1218]: sentence counts 2/1; kept as paragraph
+理工英语3 Passage 1 lines EN [1219] / ZH [1220]: sentence counts 5/4; kept as paragraph
+理工英语3 Passage 1 lines EN [1221] / ZH [1222]: sentence counts 2/1; kept as paragraph
+理工英语3 Passage 1 lines EN [1223] / ZH [1224]: sentence counts 4/2; kept as paragraph
+理工英语3 Passage 1 lines EN [1225] / ZH [1226]: sentence counts 2/1; kept as paragraph
+理工英语3 Passage 1 lines EN [1227] / ZH [1228]: sentence counts 3/2; kept as paragraph
+理工英语3 Passage 2 lines EN [1233] / ZH [1234]: equal multi-sentence counts retained as paragraph; semantics not certified
+理工英语3 Passage 2 lines EN [1237] / ZH [1238]: equal multi-sentence counts retained as paragraph; semantics not certified
+理工英语3 Passage 2 lines EN [1241] / ZH [1242]: equal multi-sentence counts retained as paragraph; semantics not certified
+理工英语3 Passage 2 lines EN [1245] / ZH [1246]: equal multi-sentence counts retained as paragraph; semantics not certified
+理工英语3 Passage 2 lines EN [1247] / ZH [1248]: equal multi-sentence counts retained as paragraph; semantics not certified
+理工英语3 Passage 3 lines EN [1253] / ZH [1254]: sentence counts 4/3; kept as paragraph
+理工英语3 Passage 3 lines EN [1255] / ZH [1256]: equal multi-sentence counts retained as paragraph; semantics not certified
+理工英语3 Passage 3 lines EN [1257] / ZH [1258]: equal multi-sentence counts retained as paragraph; semantics not certified
+理工英语3 Passage 3 lines EN [1259] / ZH [1260]: sentence counts 6/7; kept as paragraph
+理工英语3 Passage 4 lines EN [1265] / ZH [1266]: sentence counts 2/3; kept as paragraph
+理工英语3 Passage 4 lines EN [1269] / ZH [1270]: sentence counts 6/4; kept as paragraph
+理工英语3 Passage 4 lines EN [1273] / ZH [1274]: equal multi-sentence counts retained as paragraph; semantics not certified
+理工英语3 Passage 4 lines EN [1275] / ZH [1276]: equal multi-sentence counts retained as paragraph; semantics not certified
+理工英语3 Passage 5 lines EN [1280] / ZH [1281]: equal multi-sentence counts retained as paragraph; semantics not certified
+理工英语3 Passage 5 lines EN [1282] / ZH [1283]: equal multi-sentence counts retained as paragraph; semantics not certified
+理工英语3 Passage 5 lines EN [1284] / ZH [1285]: equal multi-sentence counts retained as paragraph; semantics not certified
+理工英语3 Passage 5 lines EN [1286] / ZH [1287]: sentence counts 6/5; kept as paragraph
+理工英语3 Passage 5 lines EN [1288] / ZH [1289]: sentence counts 3/1; kept as paragraph
+理工英语3 Passage 5 lines EN [1290] / ZH [1291]: equal multi-sentence counts retained as paragraph; semantics not certified
+理工英语3 Passage 6 lines EN [1295] / ZH [1296]: equal multi-sentence counts retained as paragraph; semantics not certified
+理工英语3 Passage 6 lines EN [1297] / ZH [1298]: sentence counts 3/2; kept as paragraph
+理工英语3 Passage 6 lines EN [1299] / ZH [1300]: equal multi-sentence counts retained as paragraph; semantics not certified
+理工英语3 Passage 6 lines EN [1301] / ZH [1302]: equal multi-sentence counts retained as paragraph; semantics not certified
+理工英语3 Passage 7 lines EN [1307] / ZH [1308]: equal multi-sentence counts retained as paragraph; semantics not certified
+理工英语3 Passage 7 lines EN [1309] / ZH [1310]: sentence counts 5/4; kept as paragraph
+理工英语3 Passage 7 lines EN [1311] / ZH [1312]: equal multi-sentence counts retained as paragraph; semantics not certified
+理工英语3 Passage 7 lines EN [1313] / ZH [1314]: equal multi-sentence counts retained as paragraph; semantics not certified
+理工英语3 Passage 7 lines EN [1315] / ZH [1316]: sentence counts 5/4; kept as paragraph
+理工英语3 Passage 7 lines EN [1317] / ZH [1318]: sentence counts 2/1; kept as paragraph
+理工英语3 Passage 8 lines EN [1322] / ZH [1323]: sentence counts 2/1; kept as paragraph
+理工英语3 Passage 8 lines EN [1324] / ZH [1325]: equal multi-sentence counts retained as paragraph; semantics not certified
+理工英语3 Passage 8 lines EN [1326] / ZH [1327]: equal multi-sentence counts retained as paragraph; semantics not certified
+理工英语3 Passage 8 lines EN [1328] / ZH [1329]: sentence counts 3/2; kept as paragraph
+理工英语3 Passage 8 lines EN [1330] / ZH [1331]: equal multi-sentence counts retained as paragraph; semantics not certified
+理工英语3 Passage 8 lines EN [1332] / ZH [1333]: equal multi-sentence counts retained as paragraph; semantics not certified
+理工英语3 Passage 8 lines EN [1334] / ZH [1335]: equal multi-sentence counts retained as paragraph; semantics not certified
+理工英语3 Passage 9 lines EN [1340] / ZH [1341]: sentence counts 2/1; kept as paragraph
+理工英语3 Passage 9 lines EN [1342] / ZH [1343]: equal multi-sentence counts retained as paragraph; semantics not certified
+理工英语3 Passage 9 lines EN [1346] / ZH [1347]: equal multi-sentence counts retained as paragraph; semantics not certified
+理工英语3 Passage 9 lines EN [1350] / ZH [1351]: equal multi-sentence counts retained as paragraph; semantics not certified
+理工英语3 Passage 9 lines EN [1354] / ZH [1355]: equal multi-sentence counts retained as paragraph; semantics not certified
+理工英语3 Passage 9 lines EN [1362] / ZH [1363]: equal multi-sentence counts retained as paragraph; semantics not certified
+理工英语3 Passage 9 lines EN [1366] / ZH [1367]: equal multi-sentence counts retained as paragraph; semantics not certified
+理工英语3 Passage 10 lines EN [1372] / ZH [1373]: equal multi-sentence counts retained as paragraph; semantics not certified
+理工英语3 Passage 10 lines EN [1374] / ZH [1375]: sentence counts 1/2; kept as paragraph
+理工英语3 Passage 10 lines EN [1376] / ZH [1377]: equal multi-sentence counts retained as paragraph; semantics not certified
+理工英语3 Passage 10 lines EN [1378] / ZH [1379]: equal multi-sentence counts retained as paragraph; semantics not certified
+理工英语3 Passage 10 lines EN [1380] / ZH [1381]: sentence counts 5/4; kept as paragraph
+理工英语3 Passage 10 lines EN [1382] / ZH [1383]: sentence counts 4/5; kept as paragraph
+理工英语3 Passage 11 lines EN [1387] / ZH [1388]: equal multi-sentence counts retained as paragraph; semantics not certified
+理工英语3 Passage 11 lines EN [1389] / ZH [1390]: equal multi-sentence counts retained as paragraph; semantics not certified
+理工英语3 Passage 11 lines EN [1391] / ZH [1392]: equal multi-sentence counts retained as paragraph; semantics not certified
+理工英语3 Passage 11 lines EN [1393] / ZH [1394]: equal multi-sentence counts retained as paragraph; semantics not certified
+理工英语3 Passage 11 lines EN [1395] / ZH [1396]: equal multi-sentence counts retained as paragraph; semantics not certified
+理工英语3 Passage 11 lines EN [1397] / ZH [1398]: equal multi-sentence counts retained as paragraph; semantics not certified
+理工英语3 Passage 11 lines EN [1399] / ZH [1400]: equal multi-sentence counts retained as paragraph; semantics not certified
+理工英语3 Passage 11 lines EN [1401] / ZH [1402]: sentence counts 2/3; kept as paragraph
+理工英语3 Passage 12 lines EN [1409] / ZH [1410]: equal multi-sentence counts retained as paragraph; semantics not certified
+理工英语3 Passage 12 lines EN [1411] / ZH [1412]: sentence counts 4/3; kept as paragraph
+理工英语3 Passage 12 lines EN [1413] / ZH [1414]: sentence counts 4/3; kept as paragraph
+理工英语3 Passage 12 lines EN [1415] / ZH [1416]: sentence counts 4/2; kept as paragraph
+理工英语3 Passage 12 lines EN [1417] / ZH [1418]: equal multi-sentence counts retained as paragraph; semantics not certified
+理工英语3 Passage 13 lines EN [1423] / ZH [1424]: equal multi-sentence counts retained as paragraph; semantics not certified
+理工英语3 Passage 13 lines EN [1425] / ZH [1426]: equal multi-sentence counts retained as paragraph; semantics not certified
+理工英语3 Passage 13 lines EN [1427] / ZH [1428]: equal multi-sentence counts retained as paragraph; semantics not certified
+理工英语3 Passage 13 lines EN [1429] / ZH [1430]: equal multi-sentence counts retained as paragraph; semantics not certified
+理工英语3 Passage 13 lines EN [1431] / ZH [1432]: sentence counts 5/4; kept as paragraph
+理工英语3 Passage 14 lines EN [1437] / ZH [1438]: equal multi-sentence counts retained as paragraph; semantics not certified
+理工英语3 Passage 14 lines EN [1439] / ZH [1440]: sentence counts 6/4; kept as paragraph
+理工英语3 Passage 14 lines EN [1441] / ZH [1442]: equal multi-sentence counts retained as paragraph; semantics not certified
+理工英语3 Passage 14 lines EN [1443] / ZH [1444]: sentence counts 4/3; kept as paragraph
+理工英语3 Passage 14 lines EN [1445] / ZH [1446]: sentence counts 2/3; kept as paragraph
+理工英语3 Passage 14 lines EN [1447] / ZH [1448]: equal multi-sentence counts retained as paragraph; semantics not certified
+理工英语3 Passage 15 lines EN [1452] / ZH [1453]: sentence counts 6/5; kept as paragraph
+理工英语3 Passage 15 lines EN [1454] / ZH [1455]: sentence counts 5/2; kept as paragraph
+理工英语3 Passage 15 lines EN [1456] / ZH [1457]: sentence counts 4/5; kept as paragraph
+理工英语3 Passage 15 lines EN [1458] / ZH [1459]: sentence counts 5/6; kept as paragraph
+理工英语3 Passage 16 lines EN [1464] / ZH [1465]: equal multi-sentence counts retained as paragraph; semantics not certified
+理工英语3 Passage 16 lines EN [1466] / ZH [1467]: sentence counts 5/4; kept as paragraph
+理工英语3 Passage 16 lines EN [1468] / ZH [1469]: sentence counts 4/3; kept as paragraph
+理工英语3 Passage 16 lines EN [1470] / ZH [1471]: equal multi-sentence counts retained as paragraph; semantics not certified
+理工英语3 Passage 16 lines [1472]: Non-linguistic source fragment preserved.
+理工英语4 Passage 17 lines EN [1481] / ZH [1482]: sentence counts 3/2; kept as paragraph
+理工英语4 Passage 17 lines EN [1483] / ZH [1484]: equal multi-sentence counts retained as paragraph; semantics not certified
+理工英语4 Passage 17 lines EN [1485] / ZH [1486]: equal multi-sentence counts retained as paragraph; semantics not certified
+理工英语4 Passage 18 lines EN [1491] / ZH [1492]: equal multi-sentence counts retained as paragraph; semantics not certified
+理工英语4 Passage 18 lines EN [1493] / ZH [1494]: sentence counts 3/2; kept as paragraph
+理工英语4 Passage 18 lines EN [1495] / ZH [1496]: equal multi-sentence counts retained as paragraph; semantics not certified
+理工英语4 Passage 18 lines 1497-1498: The source has a space before a comma. The original punctuation is retained.
+理工英语4 Passage 19 lines EN [1505] / ZH [1506]: sentence counts 3/4; kept as paragraph
+理工英语4 Passage 19 lines EN [1507] / ZH [1508]: equal multi-sentence counts retained as paragraph; semantics not certified
+理工英语4 Passage 19 lines EN [1511] / ZH [1512]: equal multi-sentence counts retained as paragraph; semantics not certified
+理工英语4 Passage 19 lines EN [1513] / ZH [1514]: equal multi-sentence counts retained as paragraph; semantics not certified
+理工英语4 Passage 19 lines EN [1515] / ZH [1516]: sentence counts 1/2; kept as paragraph
+理工英语4 Passage 20 lines EN [1521] / ZH [1522]: equal multi-sentence counts retained as paragraph; semantics not certified
+理工英语4 Passage 20 lines EN [1523] / ZH [1524]: sentence counts 1/2; kept as paragraph
+理工英语4 Passage 20 lines EN [1525] / ZH [1526]: equal multi-sentence counts retained as paragraph; semantics not certified
+理工英语4 Passage 20 lines EN [1527] / ZH [1528]: sentence counts 4/3; kept as paragraph
+理工英语4 Passage 20 lines EN [1529] / ZH [1530]: equal multi-sentence counts retained as paragraph; semantics not certified
+理工英语4 Passage 20 lines EN [1531] / ZH [1532]: equal multi-sentence counts retained as paragraph; semantics not certified
+理工英语4 Passage 20 lines EN [1533] / ZH [1534]: equal multi-sentence counts retained as paragraph; semantics not certified
+理工英语4 Passage 20 lines EN [1535] / ZH [1536]: equal multi-sentence counts retained as paragraph; semantics not certified
+理工英语4 Passage 20 lines EN [1537] / ZH [1538]: equal multi-sentence counts retained as paragraph; semantics not certified
+理工英语4 Passage 21 lines EN [1544] / ZH [1545]: equal multi-sentence counts retained as paragraph; semantics not certified
+理工英语4 Passage 21 lines EN [1546] / ZH [1547]: sentence counts 3/4; kept as paragraph
+理工英语4 Passage 21 lines EN [1548] / ZH [1549]: equal multi-sentence counts retained as paragraph; semantics not certified
+理工英语4 Passage 21 lines EN [1550] / ZH [1551]: equal multi-sentence counts retained as paragraph; semantics not certified
+理工英语4 Passage 21 lines EN [1552] / ZH [1553]: equal multi-sentence counts retained as paragraph; semantics not certified
+理工英语4 Passage 21 lines EN [1554] / ZH [1555]: equal multi-sentence counts retained as paragraph; semantics not certified
+理工英语4 Passage 22 lines EN [1560] / ZH [1561]: sentence counts 4/6; kept as paragraph
+理工英语4 Passage 22 lines EN [1562] / ZH [1563]: equal multi-sentence counts retained as paragraph; semantics not certified
+理工英语4 Passage 22 lines EN [1564] / ZH [1565]: sentence counts 3/2; kept as paragraph
+理工英语4 Passage 22 lines EN [1566] / ZH [1567]: equal multi-sentence counts retained as paragraph; semantics not certified
+理工英语4 Passage 22 lines EN [1568] / ZH [1569]: equal multi-sentence counts retained as paragraph; semantics not certified
+理工英语4 Passage 22 lines EN [1570] / ZH [1571]: equal multi-sentence counts retained as paragraph; semantics not certified
+理工英语4 Passage 22 lines EN [1572] / ZH [1573]: sentence counts 3/2; kept as paragraph
+理工英语4 Passage 23 lines EN [1578] / ZH [1579]: equal multi-sentence counts retained as paragraph; semantics not certified
+理工英语4 Passage 23 lines EN [1580] / ZH [1581]: equal multi-sentence counts retained as paragraph; semantics not certified
+理工英语4 Passage 23 lines EN [1582] / ZH [1583]: sentence counts 3/4; kept as paragraph
+理工英语4 Passage 23 lines EN [1584] / ZH [1585]: equal multi-sentence counts retained as paragraph; semantics not certified
+理工英语4 Passage 23 lines EN [1588] / ZH [1589]: equal multi-sentence counts retained as paragraph; semantics not certified
+理工英语4 Passage 24 lines EN [1594] / ZH [1595]: sentence counts 3/2; kept as paragraph
+理工英语4 Passage 24 lines EN [1596] / ZH [1597]: sentence counts 1/2; kept as paragraph
+理工英语4 Passage 24 lines 1598-1599: The source joins 'visually' and 'impaired'. The original spelling is retained.
+理工英语4 Passage 24 lines EN [1600] / ZH [1601]: sentence counts 1/2; kept as paragraph
+理工英语4 Passage 24 lines EN [1602] / ZH [1603]: equal multi-sentence counts retained as paragraph; semantics not certified
+理工英语4 Passage 24 lines EN [1604] / ZH [1605]: sentence counts 1/2; kept as paragraph
+理工英语4 Passage 24 lines EN [1606] / ZH [1607]: sentence counts 1/2; kept as paragraph
+理工英语4 Passage 24 lines 1608-1609: The source joins 'the' and 'multisensory'. The original spelling is retained.
+理工英语4 Passage 25 lines EN [1614] / ZH [1615]: sentence counts 6/5; kept as paragraph
+理工英语4 Passage 25 lines EN [1616] / ZH [1617]: equal multi-sentence counts retained as paragraph; semantics not certified
+理工英语4 Passage 25 lines EN [1618] / ZH [1619]: sentence counts 8/6; kept as paragraph
+理工英语4 Passage 25 lines EN [1620] / ZH [1621]: sentence counts 5/4; kept as paragraph
+理工英语4 Passage 25 lines EN [1622] / ZH [1623]: sentence counts 5/3; kept as paragraph
+理工英语4 Passage 25 lines EN [1624] / ZH [1625]: sentence counts 7/4; kept as paragraph
+理工英语4 Passage 25 lines EN [1626] / ZH [1627]: equal multi-sentence counts retained as paragraph; semantics not certified
+理工英语4 Passage 26 lines EN [1632] / ZH [1633]: sentence counts 2/1; kept as paragraph
+理工英语4 Passage 26 lines EN [1634] / ZH [1635]: equal multi-sentence counts retained as paragraph; semantics not certified
+理工英语4 Passage 26 lines EN [1636] / ZH [1637]: equal multi-sentence counts retained as paragraph; semantics not certified
+理工英语4 Passage 26 lines EN [1638] / ZH [1639]: sentence counts 2/1; kept as paragraph
+理工英语4 Passage 26 lines EN [1640] / ZH [1641]: sentence counts 3/1; kept as paragraph
+理工英语4 Passage 26 lines EN [1642] / ZH [1643]: sentence counts 4/3; kept as paragraph
+理工英语4 Passage 26 lines EN [1644] / ZH [1645]: sentence counts 4/3; kept as paragraph
+理工英语4 Passage 27 lines EN [1653] / ZH [1654]: sentence counts 3/2; kept as paragraph
+理工英语4 Passage 27 lines EN [1657] / ZH [1658]: sentence counts 3/2; kept as paragraph
+理工英语4 Passage 27 lines EN [1661] / ZH [1662]: sentence counts 7/6; kept as paragraph
+理工英语4 Passage 27 lines EN [1665] / ZH [1666]: sentence counts 10/7; kept as paragraph
+理工英语4 Passage 27 lines EN [1669] / ZH [1670]: sentence counts 4/3; kept as paragraph
+理工英语4 Passage 28 lines EN [1675] / ZH [1676]: equal multi-sentence counts retained as paragraph; semantics not certified
+理工英语4 Passage 28 lines EN [1677] / ZH [1678]: equal multi-sentence counts retained as paragraph; semantics not certified
+理工英语4 Passage 28 lines EN [1679] / ZH [1680]: sentence counts 3/2; kept as paragraph
+理工英语4 Passage 28 lines EN [1681] / ZH [1682]: equal multi-sentence counts retained as paragraph; semantics not certified
+理工英语4 Passage 28 lines EN [1683] / ZH [1684]: equal multi-sentence counts retained as paragraph; semantics not certified
+理工英语4 Passage 28 lines EN [1685] / ZH [1686]: equal multi-sentence counts retained as paragraph; semantics not certified
+理工英语4 Passage 28 lines EN [1687] / ZH [1688]: equal multi-sentence counts retained as paragraph; semantics not certified
+理工英语4 Passage 29 lines EN [1693] / ZH [1694]: sentence counts 1/3; kept as paragraph
+理工英语4 Passage 29 lines EN [1695] / ZH [1696]: sentence counts 1/2; kept as paragraph
+理工英语4 Passage 29 lines EN [1697] / ZH [1698]: equal multi-sentence counts retained as paragraph; semantics not certified
+理工英语4 Passage 29 lines EN [1699] / ZH [1700]: equal multi-sentence counts retained as paragraph; semantics not certified
+理工英语4 Passage 29 lines EN [1701] / ZH [1702]: equal multi-sentence counts retained as paragraph; semantics not certified
+理工英语4 Passage 29 lines EN [1703] / ZH [1704]: equal multi-sentence counts retained as paragraph; semantics not certified
+理工英语4 Passage 30 lines EN [1709] / ZH [1710]: equal multi-sentence counts retained as paragraph; semantics not certified
+理工英语4 Passage 30 lines 1711-1712: The source splits the proper name 'Gurian-Sherman'. The Chinese parallel gives 'Gurian-Sherman'. The original spelling is retained.
+理工英语4 Passage 30 lines EN [1713] / ZH [1714]: equal multi-sentence counts retained as paragraph; semantics not certified
+理工英语4 Passage 30 lines EN [1715] / ZH [1716]: equal multi-sentence counts retained as paragraph; semantics not certified
+理工英语4 Passage 30 lines EN [1717] / ZH [1718]: equal multi-sentence counts retained as paragraph; semantics not certified
+理工英语4 Passage 30 lines EN [1719] / ZH [1720]: equal multi-sentence counts retained as paragraph; semantics not certified
+理工英语4 Passage 31 lines EN [1727] / ZH [1728]: equal multi-sentence counts retained as paragraph; semantics not certified
+理工英语4 Passage 31 lines EN [1731] / ZH [1732]: equal multi-sentence counts retained as paragraph; semantics not certified
+理工英语4 Passage 31 lines EN [1735] / ZH [1736]: sentence counts 3/4; kept as paragraph
+理工英语4 Passage 31 lines EN [1739] / ZH [1740]: sentence counts 6/5; kept as paragraph
+理工英语4 Passage 31 lines EN [1743] / ZH [1744]: sentence counts 10/8; kept as paragraph
+理工英语4 Passage 32 lines EN [1751] / ZH [1752]: sentence counts 5/3; kept as paragraph
+理工英语4 Passage 32 lines EN [1755] / ZH [1756]: equal multi-sentence counts retained as paragraph; semantics not certified
+理工英语4 Passage 32 lines EN [1759] / ZH [1760]: equal multi-sentence counts retained as paragraph; semantics not certified
+理工英语4 Passage 32 lines EN [1763] / ZH [1764]: equal multi-sentence counts retained as paragraph; semantics not certified
+理工英语4 Passage 32 lines [1765]: Non-linguistic source fragment preserved.
+商务英语3 Passage 1 lines EN [1771] / ZH [1772]: equal multi-sentence counts retained as paragraph; semantics not certified
+商务英语3 Passage 1 lines EN [1773] / ZH [1774]: equal multi-sentence counts retained as paragraph; semantics not certified
+商务英语3 Passage 1 lines EN [1775] / ZH [1776]: equal multi-sentence counts retained as paragraph; semantics not certified
+商务英语3 Passage 1 lines EN [1777] / ZH [1778]: sentence counts 4/3; kept as paragraph
+商务英语3 Passage 1 lines EN [1779] / ZH [1780]: equal multi-sentence counts retained as paragraph; semantics not certified
+商务英语3 Passage 1 lines EN [1781] / ZH [1782]: equal multi-sentence counts retained as paragraph; semantics not certified
+商务英语3 Passage 2 lines EN [1787] / ZH [1788]: equal multi-sentence counts retained as paragraph; semantics not certified
+商务英语3 Passage 2 lines EN [1789] / ZH [1790]: sentence counts 4/3; kept as paragraph
+商务英语3 Passage 2 lines EN [1791] / ZH [1792]: equal multi-sentence counts retained as paragraph; semantics not certified
+商务英语3 Passage 3 lines EN [1797] / ZH [1798]: equal multi-sentence counts retained as paragraph; semantics not certified
+商务英语3 Passage 3 lines EN [1799] / ZH [1800]: equal multi-sentence counts retained as paragraph; semantics not certified
+商务英语3 Passage 3 lines EN [1801] / ZH [1802]: equal multi-sentence counts retained as paragraph; semantics not certified
+商务英语3 Passage 4 lines EN [1807] / ZH [1808]: equal multi-sentence counts retained as paragraph; semantics not certified
+商务英语3 Passage 4 lines EN [1809] / ZH [1810]: equal multi-sentence counts retained as paragraph; semantics not certified
+商务英语3 Passage 4 lines EN [1811] / ZH [1812]: sentence counts 9/5; kept as paragraph
+商务英语3 Passage 4 lines EN [1813] / ZH [1814]: equal multi-sentence counts retained as paragraph; semantics not certified
+商务英语3 Passage 5 lines EN [1819] / ZH [1820]: equal multi-sentence counts retained as paragraph; semantics not certified
+商务英语3 Passage 5 lines EN [1821] / ZH [1822]: equal multi-sentence counts retained as paragraph; semantics not certified
+商务英语3 Passage 5 lines EN [1823] / ZH [1824]: equal multi-sentence counts retained as paragraph; semantics not certified
+商务英语3 Passage 5 lines EN [1825] / ZH [1826]: equal multi-sentence counts retained as paragraph; semantics not certified
+商务英语3 Passage 5 lines EN [1827] / ZH [1828]: equal multi-sentence counts retained as paragraph; semantics not certified
+商务英语3 Passage 6 lines EN [1833] / ZH [1834]: equal multi-sentence counts retained as paragraph; semantics not certified
+商务英语3 Passage 6 lines EN [1835] / ZH [1836]: equal multi-sentence counts retained as paragraph; semantics not certified
+商务英语3 Passage 6 lines EN [1837] / ZH [1838]: equal multi-sentence counts retained as paragraph; semantics not certified
+商务英语3 Passage 7 lines EN [1862] / ZH [1863]: equal multi-sentence counts retained as paragraph; semantics not certified
+商务英语3 Passage 7 lines EN [1864, 1865, 1866, 1867] / ZH [1870, 1871, 1872, 1873]: tabular block retained
+商务英语3 Passage 7 lines EN [1874] / ZH [1875]: equal multi-sentence counts retained as paragraph; semantics not certified
+商务英语3 Passage 7 lines EN [1876] / ZH [1877]: equal multi-sentence counts retained as paragraph; semantics not certified
+商务英语3 Passage 7 lines EN [1878] / ZH [1879]: equal multi-sentence counts retained as paragraph; semantics not certified
+商务英语3 Passage 7 lines EN [1880] / ZH [1881]: equal multi-sentence counts retained as paragraph; semantics not certified
+商务英语3 Passage 7 lines EN [1882] / ZH [1883]: equal multi-sentence counts retained as paragraph; semantics not certified
+商务英语3 Passage 7 lines EN [1890] / ZH [1891]: tabular block retained
+商务英语3 Passage 8 lines EN [1896] / ZH [1897]: sentence counts 3/2; kept as paragraph
+商务英语3 Passage 8 lines EN [1898] / ZH [1899]: equal multi-sentence counts retained as paragraph; semantics not certified
+商务英语3 Passage 8 lines EN [1900] / ZH [1901]: sentence counts 3/2; kept as paragraph
+商务英语3 Passage 8 lines EN [1902] / ZH [1903]: sentence counts 5/3; kept as paragraph
+商务英语3 Passage 8 lines EN [1904] / ZH [1905]: equal multi-sentence counts retained as paragraph; semantics not certified
+商务英语3 Passage 9 lines EN [1912] / ZH [1913]: equal multi-sentence counts retained as paragraph; semantics not certified
+商务英语3 Passage 9 lines EN [1914] / ZH [1915]: equal multi-sentence counts retained as paragraph; semantics not certified
+商务英语3 Passage 9 lines EN [1916] / ZH [1917]: equal multi-sentence counts retained as paragraph; semantics not certified
+商务英语3 Passage 9 lines EN [1918] / ZH [1919]: equal multi-sentence counts retained as paragraph; semantics not certified
+商务英语3 Passage 9 lines EN [1920] / ZH [1921]: equal multi-sentence counts retained as paragraph; semantics not certified
+商务英语3 Passage 9 lines EN [1924] / ZH [1925]: equal multi-sentence counts retained as paragraph; semantics not certified
+商务英语3 Passage 9 lines EN [1926] / ZH [1927]: equal multi-sentence counts retained as paragraph; semantics not certified
+商务英语3 Passage 10 lines EN [1931] / ZH [1932]: equal multi-sentence counts retained as paragraph; semantics not certified
+商务英语3 Passage 10 lines EN [1933] / ZH [1934]: equal multi-sentence counts retained as paragraph; semantics not certified
+商务英语3 Passage 10 lines EN [1935] / ZH [1936]: equal multi-sentence counts retained as paragraph; semantics not certified
+商务英语3 Passage 11 lines EN [1942] / ZH [1943]: equal multi-sentence counts retained as paragraph; semantics not certified
+商务英语3 Passage 11 lines EN [1944] / ZH [1945]: sentence counts 5/4; kept as paragraph
+商务英语3 Passage 11 lines EN [1946] / ZH [1947]: equal multi-sentence counts retained as paragraph; semantics not certified
+商务英语3 Passage 12 lines EN [1952] / ZH [1953]: equal multi-sentence counts retained as paragraph; semantics not certified
+商务英语3 Passage 12 lines EN [1954] / ZH [1955]: equal multi-sentence counts retained as paragraph; semantics not certified
+商务英语3 Passage 13 lines EN [1961] / ZH [1962]: equal multi-sentence counts retained as paragraph; semantics not certified
+商务英语3 Passage 13 lines EN [1967] / ZH [1968]: equal multi-sentence counts retained as paragraph; semantics not certified
+商务英语3 Passage 13 lines EN [1971, 1972] / ZH [1973]: equal multi-sentence counts retained as paragraph; semantics not certified
+商务英语3 Passage 13 lines EN [1976] / ZH [1977]: equal multi-sentence counts retained as paragraph; semantics not certified
+商务英语3 Passage 13 lines EN [1978] / ZH [1979]: equal multi-sentence counts retained as paragraph; semantics not certified
+商务英语3 Passage 14 lines EN [1984] / ZH [1985]: equal multi-sentence counts retained as paragraph; semantics not certified
+商务英语3 Passage 14 lines EN [1986] / ZH [1987]: sentence counts 4/5; kept as paragraph
+商务英语3 Passage 14 lines EN [1988] / ZH [1989]: equal multi-sentence counts retained as paragraph; semantics not certified
+商务英语3 Passage 14 lines EN [1990] / ZH [1991]: sentence counts 8/7; kept as paragraph
+商务英语3 Passage 15 lines EN [1996] / ZH [1997]: sentence counts 5/4; kept as paragraph
+商务英语3 Passage 15 lines EN [1998] / ZH [1999]: equal multi-sentence counts retained as paragraph; semantics not certified
+商务英语3 Passage 15 lines EN [2000] / ZH [2001]: equal multi-sentence counts retained as paragraph; semantics not certified
+商务英语3 Passage 16 lines EN [2006] / ZH [2007]: equal multi-sentence counts retained as paragraph; semantics not certified
+商务英语3 Passage 16 lines EN [2008] / ZH [2009]: equal multi-sentence counts retained as paragraph; semantics not certified
+商务英语3 Passage 16 lines [2010]: Non-linguistic source fragment preserved.
+商务英语4 Passage 17 lines EN [2014] / ZH [2015]: equal multi-sentence counts retained as paragraph; semantics not certified
+商务英语4 Passage 17 lines EN [2016] / ZH [2017]: equal multi-sentence counts retained as paragraph; semantics not certified
+商务英语4 Passage 18 lines EN [2023] / ZH [2024]: equal multi-sentence counts retained as paragraph; semantics not certified
+商务英语4 Passage 18 lines EN [2031] / ZH [2032]: equal multi-sentence counts retained as paragraph; semantics not certified
+商务英语4 Passage 18 lines EN [2033] / ZH [2034]: equal multi-sentence counts retained as paragraph; semantics not certified
+商务英语4 Passage 18 lines EN [2035, 2036, 2037, 2038, 2039] / ZH [2040, 2041, 2042, 2043, 2044]: structural or multi-line block retained; semantics not certified
+商务英语4 Passage 18 lines EN [2045] / ZH [2046]: equal multi-sentence counts retained as paragraph; semantics not certified
+商务英语4 Passage 19 lines EN [2050] / ZH [2051]: equal multi-sentence counts retained as paragraph; semantics not certified
+商务英语4 Passage 19 lines EN [2052] / ZH [2053]: equal multi-sentence counts retained as paragraph; semantics not certified
+商务英语4 Passage 19 lines EN [2054] / ZH [2055]: equal multi-sentence counts retained as paragraph; semantics not certified
+商务英语4 Passage 19 lines EN [2056] / ZH [2057]: equal multi-sentence counts retained as paragraph; semantics not certified
+商务英语4 Passage 19 lines EN [2058] / ZH [2059]: equal multi-sentence counts retained as paragraph; semantics not certified
+商务英语4 Passage 20 lines EN [2064] / ZH [2065]: equal multi-sentence counts retained as paragraph; semantics not certified
+商务英语4 Passage 20 lines EN [2066] / ZH [2067]: equal multi-sentence counts retained as paragraph; semantics not certified
+商务英语4 Passage 20 lines EN [2068] / ZH [2069]: equal multi-sentence counts retained as paragraph; semantics not certified
+商务英语4 Passage 20 lines EN [2070] / ZH [2071]: equal multi-sentence counts retained as paragraph; semantics not certified
+商务英语4 Passage 21 lines EN [2076] / ZH [2077]: equal multi-sentence counts retained as paragraph; semantics not certified
+商务英语4 Passage 21 lines EN [2078] / ZH [2079]: sentence counts 8/9; kept as paragraph
+商务英语4 Passage 21 lines EN [2080] / ZH [2081]: equal multi-sentence counts retained as paragraph; semantics not certified
+商务英语4 Passage 22 lines EN [2086] / ZH [2087]: equal multi-sentence counts retained as paragraph; semantics not certified
+商务英语4 Passage 22 lines EN [2088] / ZH [2089]: sentence counts 2/1; kept as paragraph
+商务英语4 Passage 22 lines EN [2090] / ZH [2091]: sentence counts 6/5; kept as paragraph
+商务英语4 Passage 22 lines EN [2092] / ZH [2093]: sentence counts 2/1; kept as paragraph
+商务英语4 Passage 22 lines EN [2094] / ZH [2095]: equal multi-sentence counts retained as paragraph; semantics not certified
+商务英语4 Passage 22 lines EN [2096] / ZH [2097]: sentence counts 2/1; kept as paragraph
+商务英语4 Passage 22 lines EN [2098] / ZH [2099]: equal multi-sentence counts retained as paragraph; semantics not certified
+商务英语4 Passage 23 lines EN [2102] / ZH [2103]: equal multi-sentence counts retained as paragraph; semantics not certified
+商务英语4 Passage 23 lines EN [2104] / ZH [2105]: equal multi-sentence counts retained as paragraph; semantics not certified
+商务英语4 Passage 23 lines EN [2106] / ZH [2107]: equal multi-sentence counts retained as paragraph; semantics not certified
+商务英语4 Passage 24 lines EN [2116] / ZH [2117]: equal multi-sentence counts retained as paragraph; semantics not certified
+商务英语4 Passage 24 lines EN [2120] / ZH [2121]: equal multi-sentence counts retained as paragraph; semantics not certified
+商务英语4 Passage 24 lines EN [2124] / ZH [2125]: equal multi-sentence counts retained as paragraph; semantics not certified
+商务英语4 Passage 24 lines EN [2128] / ZH [2129]: equal multi-sentence counts retained as paragraph; semantics not certified
+商务英语4 Passage 25 lines EN [2133] / ZH [2134]: equal multi-sentence counts retained as paragraph; semantics not certified
+商务英语4 Passage 25 lines EN [2135] / ZH [2136]: equal multi-sentence counts retained as paragraph; semantics not certified
+商务英语4 Passage 25 lines EN [2137] / ZH [2138]: equal multi-sentence counts retained as paragraph; semantics not certified
+商务英语4 Passage 25 lines EN [2139] / ZH [2140]: equal multi-sentence counts retained as paragraph; semantics not certified
+商务英语4 Passage 25 lines EN [2141] / ZH [2142]: sentence counts 6/7; kept as paragraph
+商务英语4 Passage 26 lines EN [2146] / ZH [2147]: equal multi-sentence counts retained as paragraph; semantics not certified
+商务英语4 Passage 26 lines EN [2150, 2151] / ZH [2152]: equal multi-sentence counts retained as paragraph; semantics not certified
+商务英语4 Passage 26 lines EN [2155] / ZH [2156]: equal multi-sentence counts retained as paragraph; semantics not certified
+商务英语4 Passage 26 lines EN [2159] / ZH [2160]: equal multi-sentence counts retained as paragraph; semantics not certified
+商务英语4 Passage 27 lines EN [2164] / ZH [2165]: equal multi-sentence counts retained as paragraph; semantics not certified
+商务英语4 Passage 27 lines EN [2166] / ZH [2167]: equal multi-sentence counts retained as paragraph; semantics not certified
+商务英语4 Passage 27 lines EN [2168] / ZH [2169]: equal multi-sentence counts retained as paragraph; semantics not certified
+商务英语4 Passage 27 lines EN [2172] / ZH [2173]: equal multi-sentence counts retained as paragraph; semantics not certified
+商务英语4 Passage 27 lines EN [2176] / ZH [2177]: sentence counts 4/3; kept as paragraph
+商务英语4 Passage 28 lines EN [2184, 2185] / ZH [2186, 2187]: equal multi-sentence counts retained as paragraph; semantics not certified
+商务英语4 Passage 28 lines EN [2190] / ZH [2191]: sentence counts 3/4; kept as paragraph
+商务英语4 Passage 28 lines EN [2194] / ZH [2195]: equal multi-sentence counts retained as paragraph; semantics not certified
+商务英语4 Passage 28 lines EN [2198] / ZH [2199]: equal multi-sentence counts retained as paragraph; semantics not certified
+商务英语4 Passage 29 lines EN [2204] / ZH [2205]: equal multi-sentence counts retained as paragraph; semantics not certified
+商务英语4 Passage 29 lines EN [2206] / ZH [2207]: sentence counts 4/3; kept as paragraph
+商务英语4 Passage 29 lines EN [2208] / ZH [2209]: equal multi-sentence counts retained as paragraph; semantics not certified
+商务英语4 Passage 30 lines EN [2218] / ZH [2219]: sentence counts 1/2; kept as paragraph
+商务英语4 Passage 30 lines EN [2220] / ZH [2221]: equal multi-sentence counts retained as paragraph; semantics not certified
+商务英语4 Passage 30 lines EN [2224] / ZH [2225]: equal multi-sentence counts retained as paragraph; semantics not certified
+商务英语4 Passage 30 lines EN [2226] / ZH [2227]: equal multi-sentence counts retained as paragraph; semantics not certified
+商务英语4 Passage 31 lines EN [2232] / ZH [2233]: equal multi-sentence counts retained as paragraph; semantics not certified
+商务英语4 Passage 31 lines EN [2234] / ZH [2235]: sentence counts 10/8; kept as paragraph
+商务英语4 Passage 31 lines EN [2236] / ZH [2237]: sentence counts 5/4; kept as paragraph
+商务英语4 Passage 31 lines EN [2238] / ZH [2239]: sentence counts 7/5; kept as paragraph
+商务英语4 Passage 32 lines EN [2244] / ZH [2245]: sentence counts 5/4; kept as paragraph
+商务英语4 Passage 32 lines EN [2246] / ZH [2247]: equal multi-sentence counts retained as paragraph; semantics not certified
+商务英语4 Passage 32 lines EN [2248] / ZH [2249]: equal multi-sentence counts retained as paragraph; semantics not certified
+商务英语4 Passage 32 lines EN [2250] / ZH [2251]: equal multi-sentence counts retained as paragraph; semantics not certified
+商务英语4 Passage 32 lines EN [2252] / ZH [2253]: equal multi-sentence counts retained as paragraph; semantics not certified
+商务英语4 Passage 32 lines EN [2254] / ZH [2255, 2256]: sentence counts 2/3; kept as paragraph

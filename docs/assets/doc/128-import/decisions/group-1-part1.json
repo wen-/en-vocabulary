@@ -1,0 +1,19 @@
+{"items":[
+{"article":1,"segment":1,"ok":true},
+{"article":1,"segment":2,"ok":true},
+{"article":1,"segment":3,"zh_starts":["二十年以前","如今，大多数","但只生育"],"note":"Chinese Z1 is a parenthetical giving the percentages for the first English sentence; kept with piece 0."},
+{"article":1,"segment":4,"ok":true},
+{"article":2,"segment":1,"ok":true},
+{"article":2,"segment":2,"ok":true},
+{"article":2,"segment":3,"zh_starts":["在你发火吼叫","会有天壤之别的","不要大声吼叫","这样，可以帮助","此外，你陪伴"],"note":"Chinese has 3 sentences for 5 English; cut at clause commas to match E0/E1 and E2/E3."},
+{"article":2,"segment":4,"ok":true},
+{"article":3,"segment":1,"ok":true},
+{"article":3,"segment":3,"ok":true},
+{"article":3,"segment":5,"ok":true},
+{"article":3,"segment":7,"zh_starts":["如果老年人得不到","这会导致","以尊重的态度","此外，你可以"],"note":"Chinese splits English E3 into two sentences (Z3, Z4); kept together as one piece."},
+{"article":3,"segment":9,"ok":true},
+{"article":3,"segment":11,"ok":true},
+{"article":4,"segment":1,"ok":true},
+{"article":4,"segment":2,"ok":true},
+{"article":4,"segment":4,"en_starts":["When most","However, China","It was 6,000","China’s economic"],"zh_starts":["大多数发达国家","然而，2001年","2012年达到","中国老龄社会"],"note":"Source English has a missing space ('2012.China’s'), so the script did not split it; re-cut into two sentences."}
+]}

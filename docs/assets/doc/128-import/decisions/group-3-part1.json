@@ -1,0 +1,17 @@
+{"items":[
+{"article":33,"segment":2,"zh_starts":["但是，随着","现在的公司","自由职业者","在大约五十","要把事情做好"],"zh_fixed":{"2":{"text":"专业人员必须成为自己的首席执行官(CEO)。","why":"'Professional workers' 被误译为 自由职业者；原文指专业/知识型员工，并非自由职业者。"}}},
+{"article":33,"segment":3,"ok":true},
+{"article":34,"segment":1,"zh_starts":["我是Hoogle","欢迎你来到","Hoogle工程始建","当时被分为","我们要聘请"]},
+{"article":34,"segment":2,"ok":true},
+{"article":34,"segment":3,"zh_starts":["但在过去","以前，我们","车间里的一线","会有一个管理","当你上升到","因此，在过去"]},
+{"article":34,"segment":4,"ok":true},
+{"article":35,"segment":1,"ok":true},
+{"article":35,"segment":2,"ok":true},
+{"article":35,"segment":3,"zh_starts":["但是，并不是","贸易联盟","TUC指出","其中许多工作"]},
+{"article":35,"segment":4,"ok":true},
+{"article":36,"segment":1,"zh_starts":["人力资源管理（","这两个过程"]},
+{"article":36,"segment":2,"zh_starts":["在管理人员方面","得制定招聘","人事工作也包含"]},
+{"article":36,"segment":3,"zh_starts":["人力资源管理在","提升员工职业","优质的人力","重要的是让员工","绩效管理是","这样做的原因"]},
+{"article":36,"segment":4,"zh_starts":["人力资源管理的另","这包括部门内","员工与管理层","它决定了机构"]},
+{"article":36,"segment":5,"ok":true,"zh_fixed":{"1":{"text":"常规规划、监测和评价对人力资源管理的成功非常重要。","why":"'monitoring' 被误译为 记录，应为 监测。"}}}
+]}

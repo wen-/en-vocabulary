@@ -11,10 +11,15 @@ import {
 import { listCategories, saveCategory, deleteCategory } from "./src/db/categoryRepository.js";
 import { listPracticeAttempts, recordPracticeAttempt, summarizeAttempts } from "./src/db/practiceRepository.js";
 import { APP_SETTING_KEYS, getBooleanSetting, setBooleanSetting } from "./src/db/settingsRepository.js";
-import { AUDIO_ACCEPT, validateAudioFile, playAudioBlob } from "./src/services/audioService.js";
+import { AUDIO_ACCEPT, validateAudioFile } from "./src/services/audioService.js";
+import { audioPlayer, observePlayback } from "./src/services/audioPlayer.js";
+import { listArticles, deleteArticle, getArticleAudio } from "./src/db/articleRepository.js";
+import { importArticlePackage, createArticleTemplate, exportArticlePackage, createArticlePackage } from "./src/services/articleImportService.js";
+import { renderArticlesView } from "./src/views/articlesView.js";
 import { DEMO_CATEGORIES, DEMO_WORDS } from "./src/services/demoData.js";
 import {
   clearAllData,
+  clearVocabularyData,
   createLibraryPackageZipBlob,
   createLibraryTemplate,
   importLibraryFromFile,
@@ -38,6 +43,7 @@ const VIEWS = {
   categories: "categories",
   practice: "practice",
   settings: "settings",
+  articles: "articles",
 };
 
 const MOBILE_WORDS_PER_PAGE = 10;
@@ -78,6 +84,10 @@ const state = {
   wordFilterDisclosureOpen: false,
   words: [],
   categories: [],
+  articles: [],
+  selectedArticleId: null,
+  articleSection: "list",
+  articleImportFile: null,
   practiceAttempts: [],
   filters: {
     query: "",
@@ -107,6 +117,21 @@ const state = {
 
 let noticeTimerId = 0;
 let libraryExportRevealTimerId = 0;
+
+observePlayback((playback) => {
+  for (const row of appRoot.querySelectorAll("[data-article-sentence]")) {
+    const active = playback.status === "playing" && row.dataset.articleSentence === playback.sentenceId;
+    row.classList.toggle("is-playing", active);
+    if (active) row.setAttribute("aria-current", "true");
+    else row.removeAttribute("aria-current");
+  }
+  const status = appRoot.querySelector("[data-article-playback-status]");
+  if (status) {
+    const article = state.articles.find((item) => item.id === playback.ownerId);
+    const index = article?.sentences.findIndex((sentence) => sentence.id === playback.sentenceId) ?? -1;
+    status.textContent = index >= 0 ? `正在播放第 ${index + 1} 句英文` : "未播放。有音频的句子按顺序播放，无音频的句子跳过。";
+  }
+});
 
 function createEmptyWordDraft() {
   return {
@@ -414,7 +439,9 @@ function findWordByExampleToken(token) {
 }
 
 function openExampleWordHint(token, anchorElement) {
-  const matchedWord = findWordByExampleToken(token);
+  const matchedWord = findWordByExampleToken(token) || {
+    id: "", term: token, phonetics: [], meaning: "未收录。本地词库中没有这个单词。", hasWordAudio: false,
+  };
 
   if (!matchedWord || !(anchorElement instanceof HTMLElement)) {
     return;
@@ -470,7 +497,7 @@ function shouldDismissExampleWordHint(target) {
 }
 
 function renderExampleWordHint() {
-  if (!state.exampleWordHint || state.view !== VIEWS.words) {
+  if (!state.exampleWordHint || ![VIEWS.words, VIEWS.articles].includes(state.view)) {
     return "";
   }
 
@@ -563,14 +590,16 @@ function withCategoryCounts(categories, words) {
 }
 
 async function refreshData() {
-  const [words, categories, practiceAttempts, showLibraryExportAction] = await Promise.all([
+  const [words, categories, practiceAttempts, showLibraryExportAction, articles] = await Promise.all([
     listWords(),
     listCategories(),
     listPracticeAttempts(),
     getBooleanSetting(APP_SETTING_KEYS.showLibraryExportAction, false),
+    listArticles(),
   ]);
 
   state.words = words;
+  state.articles = articles;
   state.categories = withCategoryCounts(categories, words);
   state.practiceAttempts = practiceAttempts;
   state.showLibraryExportAction = showLibraryExportAction;
@@ -804,6 +833,7 @@ function renderNavigation() {
     <nav class="tab-row" aria-label="Primary">
       ${Object.entries({
         [VIEWS.words]: "单词",
+        [VIEWS.articles]: "文章",
         [VIEWS.categories]: "分类",
         [VIEWS.practice]: "练习",
         [VIEWS.settings]: "词库",
@@ -864,6 +894,15 @@ function renderView() {
   const wordsById = getWordsById();
 
   switch (state.view) {
+    case VIEWS.articles:
+      return renderArticlesView({
+        articles: state.articles,
+        selectedId: state.selectedArticleId,
+        section: state.articleSection,
+        importFile: state.articleImportFile,
+        busy: state.busy,
+        playback: audioPlayer.state,
+      });
     case VIEWS.categories:
       return renderCategoriesView({
         categories: state.categories,
@@ -924,11 +963,6 @@ function onToggle(event) {
   const target = event.target;
 
   if (!(target instanceof HTMLDetailsElement)) {
-    return;
-  }
-
-  if (target.dataset.ui === "word-editor-disclosure") {
-    state.wordEditorExpanded = target.open;
     return;
   }
 
@@ -1184,6 +1218,7 @@ async function handleWordSubmit(form) {
   );
 
   state.wordDraft = createEmptyWordDraft();
+  state.wordEditorExpanded = false;
   await refreshData();
 }
 
@@ -1304,7 +1339,8 @@ async function handleImportLibrary(form) {
   }
 
   if (importMode === "replace") {
-    await clearAllData();
+    audioPlayer.stop();
+    await clearVocabularyData();
     resetPracticeSession();
   }
 
@@ -1313,6 +1349,7 @@ async function handleImportLibrary(form) {
   });
   state.wordDraft = createEmptyWordDraft();
   state.categoryDraft = createEmptyCategoryDraft();
+  audioPlayer.stop();
   state.view = VIEWS.words;
   state.importPreviews.library = null;
   await refreshData();
@@ -1328,6 +1365,15 @@ async function onChange(event) {
 
   if (target.name === "libraryFile") {
     await previewImportFile(target.files?.[0] ?? null);
+    return;
+  }
+
+  if (target.name === "articlePackage") {
+    state.articleImportFile = target.files?.[0] ?? null;
+    const button = appRoot.querySelector('[data-action="article-import"]');
+    if (button) button.disabled = state.busy || !state.articleImportFile;
+    const status = appRoot.querySelector("#article-import-file-status");
+    if (status) status.textContent = state.articleImportFile ? `已选择 ${state.articleImportFile.name}` : "尚未选择文件。";
     return;
   }
 
@@ -1355,23 +1401,19 @@ async function onChange(event) {
 }
 
 async function handlePlayWordAudio(wordId) {
-  const record = await getWordAudioRecord(wordId);
-
-  if (!record?.blob) {
-    throw new Error("当前单词还没有音频。");
-  }
-
-  await playAudioBlob(record.blob);
+  await audioPlayer.play([{ id: wordId }], async () => {
+    const record = await getWordAudioRecord(wordId);
+    if (!record?.blob) throw new Error("当前单词还没有音频。");
+    return record.blob;
+  });
 }
 
 async function handlePlayExampleAudio(exampleId) {
-  const record = await getExampleAudioRecord(exampleId);
-
-  if (!record?.blob) {
-    throw new Error("当前例句还没有音频。");
-  }
-
-  await playAudioBlob(record.blob);
+  await audioPlayer.play([{ id: exampleId }], async () => {
+    const record = await getExampleAudioRecord(exampleId);
+    if (!record?.blob) throw new Error("当前例句还没有音频。");
+    return record.blob;
+  });
 }
 
 async function playAudioWithFeedback(button, task) {
@@ -1557,7 +1599,82 @@ async function onClick(event) {
   const { action } = trigger.dataset;
 
   switch (action) {
+    case "article-section":
+      if (state.busy || !["list", "import"].includes(trigger.dataset.section)) return;
+      audioPlayer.stop();
+      state.exampleWordHint = null;
+      state.selectedArticleId = null;
+      state.articleSection = trigger.dataset.section;
+      render();
+      appRoot.querySelector('.article-section-nav [aria-pressed="true"]')?.focus();
+      return;
+    case "article-open":
+    case "article-back":
+      audioPlayer.stop();
+      state.exampleWordHint = null;
+      state.selectedArticleId = action === "article-open" ? trigger.dataset.articleId : null;
+      render();
+      return;
+    case "article-stop":
+      audioPlayer.stop();
+      return;
+    case "article-play-all":
+    case "article-play-sentence": {
+      const article = state.articles.find((item) => item.id === state.selectedArticleId);
+      if (!article) return;
+      const sentences = article.sentences.filter((sentence) => sentence.hasAudio &&
+        (action === "article-play-all" || sentence.id === trigger.dataset.sentenceId));
+      await runPassiveAction(() => audioPlayer.play(sentences, async (sentence) =>
+        (await getArticleAudio(sentence.id))?.blob, { ownerId: article.id }));
+      return;
+    }
+    case "article-import": {
+      const file = state.articleImportFile;
+      if (!file || state.busy) return;
+      await runAction(async () => {
+        const count = await importArticlePackage(file);
+        state.articleImportFile = null;
+        await refreshData();
+        state.selectedArticleId = null;
+        state.articleSection = "list";
+        setNotice(`已导入 ${count} 篇文章。`, "success");
+      });
+      return;
+    }
+    case "article-template":
+    case "article-export":
+    case "article-export-one":
+      await runAction(async () => {
+        let blob;
+        if (action === "article-template") blob = await createArticleTemplate();
+        else if (action === "article-export") blob = await exportArticlePackage();
+        else {
+          const article = state.articles.find((item) => item.id === trigger.dataset.articleId);
+          if (!article) throw new Error("文章不存在。");
+          const audio = await Promise.all(article.sentences.filter((sentence) => sentence.hasAudio)
+            .map(async (sentence) => [sentence.id, (await getArticleAudio(sentence.id))?.blob]));
+          blob = await createArticlePackage([article], new Map(audio));
+        }
+        createDownload(action === "article-template" ? "articles-template.zip" : "articles-backup.zip", blob, "application/zip");
+      }, "文章 ZIP 已生成。");
+      return;
+    case "article-delete": {
+      if (state.busy) return;
+      const article = state.articles.find((item) => item.id === trigger.dataset.articleId);
+      if (!article || !window.confirm(`删除“${article.title}”及其音频？此操作不可恢复。`)) return;
+      audioPlayer.stop();
+      await runAction(async () => {
+        await deleteArticle(article);
+        state.selectedArticleId = null;
+        state.exampleWordHint = null;
+        await refreshData();
+      }, "文章已删除。");
+      return;
+    }
     case "switch-view":
+      audioPlayer.stop();
+      state.selectedArticleId = null;
+      state.articleSection = "list";
       closeExampleWordHint();
       state.view = trigger.dataset.view || VIEWS.words;
       render();
@@ -1631,6 +1748,12 @@ async function onClick(event) {
     case "reset-word-draft":
       state.wordDraft = createEmptyWordDraft();
       render();
+      return;
+    case "open-word-editor":
+      state.wordDraft = createEmptyWordDraft();
+      state.wordEditorExpanded = true;
+      render();
+      scrollToWordEditorStart();
       return;
     case "collapse-word-editor": {
       const form = trigger.closest("form");
@@ -1804,7 +1927,11 @@ async function onClick(event) {
       }
 
       await runAction(async () => {
+        audioPlayer.stop();
         await clearAllData();
+        state.selectedArticleId = null;
+        state.articleSection = "list";
+        state.articleImportFile = null;
         state.wordDraft = createEmptyWordDraft();
         state.categoryDraft = createEmptyCategoryDraft();
         resetPracticeSession();
@@ -1829,6 +1956,7 @@ async function onClick(event) {
 }
 
 async function initialize() {
+  window.addEventListener("pagehide", () => audioPlayer.stop());
   window.addEventListener("beforeinstallprompt", (event) => {
     event.preventDefault();
     state.installPromptEvent = event;

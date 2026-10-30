@@ -1,0 +1,20 @@
+{"items":[
+{"article":121,"segment":1,"ok":true},
+{"article":121,"segment":2,"ok":true},
+{"article":121,"segment":3,"ok":true},
+{"article":121,"segment":4,"ok":true},
+{"article":121,"segment":5,"en_starts":["In real life","There is simply","For example, different","Or even worse","Even if the team","There may be a lack","This is why"],"zh_starts":["在现实生活中","可能出现问题","例如，不同","更为甚者","即使团队目标","团队中可能会","所以，每个团队"],"note":"Script merged 'There is simply too much room for problems.' and 'For example, ...' into one English sentence; re-cut so each has its own Chinese."},
+{"article":122,"segment":1,"ok":true},
+{"article":122,"segment":3,"ok":true},
+{"article":122,"segment":5,"ok":true,"zh_fixed":{"3":{"text":"例如，棒球运动员在非训练时间还积极主动地练习挥棒，就是团队精神的体现。","why":"英文是 baseball player 和 practice his swing，原译“篮球运动员”错译，并漏译挥棒（swing）"}}},
+{"article":122,"segment":7,"ok":true},
+{"article":123,"segment":1,"ok":true,"zh_fixed":{"1":{"text":"该表记录了公司在那个时点的资产和负债状况。","why":"'at that point in time' 指某一时点，原译“及时记录”与英文不符"}}},
+{"article":123,"segment":2,"ok":true,"zh_fixed":{"1":{"text":"上半部分显示了钱的用途（净资产），下半部分显示了钱的来源（所用资本）。","why":"'the capital employed' 是所用资本，原译“负债”错误（负债属于上半部分的内容）"}}},
+{"article":123,"segment":3,"ok":true},
+{"article":123,"segment":5,"ok":true},
+{"article":123,"segment":7,"zh_starts":["资产负债表的下半","对于有限公司","公司可以将","这就是留存"],"note":"Z2 translates E2 and E3 together; cut at the comma before 这就是."},
+{"article":124,"segment":1,"en_starts":["Data management","The manual handling","Large organizations","Electronic accounting","Because the systems","These systems"],"zh_starts":["数据管理","人工处理","大型公司","会计电算化软件","因为系统","对照采购"],"zh_fixed":{"4":{"text":"因为系统是自动的，所以记账任务可以同时处理。","why":"'managed simultaneously' 是同时处理，原译“自动完成”与英文不符"}},"note":"Heading 'Data management' is on its own line; split it off as its own piece."},
+{"article":124,"segment":3,"en_starts":["Software enables","These include","With modules","The payroll module"],"zh_starts":["该软件可以","这些包括","该系统拥有","工资单模块"],"zh_fixed":{"1":{"text":"这些包括发票、支票、账目报表和退税表格。","why":"'checks' 是支票，原译“账簿”错误"},"3":{"text":"工资单模块生成和打印工资支票，附至总分类账之上，自动生成《联邦保险捐税法》所要求缴纳税种的正确数额。","why":"'payroll checks' 是工资支票，原译“工资单”不准确"}},"note":"Script merged two English sentences ('These include...' and 'With modules...') into one; re-cut to match four Chinese sentences."},
+{"article":124,"segment":5,"ok":true},
+{"article":124,"segment":7,"ok":true}
+]}

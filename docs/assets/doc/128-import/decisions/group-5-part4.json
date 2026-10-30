@@ -1,0 +1,21 @@
+{"items":[
+{"article":77,"segment":1,"ok":true},
+{"article":77,"segment":2,"zh_starts":["在许多方面","许多车已经","安装了这些","安装的定速","我们已经有"],"zh_fixed":{"3":{"text":"没有人注意到定速巡航的引入。","why":"No one noticed the introduction of cruise control：原译“安装的定速巡航常被人们忽视不用”与英文意思不符"}},"note":"English typos 'andautomatic', 'collisionavoidance', and a full-width comma in E1."},
+{"article":77,"segment":3,"en_starts":["Improving","Machines","Road signs","They are often","But it","Driverless"],"zh_starts":["改善这种","机器比人类","路标建议","但常常被","但对于计算","无人驾驶汽车还"],"note":"English E2 holds two sentences ('Road signs ad vise ... jams. They are often ignored by drivers.'; 'ad vise' is a source typo); re-cut, and the Chinese Z2 is cut at '但常常被'."},
+{"article":77,"segment":4,"ok":true,"note":"English typo 'fuelefficiency'."},
+{"article":77,"segment":5,"zh_starts":["它们可以有","他们甚至","然而，在道","因此，可能","这无疑是"],"note":"Chinese Z3 translates E3+E4, cut at '这无疑是'. English typo 'bepotential'."},
+{"article":78,"segment":1,"ok":true},
+{"article":78,"segment":2,"zh_starts":["这辆自动","甚至拥有","圆形车身","然而，因为","目标是最终","这样的话"],"note":"Chinese Z0 translates E0+E1 and Z3 translates E4+E5; cut at the commas."},
+{"article":78,"segment":3,"ok":true},
+{"article":78,"segment":4,"zh_starts":["科技公司首","车上增加","如今，谷歌","汽车的圆顶"],"note":"Chinese Z0 translates E0+E1, cut at '车上增加'."},
+{"article":78,"segment":5,"en_starts":["A car could","Before self-driving","Companies also"],"zh_starts":["汽车能让","在无人驾驶","公司也需要"],"note":"English E1 holds two sentences glued ('functions.Companies'); re-cut."},
+{"article":78,"segment":6,"ok":true,"note":"English typo 'automanufacturers'."},
+{"article":79,"segment":1,"zh_starts":["试想一下","这种织物","该材料是为","它由特殊","电池组通过","这样就可以"],"note":"Chinese Z2 translates E2+E3, cut at '它由特殊'."},
+{"article":79,"segment":2,"zh_starts":["Intelli","使其能将","还可以给其","这些材料已","但还需要进"],"zh_fixed":{"0":{"text":"Intelligent Textiles公司研制了这种织物，","why":"has been developed 是“研制”，原译“改进”意思不同"}},"note":"English typo 'IntelligentTextiles'. Chinese Z0 translates E0+E1+E2 and Z1 translates E3+E4; cut at the commas."},
+{"article":79,"segment":3,"zh_starts":["取得这样","目前，给电池","感应式充电","但还不能"],"note":"E0 corresponds to Chinese Z0+Z1 (Z0 '取得这样的成绩已经不错了' renders 'And that's all great'), so they stay in one piece."},
+{"article":79,"segment":4,"zh_starts":["假设你的裤","假设能跟","那样的话","是的，你可","这与过去"],"zh_fixed":{"3":{"text":"是的，你可能需要时不时给你所用的电源充电，但只要给衣柜里的卡其裤连接上电源就可以了。","why":"now and then 是“时不时”，原译“给时常用到的电源充电”误解了语义；Z3 与 Z4 对应同一英文句，合并为一片"}},"note":"English typo 'pair ofkhakis'. E3 is one sentence matching Chinese Z3+Z4, so they stay in one piece."},
+{"article":80,"segment":1,"ok":true},
+{"article":80,"segment":2,"zh_starts":["这些地砖","还能用来","预计一年","行人的脚步","足以给商"],"note":"Chinese Z0 translates E0+E1, cut at '还能用来'. English typo 'hundredkilowatt-hours'."},
+{"article":80,"segment":3,"en_groups":[[0],[1],[2,3]],"zh_starts":["2009年","17.7","数百万计"],"note":"Chinese Z2 is one sentence translating E2+E3 with no clause boundary, so those two English sentences are merged."},
+{"article":80,"segment":4,"ok":true,"note":"English typo 'attendees'footfalls'; E3 says footfalls 'controlled' (source word)."}
+]}

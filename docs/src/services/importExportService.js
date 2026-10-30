@@ -1,6 +1,7 @@
 import { AUDIO_OWNER_TYPES, STORES, createAudioRecordId, requestToPromise, runTransaction } from "../db/database.js";
 import { listAudioRecords, listWords } from "../db/wordRepository.js";
 import { listCategories } from "../db/categoryRepository.js";
+import { audioPlayer } from "./audioPlayer.js";
 import { createCategoryKey, createExampleKey, createId, normalizeStringList, normalizeText, uniqueStrings } from "./helpers.js";
 
 export const LIBRARY_SCHEMA_VERSION = 1;
@@ -856,12 +857,22 @@ export async function importLibraryFromFile(file, options = {}) {
 }
 
 export async function clearAllData() {
+  audioPlayer.stop();
+  await clearStores(Object.values(STORES));
+}
+
+export async function clearVocabularyData() {
+  audioPlayer.stop();
+  await clearStores([STORES.words, STORES.categories, STORES.audio, STORES.practiceAttempts, STORES.settings]);
+}
+
+async function clearStores(storeNames) {
   await runTransaction(
-    [STORES.words, STORES.categories, STORES.audio, STORES.practiceAttempts, STORES.settings],
+    storeNames,
     "readwrite",
-    async (stores) => {
-      for (const storeName of Object.values(STORES)) {
-        await requestToPromise(stores[storeName].clear());
+    (stores) => {
+      for (const storeName of storeNames) {
+        stores[storeName].clear();
       }
     },
   );

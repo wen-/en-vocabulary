@@ -1,4 +1,4 @@
-const CACHE_NAME = "english-learning-shell-v24";
+const CACHE_NAME = "english-learning-shell-v28";
 
 const APP_ASSETS = [
   "./",
@@ -13,6 +13,12 @@ const APP_ASSETS = [
   "./assets/vendor/JSZIP-LICENSE.txt",
   "./src/services/helpers.js",
   "./src/services/audioService.js",
+  "./src/services/audioPlayer.js",
+  "./src/services/articleImportService.js",
+  "./src/db/articleRepository.js",
+  "./src/db/settingsRepository.js",
+  "./src/views/articlesView.js",
+  "./assets/article-template.wav",
   "./src/services/importExportService.js",
   "./src/db/database.js",
   "./src/db/wordRepository.js",
@@ -34,7 +40,7 @@ self.addEventListener("install", (event) => {
   event.waitUntil(
     caches
       .open(CACHE_NAME)
-      .then((cache) => cache.addAll(PRECACHE_ASSETS))
+      .then((cache) => cache.addAll(PRECACHE_ASSETS.map((url) => new Request(url, { cache: "reload" }))))
       .then(() => self.skipWaiting()),
   );
 });
@@ -61,7 +67,7 @@ self.addEventListener("fetch", (event) => {
 
   if (event.request.mode === "navigate") {
     event.respondWith(
-      fetch(event.request)
+      fetch(event.request, { cache: "no-cache" })
         .then((response) => {
           const copy = response.clone();
           caches.open(CACHE_NAME).then((cache) => cache.put("./index.html", copy));
@@ -73,7 +79,7 @@ self.addEventListener("fetch", (event) => {
   }
 
   event.respondWith(
-    fetch(event.request)
+    fetch(event.request, { cache: "no-cache" })
       .then((response) => {
         if (!response || response.status !== 200 || response.type !== "basic") {
           return response;

@@ -1,0 +1,19 @@
+{"items":[
+{"article":117,"segment":1,"ok":true},
+{"article":117,"segment":2,"zh_starts":["以“非言语定位”","在一场谈判中","他（她）也可以","首先，个人空间","谈判者一般","其次，第一印象","诚实而尊重","如果你不能"],"note":"Chinese Z3+Z4 translate E3 together; Z6 plus the first clause of Z7 translate E5; the second clause of Z7 translates E6."},
+{"article":117,"segment":3,"ok":true},
+{"article":118,"segment":1,"ok":true},
+{"article":118,"segment":2,"en_groups":[[0,1]],"zh_starts":["1. 总是发起谈判"],"note":"Numbered heading; script split '1.' from the sentence, rejoined as one piece."},
+{"article":118,"segment":3,"zh_starts":["你必须启动","这是因为","如果是对方","例如，当你","于是，你","所以，永远"],"note":"Z0 translates E0 and E1; cut at the comma before 这是因为."},
+{"article":118,"segment":4,"en_groups":[[0,1]],"zh_starts":["2. 总是以书面形式谈判"],"note":"Numbered heading; script split '2.' from the sentence, rejoined as one piece."},
+{"article":118,"segment":5,"ok":true,"zh_fixed":{"2":{"text":"文件应包括协议的所有要点，并且让潜在客户感觉真实。","why":"'become real to the prospective customer' 被译成“潜在客户能够实现”，意思不符"},"4":{"text":"但是，如果你在谈判时就建立书面协议的话，一旦对方决定购买，你就可以准备要求对方签字了。","why":"'the decision to buy is made' 指客户做出购买决定，原译“你决定购买”主语错误"}}},
+{"article":118,"segment":6,"en_groups":[[0,1]],"zh_starts":["3. 总是保持冷静"],"note":"Numbered heading; script split '3.' from the sentence, rejoined as one piece."},
+{"article":118,"segment":7,"ok":true},
+{"article":119,"segment":1,"ok":true},
+{"article":119,"segment":2,"ok":true},
+{"article":119,"segment":3,"ok":true},
+{"article":120,"segment":3,"ok":true},
+{"article":120,"segment":5,"ok":true},
+{"article":120,"segment":7,"ok":true},
+{"article":120,"segment":9,"ok":true}
+]}

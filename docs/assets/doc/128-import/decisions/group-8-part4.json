@@ -1,0 +1,19 @@
+{"items":[
+{"article":125,"segment":1,"ok":true},
+{"article":125,"segment":2,"en_groups":[[0],[1],[2,3]],"zh_starts":["淘宝和天猫","因上千万","“今天买什么了"],"zh_fixed":{"1":{"text":"因数十万的消费者争相以折扣价格购买衣服、家具和家居装饰品，光棍节当天最终的销售额达到惊人的350.2亿元。","why":"'hundreds of thousands of consumers' 是数十万消费者，原译“上千万”数量不符"}},"note":"Script split E2/E3 at the closing quote mark; they are one English sentence translated by the single Chinese sentence Z2, so they are re-merged."},
+{"article":125,"segment":3,"ok":true},
+{"article":126,"segment":2,"zh_starts":["这一天被视为"],"zh_fixed":{"0":{"text":"这一天被视为超级在线购物日，为包括沃尔玛在内的零售商打造了创纪录的一天。这标志着人们的购物偏好发生了变化，因为智能手机和平板电脑带来了近三分之一的访问量，而对有的零售商而言，已超过一半的访问量。","why":"'traffic' 是访问量（流量），原译“销售量”与英文不符；英文只有一句，原中文两句合为一个片段"}},"note":"One long English sentence, two Chinese sentences; kept as a single piece."},
+{"article":126,"segment":3,"ok":true,"zh_fixed":{"0":{"text":"沃尔玛网站预计将录得迄今为止其最大的“网络星期一”销售额，此前已创造了“黑色星期五”周末在线狂销的新纪录。","why":"'expects to register its biggest Cyber Monday yet' 是预计录得最大销售额，原译“希望能够注册”错译"},"2":{"text":"沃尔玛网站首席执行官乔尔·安德森说，电视和平板电脑的大幅度让利也刺激了购物。","why":"英文是 CEO of Walmart.com（沃尔玛网站），原译为“沃尔玛首席执行官”"}}},
+{"article":126,"segment":5,"ok":true,"zh_fixed":{"1":{"text":"畅路销的首席执行官斯科特·温格说，在线市场销售状况良好的部分原因是，消费者去这些网站购买在普通零售商店已售罄的畅销产品。","why":"'are selling out at regular retailers' 是在普通零售店已售罄，原译“在售”意思相反"}}},
+{"article":126,"segment":6,"ok":true},
+{"article":127,"segment":1,"ok":true},
+{"article":127,"segment":2,"zh_starts":["另一种企业形式","即两个或多个","这样做通常","合伙关系中有","有完全责任","有限责任合伙人可能","医生、律师","丈夫和妻子","只要所有者","个人独资企业"],"note":"Z0 translates E0+E1 (cut at 即); Z2 translates E3+E4 (cut at the comma before 有完全责任)."},
+{"article":127,"segment":3,"zh_starts":["但是，公司被设计","它是最复杂","公司可以通过","股票代表","只要公司还在"],"note":"Z0 translates E0+E1; cut at the comma before 它是最复杂."},
+{"article":127,"segment":4,"zh_starts":["股份公司被认为","董事会控制","董事任命","董事们可能","公司可以有几个","但并非所有","一些非营利"],"note":"Z1 translates E1+E2 (cut before 董事任命); Z4 translates E5+E6 (cut before 一些非营利)."},
+{"article":128,"segment":1,"en_groups":[[0,1],[2],[3],[4]],"zh_starts":["瑞典皇家","尤金·法玛和","罗伯特·希勒是","他们将分享"],"note":"Script split E0/E1 at 'Oct.' / '14, 2013.'; re-merged."},
+{"article":128,"segment":2,"ok":true},
+{"article":128,"segment":3,"ok":true},
+{"article":128,"segment":4,"ok":true},
+{"article":128,"segment":5,"ok":true},
+{"article":128,"segment":6,"zh_starts":["拉尔斯·彼得·汉森开发","他的方法支持"],"zh_fixed":{"1":{"text":"他的方法支持希勒先生的发现，并影响了金融业的价格预测。","why":"源中文末尾混入了一句英文及其中文（“wwThe Nobel Prize in economics was not created by Alfred Nobel...诺贝尔经济学奖不是由艾尔弗雷德 • 诺贝尔创立的……1968年建立的。”），这句话在本段英文中没有对应原文，不属于这一句英文，故从该片段中移出"}},"note":"Source defect: the Chinese paragraph ends with an extra English sentence plus its Chinese translation (Nobel Prize in economics was established by Sweden's central bank in 1968) that is absent from the English of this segment. Removed from piece 1 via zh_fixed; the user may want to check whether the English source lost this sentence."}
+]}

@@ -1,0 +1,28 @@
+{
+  "items": [
+    {"article": 17, "segment": 1, "ok": true},
+    {"article": 17, "segment": 2, "zh_starts": ["1953年", "这遭到", "独立电视法案"],
+     "note": "Chinese 现在，商业电视遍地开花，欣欣向荣。 translates the tail of English sentence 2 (commercial television now flourishes), so it stays with piece 1."},
+    {"article": 17, "segment": 3, "ok": true},
+    {"article": 17, "segment": 4, "ok": true},
+    {"article": 18, "segment": 1, "ok": true},
+    {"article": 18, "segment": 2,
+     "zh_starts": ["乱涂乱画", "非法在墙上", "相应的惩罚", "代际变化", "现在越来越", "他们更喜欢", "他们中有", "网络的普及"],
+     "zh_fixed": {"0": {"text": "乱涂乱画和火车涂鸦风靡程度下降最主要的原因是治安管理更加完善。",
+                        "why": "English 'better policing' means better policing/law enforcement; 政策法规更加完备 (more complete policies and regulations) changes the meaning."}}},
+    {"article": 18, "segment": 3, "ok": true},
+    {"article": 19, "segment": 1, "ok": true},
+    {"article": 19, "segment": 2, "ok": true},
+    {"article": 19, "segment": 3, "ok": true},
+    {"article": 19, "segment": 4, "ok": true},
+    {"article": 20, "segment": 1,
+     "zh_starts": ["我已经养成", "我每周都会", "我经常能轻", "第二天，我", "我把可用"],
+     "zh_fixed": {"1": {"text": "我每周都会有几次在半夜离开家去城里到处转转。我收集的东西有：旧玩具、用过的电器、破损的家具等。",
+                        "why": "English 'the list goes on' means 'and so on'; the source wrongly says the speaker lists the items on a sheet (列成一张表). 'broken furniture' was also rendered as 家具碎片 (furniture fragments)."}},
+     "note": "English sentence 2 (E1) is translated by two Chinese sentences (我每周都会… and 我将自己收集的东西列成一张表…), kept together in piece 1."},
+    {"article": 20, "segment": 2,
+     "zh_starts": ["别人视为垃圾", "当然，起初", "得通过创造", "我创作的", "从原材料", "首先，我把", "这件事我", "剩下的就"],
+     "note": "Source English typo in E1: 'it farmers market s not art' (should be 'it's not art'). Left untouched. Chinese sentence 2 translates English E1 and E2, cut at the comma."},
+    {"article": 20, "segment": 3, "ok": true}
+  ]
+}

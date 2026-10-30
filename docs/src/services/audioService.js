@@ -1,3 +1,5 @@
+import { audioPlayer } from "./audioPlayer.js";
+
 export const AUDIO_ACCEPT = ".mp3,.wav,.ogg,.m4a,audio/mpeg,audio/wav,audio/ogg,audio/mp4";
 export const MAX_AUDIO_BYTES = 4 * 1024 * 1024;
 
@@ -20,23 +22,5 @@ export async function playAudioBlob(blob) {
     throw new Error("当前单词没有可播放的音频。");
   }
 
-  const objectUrl = URL.createObjectURL(blob);
-  const audio = new Audio(objectUrl);
-
-  try {
-    await audio.play();
-  } catch (error) {
-    URL.revokeObjectURL(objectUrl);
-    throw new Error("音频播放失败，请在用户点击后重试。");
-  }
-
-  return new Promise((resolve) => {
-    const release = () => {
-      URL.revokeObjectURL(objectUrl);
-      resolve();
-    };
-
-    audio.onended = release;
-    audio.onerror = release;
-  });
+  return audioPlayer.play([{ id: null }], async () => blob);
 }

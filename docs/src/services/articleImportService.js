@@ -68,25 +68,35 @@ function zipLibrary() {
   return globalThis.JSZip;
 }
 
-async function decodeAudio(bytes) {
-  const Context = globalThis.AudioContext || globalThis.webkitAudioContext;
-  if (!Context) throw new Error("此浏览器不支持音频校验，请使用支持 Web Audio 的浏览器导入。");
-  const context = new Context();
-  let decoded;
-  try {
-    decoded = await context.decodeAudioData(bytes.buffer.slice(bytes.byteOffset, bytes.byteOffset + bytes.byteLength));
-  } catch {
-    fail("音频无法解码，请检查文件是否损坏或使用 PCM WAV。");
-  } finally {
-    await context.close();
-  }
-  if (!(decoded.duration > 0) || decoded.duration > 300) fail("音频必须有内容且不超过 5 分钟。");
+// iOS Safari reloads the page after a few hundred real-time AudioContexts, so one
+// offline context (no audio hardware) decodes every file in a package.
+function createAudioValidator() {
+  let context;
+  return async (bytes) => {
+    if (!context) {
+      const Context = globalThis.OfflineAudioContext || globalThis.webkitOfflineAudioContext;
+      if (!Context) throw new Error("此浏览器不支持音频校验，请使用支持 Web Audio 的浏览器导入。");
+      context = new Context(1, 1, 44100);
+    }
+    let decoded;
+    try {
+      decoded = await new Promise((resolve, reject) => {
+        const buffer = bytes.buffer.slice(bytes.byteOffset, bytes.byteOffset + bytes.byteLength);
+        context.decodeAudioData(buffer, resolve, reject)?.then?.(resolve, reject);
+      });
+    } catch {
+      fail("音频无法解码，请检查文件是否损坏或使用 PCM WAV。");
+    }
+    if (!(decoded.duration > 0) || decoded.duration > 300) fail("音频必须有内容且不超过 5 分钟。");
+  };
 }
 
-export async function readArticlePackage(file, { validateAudio = decodeAudio } = {}) {
+export async function readArticlePackage(file, { validateAudio = createAudioValidator(), onProgress } = {}) {
   if (!file?.size || file.size > ARTICLE_LIMITS.zipBytes || !/\.zip$/i.test(file.name || "")) {
     fail("请选择不超过 100 MB 的 ZIP 文件。");
   }
+  onProgress?.({ phase: "reading", completed: 0, total: 0 });
+  if (onProgress) await new Promise((resolve) => setTimeout(resolve, 0));
   let zip;
   try {
     zip = await zipLibrary().loadAsync(await file.arrayBuffer());
@@ -117,6 +127,9 @@ export async function readArticlePackage(file, { validateAudio = decodeAudio } =
     fail("articles.json 不是有效的 UTF-8 JSON。");
   }
   const articles = parseArticleManifest(value);
+  const audioTotal = new Set(articles.flatMap((article) =>
+    article.sentences.map((sentence) => sentence.audio).filter(Boolean))).size;
+  if (audioTotal) onProgress?.({ phase: "audio", completed: 0, total: audioTotal });
   const blobs = new Map();
   for (const article of articles) {
     for (const sentence of article.sentences) {
@@ -129,6 +142,7 @@ export async function readArticlePackage(file, { validateAudio = decodeAudio } =
         const type = detectAudioType(bytes);
         await validateAudio(bytes);
         blobs.set(sentence.audio, new Blob([bytes], { type }));
+        onProgress?.({ phase: "audio", completed: blobs.size, total: audioTotal });
       }
       sentence.blob = blobs.get(sentence.audio);
     }
@@ -136,8 +150,9 @@ export async function readArticlePackage(file, { validateAudio = decodeAudio } =
   return articles;
 }
 
-export async function importArticlePackage(file) {
-  const articles = await readArticlePackage(file);
+export async function importArticlePackage(file, { onProgress } = {}) {
+  const articles = await readArticlePackage(file, { onProgress });
+  onProgress?.({ phase: "committing", completed: 0, total: 0 });
   return importArticles(articles);
 }
 

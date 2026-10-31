@@ -126,6 +126,26 @@ test("ZIP validates every referenced audio before returning importable articles"
   assert.equal(articles[0].sentences[1].blob, undefined);
 });
 
+test("article package reading reports parsing then each unique audio check", async () => {
+  const files = { "audio/a.wav": wav, "audio/b.wav": wav };
+  const value = { schemaVersion: 1, articles: [{ title: "Two", sentences: [
+    { en: "A.", zh: "甲。", audio: "audio/a.wav" },
+    { en: "B.", zh: "乙。", audio: "audio/b.wav" },
+    { en: "A again.", zh: "再甲。", audio: "audio/a.wav" },
+  ] }] };
+  const progress = [];
+  await readArticlePackage(await packageFile(value, files), {
+    validateAudio: async () => {},
+    onProgress: (event) => progress.push(event),
+  });
+  assert.deepEqual(progress, [
+    { phase: "reading", completed: 0, total: 0 },
+    { phase: "audio", completed: 0, total: 2 },
+    { phase: "audio", completed: 1, total: 2 },
+    { phase: "audio", completed: 2, total: 2 },
+  ]);
+});
+
 test("ZIP rejects missing audio, empty audio, invalid audio, and decoder failures", async () => {
   for (const files of [{}, { "audio/morning.wav": new Uint8Array() }, { "audio/morning.wav": new Uint8Array([1, 2, 3]) }]) {
     await assert.rejects(readArticlePackage(await packageFile(manifest(), files)), /文章包无效/);
@@ -149,18 +169,43 @@ test("invalid article imports never open a database or partially write earlier a
   value.articles.push({ title: "Later article", sentences: [{ en: "Hello.", zh: "你好。", audio: "audio/missing.wav" }] });
   let opened = 0;
   const originalDatabase = globalThis.indexedDB;
-  const originalContext = globalThis.AudioContext;
+  const originalContext = globalThis.OfflineAudioContext;
   globalThis.indexedDB = { open() { opened += 1; throw new Error("must not write"); } };
-  globalThis.AudioContext = class {
+  globalThis.OfflineAudioContext = class {
     async decodeAudioData() { return { duration: 1 }; }
-    async close() {}
   };
   try {
     await assert.rejects(importArticlePackage(await packageFile(value)), /missing.wav/);
     assert.equal(opened, 0);
   } finally {
     globalThis.indexedDB = originalDatabase;
+    globalThis.OfflineAudioContext = originalContext;
+  }
+});
+
+test("repeated imports decode audio without opening a hardware audio context per file", async () => {
+  const files = Object.fromEntries(Array.from({ length: 5 }, (_, index) => [`audio/${index}.wav`, wav]));
+  const value = { schemaVersion: 1, articles: [{ title: "Many", sentences: Object.keys(files)
+    .map((audio) => ({ en: "Hello.", zh: "你好。", audio })) }] };
+  let realtime = 0;
+  let offline = 0;
+  const originalContext = globalThis.AudioContext;
+  const originalOffline = globalThis.OfflineAudioContext;
+  globalThis.AudioContext = class { constructor() { realtime += 1; } };
+  globalThis.OfflineAudioContext = class {
+    constructor() { offline += 1; }
+    async decodeAudioData() { return { duration: 1 }; }
+  };
+  try {
+    for (let run = 0; run < 2; run += 1) {
+      const articles = await readArticlePackage(await packageFile(value, files));
+      assert.equal(articles[0].sentences.length, 5);
+    }
+    assert.equal(realtime, 0);
+    assert.ok(offline <= 2, `offline contexts: ${offline}`);
+  } finally {
     globalThis.AudioContext = originalContext;
+    globalThis.OfflineAudioContext = originalOffline;
   }
 });
 
@@ -378,6 +423,17 @@ test("article import section shows the template and selected file without the li
   assert.match(html, /已选择 &lt;selected&gt;\.zip/);
   assert.match(html, /data-action="article-import" >导入文章/);
   assert.doesNotMatch(html, /data-action="article-open"|data-action="article-export"|article-sentences/);
+});
+
+test("article import section shows article progress only while importing", () => {
+  const props = { articles: [], section: "import", playback: {} };
+  const busy = renderArticlesView({ ...props, busy: true, importProgress: { phase: "audio", completed: 3, total: 10 } });
+  const slot = busy.match(/<div data-import-progress="article">([\s\S]*?)<\/section><\/div>/)[1];
+  assert.match(slot, /正在校验文章音频 3 \/ 10（30%）/);
+  assert.match(slot, /文章导入进度/);
+  assert.doesNotMatch(slot, /词库/);
+  const idle = renderArticlesView({ ...props, busy: false, importProgress: null });
+  assert.match(idle, /<div data-import-progress="article"><\/div>/);
 });
 
 test("article import requires a file and disables controls while busy", () => {

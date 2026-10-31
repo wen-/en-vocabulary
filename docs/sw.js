@@ -1,4 +1,4 @@
-const CACHE_NAME = "english-learning-shell-v40";
+const CACHE_NAME = "english-learning-shell-v42";
 
 const APP_ASSETS = [
   "./",

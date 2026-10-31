@@ -1,4 +1,5 @@
 import { escapeHtml, renderAudioIcon } from "../services/helpers.js";
+import { renderImportProgress } from "./importProgress.js";
 import { renderExampleEnglishText } from "./wordsView.js";
 
 const ARTICLE_TITLE_COLLATOR = new Intl.Collator("zh-CN", { numeric: true, sensitivity: "base" });
@@ -23,7 +24,7 @@ function compareArticles(left, right) {
   return ARTICLE_TITLE_COLLATOR.compare(left.title, right.title);
 }
 
-export function renderArticlesView({ articles, selectedId, section = "list", busy, importFile, playback }) {
+export function renderArticlesView({ articles, selectedId, section = "list", busy, importFile, importProgress, playback }) {
   const article = articles.find((item) => item.id === selectedId);
   const sortedArticles = [...articles].sort(compareArticles);
   return `<section class="view-stack">
@@ -47,6 +48,7 @@ export function renderArticlesView({ articles, selectedId, section = "list", bus
           <div class="form-actions">
             <button class="primary-button" data-action="article-import" ${busy || !importFile ? "disabled" : ""}>${busy ? "处理中…" : "导入文章"}</button>
           </div>
+          <div data-import-progress="article">${renderImportProgress(importProgress, "article")}</div>
           <p class="help-text">备份文章请到“文章列表”导出，词库备份不包含文章。</p>
         </div>
       ` : article ? `

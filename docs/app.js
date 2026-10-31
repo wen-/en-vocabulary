@@ -903,6 +903,7 @@ function renderView() {
         selectedId: state.selectedArticleId,
         section: state.articleSection,
         importFile: state.articleImportFile,
+        importProgress: state.importProgress,
         busy: state.busy,
         playback: audioPlayer.state,
       });
@@ -1024,7 +1025,7 @@ function updateImportProgress(progress) {
   if (previous?.phase === progress.phase && now - lastImportProgressPaint < 100 && progress.completed !== progress.total) return;
   lastImportProgressPaint = now;
   const container = appRoot.querySelector("[data-import-progress]");
-  if (container) container.innerHTML = renderImportProgress(progress);
+  if (container) container.innerHTML = renderImportProgress(progress, container.dataset.importProgress || "library");
 }
 
 async function registerServiceWorker() {
@@ -1671,7 +1672,8 @@ async function onClick(event) {
       const file = state.articleImportFile;
       if (!file || state.busy) return;
       await runAction(async () => {
-        const count = await importArticlePackage(file);
+        const count = await importArticlePackage(file, { onProgress: updateImportProgress });
+        updateImportProgress({ phase: "refreshing", completed: 0, total: 0 });
         state.articleImportFile = null;
         await refreshData();
         state.selectedArticleId = null;

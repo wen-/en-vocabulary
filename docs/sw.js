@@ -1,4 +1,4 @@
-const CACHE_NAME = "english-learning-shell-v34";
+const CACHE_NAME = "english-learning-shell-v40";
 
 const APP_ASSETS = [
   "./",
@@ -37,13 +37,23 @@ const APP_ASSETS = [
 
 const PRECACHE_ASSETS = [...new Set(APP_ASSETS)];
 
+async function precache() {
+  const cache = await caches.open(CACHE_NAME);
+  await Promise.all(PRECACHE_ASSETS.map(async (url) => {
+    try {
+      const request = new Request(url, { cache: "reload" });
+      const response = await fetch(request);
+      if (!response.ok) throw new Error(`HTTP ${response.status}`);
+      await cache.put(request, response);
+    } catch (error) {
+      // One missing file must not block the whole update; keep installing the rest.
+      console.warn("Precache skipped", url, error);
+    }
+  }));
+}
+
 self.addEventListener("install", (event) => {
-  event.waitUntil(
-    caches
-      .open(CACHE_NAME)
-      .then((cache) => cache.addAll(PRECACHE_ASSETS.map((url) => new Request(url, { cache: "reload" }))))
-      .then(() => self.skipWaiting()),
-  );
+  event.waitUntil(precache().then(() => self.skipWaiting()));
 });
 
 self.addEventListener("activate", (event) => {

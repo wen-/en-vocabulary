@@ -413,7 +413,7 @@ async function parseLibraryFile(file, options = {}) {
       hydratedWord.audio = resolved.path;
       hydratedWord.audioBlob = blob;
       hydratedWord.audioName = resolved.path.split("/").pop() || `${word.term}.bin`;
-      hydratedWord.audioType = blob.type || inferAudioMimeType(hydratedWord.audioName);
+      hydratedWord.audioType = inferAudioMimeType(hydratedWord.audioName);
       hydratedWord.audioSize = blob.size;
       onProgress?.({ phase: "audio", completed: ++audioCompleted, total: audioTotal });
     }
@@ -427,7 +427,7 @@ async function parseLibraryFile(file, options = {}) {
         hydratedExample.audio = resolved.path;
         hydratedExample.audioBlob = blob;
         hydratedExample.audioName = resolved.path.split("/").pop() || `${word.term}-example.bin`;
-        hydratedExample.audioType = blob.type || inferAudioMimeType(hydratedExample.audioName);
+        hydratedExample.audioType = inferAudioMimeType(hydratedExample.audioName);
         hydratedExample.audioSize = blob.size;
         onProgress?.({ phase: "audio", completed: ++audioCompleted, total: audioTotal });
       }
@@ -507,6 +507,7 @@ function createImportedAudioRecord(wordId, ownerType, ownerId, source, now) {
   }
 
   const normalizedOwnerType = ownerType === AUDIO_OWNER_TYPES.example ? AUDIO_OWNER_TYPES.example : AUDIO_OWNER_TYPES.word;
+  const type = source.audioType || inferAudioMimeType(source.audioName || source.audio);
 
   return {
     id: createAudioRecordId(normalizedOwnerType, ownerId),
@@ -514,9 +515,9 @@ function createImportedAudioRecord(wordId, ownerType, ownerId, source, now) {
     ownerId: String(ownerId),
     wordId: String(wordId),
     name: source.audioName || source.audio || `${wordId}.bin`,
-    type: source.audioType || inferAudioMimeType(source.audioName || source.audio),
+    type,
     size: source.audioSize || blob.size,
-    blob,
+    blob: blob.type === type ? blob : blob.slice(0, blob.size, type),
     updatedAt: now,
   };
 }

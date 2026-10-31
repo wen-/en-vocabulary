@@ -1034,7 +1034,15 @@ async function registerServiceWorker() {
   }
 
   try {
-    await navigator.serviceWorker.register("./sw.js");
+    const hadController = Boolean(navigator.serviceWorker.controller);
+    let reloading = false;
+    navigator.serviceWorker.addEventListener("controllerchange", () => {
+      if (!hadController || reloading) return;
+      reloading = true;
+      window.location.reload();
+    });
+    const registration = await navigator.serviceWorker.register("./sw.js", { updateViaCache: "none" });
+    registration.update().catch(() => {});
     state.serviceWorkerState = navigator.serviceWorker.controller ? "controlled" : "registered";
   } catch (error) {
     state.serviceWorkerState = "error";

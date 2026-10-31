@@ -14,11 +14,14 @@ function normalizeAudioRecord(record) {
   }
 
   const ownerType = normalizeAudioOwnerType(record.ownerType);
+  const blob = record.blob;
+  const type = record.type;
 
   return {
     ...record,
     id: record.id || createAudioRecordId(ownerType, record.ownerId),
     ownerType,
+    blob: blob && type?.startsWith("audio/") && blob.type !== type ? blob.slice(0, blob.size, type) : blob,
   };
 }
 

@@ -133,6 +133,8 @@ test("ZIP reports actual audio references and missing audio stops before writing
     onProgress: (event) => progress.push(event),
   });
   assert.equal(result.importedAudio, 2);
+  assert.deepEqual(database.records.audio.map((record) => record.blob.type), ["audio/mpeg", "audio/mpeg"]);
+  assert.deepEqual(await Promise.all(database.records.audio.map((record) => record.blob.text())), ["word", "example"]);
   assert.deepEqual(progress.filter((p) => p.phase === "audio").map((p) => [p.completed, p.total]), [[0, 2], [1, 2], [2, 2]]);
   delete entries["audio/examples/hello.mp3"];
   const failureProgress = [];
@@ -140,6 +142,26 @@ test("ZIP reports actual audio references and missing audio stops before writing
     onProgress: (event) => failureProgress.push(event),
   }));
   assert.equal(failureProgress.some((p) => p.phase === "writing"), false);
+});
+
+test("previously imported untyped audio receives its stored media type on read", async () => {
+  const url = new URL("../src/db/wordRepository.js", import.meta.url);
+  const database = await import("../src/db/database.js");
+  const blob = new Blob(["existing mp3 bytes"]);
+  globalThis.__audioReadTestDatabase = {
+    ...database,
+    requestToPromise: async (value) => value,
+    runTransaction: async (_, __, handler) => handler({
+      audio: { get: () => ({ id: "word::old", ownerType: "word", wordId: "old", ownerId: "old", type: "audio/mpeg", blob }) },
+    }),
+  };
+  const source = (await readFile(url, "utf8"))
+    .replace(/^import \{([\s\S]*?)\} from "\.\/database.js";/, "const {$1} = globalThis.__audioReadTestDatabase;")
+    .replace(/from "(\.[^"]+)"/g, (_, path) => `from "${new URL(path, url)}"`);
+  const api = await import(`data:text/javascript;base64,${Buffer.from(source).toString("base64")}`);
+  const record = await api.getWordAudioRecord("old");
+  assert.equal(record.blob.type, "audio/mpeg");
+  assert.equal(await record.blob.text(), "existing mp3 bytes");
 });
 
 test("invalid JSON reports no write or saved stage", async () => {
@@ -204,4 +226,44 @@ test("library progress is directly below the import button inside the form", () 
   const idle = renderSettingsView({ ...props, importProgress: null, busy: false });
   assert.match(idle, /<div data-import-progress><\/div>/);
   assert.doesNotMatch(idle, /aria-label="词库导入进度"/);
+});
+
+test("service worker still installs and takes over when one precached file is missing", async () => {
+  const vm = await import("node:vm");
+  const handlers = new Map();
+  const cached = new Map();
+  let skipped = false;
+  const fetchAsset = async (request) => request.url.endsWith("/assets/article-template.wav")
+    ? new Response("missing", { status: 404 })
+    : new Response(`fresh ${new URL(request.url).pathname}`);
+  const cache = {
+    async addAll(requests) {
+      for (const request of requests) {
+        const response = await fetchAsset(request);
+        if (!response.ok) throw new TypeError("addAll rejected a 404");
+        cached.set(request.url, response);
+      }
+    },
+    async add(request) { await this.addAll([request]); },
+    async put(request, response) { cached.set(typeof request === "string" ? request : request.url, response); },
+  };
+  class LocalRequest extends Request {
+    constructor(url, options) { super(new URL(url, "https://app.test/"), options); }
+  }
+  vm.runInNewContext(await readFile(new URL("../sw.js", import.meta.url), "utf8"), {
+    self: {
+      location: { origin: "https://app.test" },
+      addEventListener: (name, handler) => handlers.set(name, handler),
+      skipWaiting: async () => { skipped = true; },
+    },
+    Request: LocalRequest, URL, console: { warn() {} }, fetch: fetchAsset,
+    caches: { open: async () => cache },
+  });
+  let installation;
+  handlers.get("install")({ waitUntil: (promise) => { installation = promise; } });
+  await installation;
+  assert.equal(skipped, true);
+  assert.equal(await cached.get("https://app.test/app.js").text(), "fresh /app.js");
+  assert.equal(await cached.get("https://app.test/src/views/importProgress.js").text(), "fresh /src/views/importProgress.js");
+  assert.equal(cached.has("https://app.test/assets/article-template.wav"), false);
 });
